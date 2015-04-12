@@ -75,6 +75,7 @@ public class SemaineFragment extends Fragment {
 	private ProgressBar pbTelechargement;
 	private ProgressBar pbTelechargement2;
 	private TextView tvTelechargement;
+	private TextView tvTelechargement2;
 	
 	// json reçu
 	private JSONObject json;
@@ -126,12 +127,13 @@ public class SemaineFragment extends Fragment {
 		pbTelechargement = (ProgressBar)v.findViewById(R.id.pbTelechargement);
 		pbTelechargement2 = (ProgressBar)v.findViewById(R.id.pbTelechargement2);
 		tvTelechargement = (TextView)v.findViewById(R.id.tvTelechargement);
+		tvTelechargement2 = (TextView)v.findViewById(R.id.tvTelechargement2);
 		
 		// chargement du json si présent
 		chargerDepuisJsonSauvegarde();
 		
 		// connexion à myEPF si pas fait et pas en cours
-		if(!EdtFragment.connecteAMyEpf && !EdtFragment.enTrainDeSeConnecterAMyEPF){
+		if(!MainActivite.connecteAMyEpf && !MainActivite.enTrainDeSeConnecterAMyEPF){
 			Log.i(tag(), "Connexion à myEPF");
 			mere.connexionMyEPF();
 		}
@@ -141,6 +143,8 @@ public class SemaineFragment extends Fragment {
 //			// si on est plus tard que samedi 14h, on décale
 //			lancerTelechargement(true, true);
 //		}
+		
+		
 		if(indexFragment==0){
 			lancerTelechargement(true, false);
 		} else {
@@ -201,7 +205,7 @@ public class SemaineFragment extends Fragment {
 				
 //		avancement("Semaine récupérée en "+(SystemClock.elapsedRealtime()-temps1)/1000+"s.", 100);
 		
-		EdtFragment.setServerOk(true);
+		MainActivite.serverOk = true;
 		chargerVueComplete();
 		
 		getActivity().runOnUiThread(new Runnable() {
@@ -215,6 +219,7 @@ public class SemaineFragment extends Fragment {
 	private void onCoursDisplayed(){
 		SemainesPagerAdapter.definirCm(null);
 		updateProchainSite();
+		avancement("Edt téléchargé", 100, false);
 	}
 	
 	/**
@@ -517,17 +522,17 @@ public class SemaineFragment extends Fragment {
 	private class GetEdtSemaine extends AsyncTask<Boolean, Void, Void>{
 	    @Override
 	    protected Void doInBackground(Boolean... params) {
-	    	avancement("Connexion à my.epf", 15, false);
-	    	while(!EdtFragment.isConnecteAMyEpf() || EdtFragment.isTelechargementEdtEnCours()){
+	    	avancement("Attente connexion à my.epf", 15, false);
+	    	while(!MainActivite.connecteAMyEpf || EdtFragment.telechargementEdtEnCours){
 		        try {
-		            Thread.sleep(100);
+		            Thread.sleep(500);
 		        } catch (InterruptedException e) {
 		            e.printStackTrace();
 		        }
 	    	}
 	    	
 	    	avancement("Téléchargement de l'edt", 30, false);
-	    	EdtFragment.setTelechargementEdtEnCours(true);
+	    	EdtFragment.telechargementEdtEnCours=true;
 	    	boolean firstTime = params[0];
 	    	boolean avancementUneSemaine = params[1];
 	    	
@@ -567,10 +572,13 @@ public class SemaineFragment extends Fragment {
 					JSONObject json = new JSONObject(sb.toString());
 					onEdtDownloaded(json);
 				} catch (JSONException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
+					avancement("Impossible de convertir en JSON", 0, false);
+					Log.e(getTag(), sb.toString());
+					return null;
 				}
 			} catch(IOException e){
-				e.printStackTrace();
+//				e.printStackTrace();
 				avancement("Impossible de lire la réponse finale", 0, false);
 				return null;
 			}
@@ -592,25 +600,34 @@ public class SemaineFragment extends Fragment {
 				public void run() {
 					if(pourcentage >= 100){
 						if(!appeleParLaMere)
-							Log.i(tag(), "Avancement terminé"+pourcentage+" : "+texte);
+							Log.i(tag(), "Avancement terminé : "+texte);
 						SemaineFragment.this.tvTelechargement.setText(texte);
+						SemaineFragment.this.tvTelechargement.setVisibility(View.GONE);
+						SemaineFragment.this.tvTelechargement2.setText(texte);
+						SemaineFragment.this.tvTelechargement2.setVisibility(View.GONE);
 						SemaineFragment.this.pbTelechargement.setVisibility(View.GONE);
 						SemaineFragment.this.pbTelechargement2.setVisibility(View.GONE);
+						
 					} else if(pourcentage > 0){
 						if(!appeleParLaMere)
 							Log.i(tag(), "Avancement "+pourcentage+" : "+texte);
 						SemaineFragment.this.tvTelechargement.setText(texte);
+						SemaineFragment.this.tvTelechargement2.setVisibility(View.VISIBLE);
 						SemaineFragment.this.pbTelechargement.setProgress(pourcentage);
 						SemaineFragment.this.pbTelechargement.setVisibility(View.VISIBLE);
+						SemaineFragment.this.tvTelechargement2.setText(texte);
 						SemaineFragment.this.pbTelechargement2.setProgress(pourcentage);
 						SemaineFragment.this.pbTelechargement2.setVisibility(View.VISIBLE);
+						
 					} else {
 						if(!appeleParLaMere)
 							Log.i(tag(), "Avancement erreur : "+texte);
 						EdtFragment.setTelechargementEdtEnCours(false);
 						SemaineFragment.this.tvTelechargement.setText(texte);
 						SemaineFragment.this.pbTelechargement.setVisibility(View.GONE);
+						SemaineFragment.this.tvTelechargement2.setText(texte);
 						SemaineFragment.this.pbTelechargement2.setVisibility(View.GONE);
+//						SemaineFragment.this.tvTelechargement2.setVisibility(View.GONE);
 					}
 
 				}

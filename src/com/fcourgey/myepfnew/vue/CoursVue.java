@@ -69,7 +69,7 @@ public class CoursVue extends Button {
 							values.put(Colonne.DEVOIRS, devoirs);
 							long lastId = modele.inserer(values);
 							if(lastId > 0){
-								Log.i("CoursVue", "devoirs bien inséré (id "+lastId+")");
+								Log.i("CoursVue", "devoir bien inséré (id "+lastId+")");
 								cours.setDevoirs(devoirs);
 							} else {
 								Log.e("CoursVue", "IMPOSSIBLE D'INSERER LE DEVOIR");
@@ -83,11 +83,7 @@ public class CoursVue extends Button {
 					}
 				})
 
-				.setNegativeButton(R.string.annuler, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						System.out.println("Annuler");
-					}
-				})
+				.setNegativeButton(R.string.annuler, null)
 				.create()
 				.show();
 			}

@@ -1,11 +1,10 @@
-package com.fcourgey.myepfnew.controlleur;
+package com.fcourgey.myepfnew.controleur;
 
 import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.util.Log;
 
 import com.fcourgey.myepfnew.activite.AccueilActivite;
 import com.fcourgey.myepfnew.modele.PreferencesModele;
@@ -14,6 +13,7 @@ import com.fcourgey.myepfnew.vue.IdentifiantsVue;
 
 public class AccueilControleur {
 	
+	@SuppressWarnings("unused")
 	private static final String TAG = "AccueilControleur";
 	
 	/**
@@ -36,10 +36,10 @@ public class AccueilControleur {
 			int versionCode = pinfo.versionCode;
 			if(versionCode == 14000 && activite.getPrefs().getBoolean(PreferencesModele.V14_MDP_HASHE, false)==false){
 				String mdp = activite.getPrefs().getMdp();
-				System.out.println("Mdp avant hash : " + mdp);
+//				System.out.println("Mdp avant hash : " + mdp);
 				try {
 					String mdpHashe = Securite.encrypt(mdp);
-					System.out.println("Mdp apres hash: " + mdpHashe);
+//					System.out.println("Mdp apres hash: " + mdpHashe);
 					activite.getPrefs().setMdp(mdpHashe);
 					String mdpVerif = activite.getPrefs().getMdp();
 					if(mdpVerif.equals(mdpHashe)){
@@ -62,7 +62,6 @@ public class AccueilControleur {
 		String login = activite.getPrefs().getIdentifiant();
 		// et le mdp
 		String mdp = activite.getPrefs().getMdp();
-		Log.i(TAG, login+" et "+mdp);
 		// si pas de login, on demande avec une popup
 		if(login == null || login.length() < PreferencesModele.TAILLE_MIN_IDENTIFIANT || mdp == null || mdp.length()<PreferencesModele.TAILLE_MIN_MDP){
 			IdentifiantsVue.show(activite);

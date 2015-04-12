@@ -45,7 +45,7 @@ public class BulletinFragment extends Fragment {
 		
 		CHEMIN_BULLETIN = getActivity().getFilesDir()+"/bulletin.pdf";
 		
-		((TextView)getActivity().findViewById(R.id.bTelechargerBulletin)).setOnClickListener(new OnClickListener() {
+		((TextView)vue.findViewById(R.id.bTelechargerBulletin)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				onTelechargerBulletinClicked();
 			}

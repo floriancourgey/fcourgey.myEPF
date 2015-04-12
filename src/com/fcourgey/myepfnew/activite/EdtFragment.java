@@ -1,57 +1,18 @@
 package com.fcourgey.myepfnew.activite;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.cookie.SM;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.http.SslError;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.StrictMode;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.controlleur.DrawerControleur;
-import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
-import com.fcourgey.myepfnew.modele.PreferencesModele;
-import com.fcourgey.myepfnew.outils.Securite;
-import com.mikhaellopez.circularimageview.CircularImageView;
 
-@SuppressWarnings("deprecation")
 public class EdtFragment extends Fragment {
 	
 	private static MainActivite a;
@@ -70,14 +31,10 @@ public class EdtFragment extends Fragment {
 	
 	public static final int NB_SEC_REQ_TIMEOUT = 20;
 	
-	public static boolean connecteAMyEpf = false;
-	public static boolean enTrainDeSeConnecterAMyEPF = false;
+	public static boolean telechargementEdtEnCours = false;
 	
-	private static boolean telechargementEdtEnCours = false;
-	
+	@SuppressWarnings("unused")
 	private static WebView wvCachee;
-	
-	private static boolean serverOk;
 	
 	private static View vue;
 	
@@ -102,15 +59,6 @@ public class EdtFragment extends Fragment {
 	}
 	
 	/**
-	 * Est exécuté lorsque la connexion à myEPF a réussi
-	 */
-	private void onMyEPFConnected(){
-		enTrainDeSeConnecterAMyEPF = false;
-		connecteAMyEpf = true;
-//		initPhotoEtNomProfil();
-	}
-	
-	/**
 	 * Affiche l'avancement sur la progressBar et son textview correspondant
 	 * Fait un system.out.println également
 	 */
@@ -120,31 +68,6 @@ public class EdtFragment extends Fragment {
 		}
 	}
 	
-	/**
-	 * initialise les cookies
-	 */
-	private void initCookies(){
-		CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(EdtFragment.wvCachee.getContext());
-		CookieManager cookieManager = CookieManager.getInstance();
-		cookieManager.removeAllCookie();
-		cookieManager.setAcceptCookie(true);
-		cookieSyncManager.sync();
-	}
-
-	/**
-	 * initalise la webview
-	 */
-	@SuppressLint("SetJavaScriptEnabled")
-	private void initWebSettings(){
-		WebSettings webSettings = EdtFragment.wvCachee.getSettings();
-		webSettings.setBuiltInZoomControls(true);
-		webSettings.setJavaScriptEnabled(true);
-		webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-		webSettings.setLoadWithOverviewMode(true);
-		webSettings.setUseWideViewPort(true);
-		webSettings.setUserAgentString("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:35.0) Gecko/20100101 Firefox/35.0 Waterfox/35.0");
-	}
-
 	/**
 	 * retourne true si internet ok
 	 * @return true/false
@@ -167,24 +90,6 @@ public class EdtFragment extends Fragment {
 	
 	public static boolean isTelechargementEnCours(){
 		return telechargementEdtEnCours;
-	}
-
-	public static boolean isServerOk() {
-		return serverOk;
-	}
-
-	public static void setServerOk(boolean b){
-		serverOk = b;
-	}
-
-	
-
-	public static boolean isConnecteAMyEpf() {
-		return connecteAMyEpf;
-	}
-
-	public static void setConnecteAMyEpf(boolean connecteAMyEpf) {
-		EdtFragment.connecteAMyEpf = connecteAMyEpf;
 	}
 
 	public static boolean isTelechargementEdtEnCours() {

@@ -8,6 +8,8 @@ import com.fcourgey.myepfnew.modele.PreferencesModele;
 
 public class _MereActivite extends ActionBarActivity {
 	
+	public static final String logcatFilter = "tag:^(?!.*(dalvik|EGL|Choreo)).*$";
+	
 	public static Context context;
 	public static PreferencesModele prefs;
 	

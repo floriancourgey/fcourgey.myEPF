@@ -10,6 +10,7 @@ import android.preference.PreferenceFragment;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.modele.PreferencesModele;
+import com.fcourgey.myepfnew.outils.Android;
 import com.fcourgey.myepfnew.vue.ViderCacheVue;
 
 public class PreferencesFragment extends PreferenceFragment {
@@ -36,6 +37,7 @@ public class PreferencesFragment extends PreferenceFragment {
 				ViderCacheVue.show(getActivity(), new OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						PreferencesModele.viderCache();
+						Android.quitter();
 					}
 				});
 				return false;

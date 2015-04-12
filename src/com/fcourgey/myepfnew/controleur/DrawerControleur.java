@@ -1,4 +1,4 @@
-package com.fcourgey.myepfnew.controlleur;
+package com.fcourgey.myepfnew.controleur;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,6 +8,9 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -17,9 +20,12 @@ import com.fcourgey.myepfnew.activite.BulletinFragment;
 import com.fcourgey.myepfnew.activite.EdtFragment;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.activite.PreferencesActivite;
+import com.fcourgey.myepfnew.outils.Android;
 import com.fcourgey.myepfnew.vue.DrawerVue;
 
-public class DrawerControleur {
+public class DrawerControleur extends Fragment {
+	
+	private boolean activerDrawer = false;
 	
 	private MainActivite a;
 	
@@ -27,14 +33,15 @@ public class DrawerControleur {
 	
 	public DrawerControleur(MainActivite a) {
 		this.a = a;
-		vue = new DrawerVue(a, a.getIdentifiant());
-		initOnDrawerListeners();
+//		vue = new DrawerVue(a, a.getIdentifiant());
+		if(activerDrawer)
+			initOnDrawerListeners();
 	}
 	
 	/**
 	 * au clic sur l'emploi du temps
 	 */
-	private void onEdtClicked(){
+	public void onEdtClicked(){
 		Fragment newFragment;
         FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
 		newFragment = new EdtFragment();
@@ -46,7 +53,7 @@ public class DrawerControleur {
 	/**
 	 * au clic sur le bulletin
 	 */
-	private void onBulletinClicked(){
+	public void onBulletinClicked(){
 		Fragment newFragment;
         FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
 		newFragment = new BulletinFragment();
@@ -58,7 +65,7 @@ public class DrawerControleur {
 	/**
 	 * au clic sur les préférences
 	 */
-	private void onPreferencesClicked(){
+	public void onPreferencesClicked(){
 		// init popup
     	AlertDialog.Builder builder = new AlertDialog.Builder(a);
     	builder.setMessage("Les préférences seront prises en compte au prochain redémarrage de l'appli.")
@@ -76,7 +83,7 @@ public class DrawerControleur {
 	/**
 	 * au clic sur A propos
 	 */
-	private void onAProposClicked(){
+	public void onAProposClicked(){
 		// init popup
 		AlertDialog.Builder builder = new AlertDialog.Builder(a);
     	builder = new AlertDialog.Builder(a);
@@ -95,8 +102,8 @@ public class DrawerControleur {
 	/**
 	 * au clic sur Quitter
 	 */
-	private void onQuitterClicked(){
-		android.os.Process.killProcess(android.os.Process.myPid());
+	public void onQuitterClicked(){
+		Android.quitter();
 	}
 	
 	/**
@@ -158,4 +165,9 @@ public class DrawerControleur {
 		vue.getToggleBouton().onConfigurationChanged(newConfig);
 	}
 
+	public DrawerVue getVue() {
+		return vue;
+	}
+
+	
 }

@@ -20,22 +20,32 @@ import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.controlleur.DrawerControleur;
+import com.fcourgey.myepfnew.controleur.DrawerControleur;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 import com.fcourgey.myepfnew.modele.PreferencesModele;
 import com.fcourgey.myepfnew.outils.Securite;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+@SuppressWarnings("deprecation")
 public class MainActivite extends _MereActivite {
 	
 	private static final String TAG = "MainActivite";
@@ -45,6 +55,8 @@ public class MainActivite extends _MereActivite {
 	public static final String URL_MYDATA = EdtFragment.URL_MYDATA;
 	public static final String URL_PROFIL = URL_MYDATA+"pegasus/index.php?com=tracking&job=tracking-etudiant";
 
+	public static boolean connecteAMyEpf = false;
+	public static boolean enTrainDeSeConnecterAMyEPF = false;
 		
 	public static String CHEMIN_PHOTO_PROFIL;
 	
@@ -53,7 +65,7 @@ public class MainActivite extends _MereActivite {
 	
 	private static WebView wvCachee;
 	
-	private static boolean serverOk;
+	public static boolean serverOk;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,10 +95,9 @@ public class MainActivite extends _MereActivite {
 	 * Lance onMyEPFConnected
 	 */
 	public void connexionMyEPF() {
-		/*
 		enTrainDeSeConnecterAMyEPF = true;
 		avancement("Requête login", 5);
-		wvCachee = (WebView)vue.findViewById(R.id.wvCachee);
+		wvCachee = (WebView)findViewById(R.id.wvCachee);
 		runOnUiThread(new Runnable() {
 			@SuppressLint("NewApi")
 			public void run() {
@@ -96,9 +107,9 @@ public class MainActivite extends _MereActivite {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 				      WebView.setWebContentsDebuggingEnabled(true);
 				}
-				EdtFragment.wvCachee.setWebChromeClient(new WebChromeClient());
-				EdtFragment.wvCachee.loadUrl(URL_LOGIN_REQUETE);
-				EdtFragment.wvCachee.setWebViewClient(new WebViewClient(){
+				MainActivite.wvCachee.setWebChromeClient(new WebChromeClient());
+				MainActivite.wvCachee.loadUrl(EdtFragment.URL_LOGIN_REQUETE);
+				MainActivite.wvCachee.setWebViewClient(new WebViewClient(){
 				    private boolean ignorerRequetesAccueil = false;
 				    
 				    private boolean premiereRequeteEdtResultat = true;
@@ -151,36 +162,40 @@ public class MainActivite extends _MereActivite {
 				    	}
 				    }
 				});
-				EdtFragment.this.runOnUiThread(new Runnable() {
+				MainActivite.this.runOnUiThread(new Runnable() {
 					class CompteARebours extends CountDownTimer {
 						CompteARebours(long duree, long intervalleActualisation) {
 							super(duree, intervalleActualisation);
 						}
 						public void onTick(long millisUntilFinished) {}
 						public void onFinish() {
-							if (!EdtFragment.serverOk) {
+							if (!serverOk) {
 								enTrainDeSeConnecterAMyEPF = false;
 								avancement("Délai d'attente dépassé", 0);
 							}
 						}
 					}
 					public void run() {
-						new CompteARebours(NB_SEC_REQ_TIMEOUT*1000, 300).start();
+						new CompteARebours(EdtFragment.NB_SEC_REQ_TIMEOUT*1000, 300).start();
 					}
 				});
 			}
 		});
-		*/
 	}
 	
+	private void avancement(String string, int i) {
+		Log.i(TAG, "avancement "+i+" : "+string);
+	}
+
 	/**
 	 * Est exécuté lorsque la connexion à myEPF a réussi
 	 */
 	private void onMyEPFConnected(){
-//		enTrainDeSeConnecterAMyEPF = false;
-//		connecteAMyEpf = true;
-//		initPhotoEtNomProfil();
-	}
+		avancement("my.epf connecté", 50);
+		enTrainDeSeConnecterAMyEPF = false;
+		connecteAMyEpf = true;
+		serverOk = true;
+	}	
 	
 	/**
 	 * initialise les cookies
@@ -213,7 +228,7 @@ public class MainActivite extends _MereActivite {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 	    super.onPostCreate(savedInstanceState);
-	    drawer.onPostCreate(savedInstanceState);
+//	    drawer.onPostCreate(savedInstanceState);
 	}
 	/**
 	 * pour le drawer
@@ -221,8 +236,37 @@ public class MainActivite extends _MereActivite {
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        drawer.onConfigurationChanged(newConfig);
+//        drawer.onConfigurationChanged(newConfig);
     }
+	/**
+	 * Menu
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.menu, menu);
+	    return true;
+	}
+	/**
+	 * Menu et drawer
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.preferences:
+	            drawer.onPreferencesClicked();
+	            return true;
+	        case R.id.apropos:
+	        	drawer.onAProposClicked();
+	            return true;
+	        case R.id.quitter:
+	        	drawer.onQuitterClicked();
+	            return true;
+	        default:
+	        	return drawer.getVue().getToggleBouton().onOptionsItemSelected(item);
+	    }
+	}
 	
 	private void afficherPhotoProfil(){
 		CircularImageView photoProfil = (CircularImageView)findViewById(R.id.photo_profil);
@@ -243,6 +287,7 @@ public class MainActivite extends _MereActivite {
 		photoProfil.setImageBitmap(bmp);
 		Log.i(TAG, "màj photo de profil ok");
 	}
+	@SuppressWarnings("unused")
 	private void initPhotoEtNomProfil(){
 		// check si existe
 		File file = new File(CHEMIN_PHOTO_PROFIL);
@@ -329,7 +374,7 @@ public class MainActivite extends _MereActivite {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent e) {
 	    if (keyCode == KeyEvent.KEYCODE_MENU) {
-	    	drawer.clicSurBoutonMenu();
+//	    	drawer.clicSurBoutonMenu();
 	        return true;
 	    }
 	    return super.onKeyDown(keyCode, e);

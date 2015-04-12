@@ -3,7 +3,7 @@ package com.fcourgey.myepfnew.activite;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.fcourgey.myepfnew.controlleur.AccueilControleur;
+import com.fcourgey.myepfnew.controleur.AccueilControleur;
 
 public class AccueilActivite extends _MereActivite {
 	
