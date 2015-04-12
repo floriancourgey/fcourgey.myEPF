@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="groupe">
+        <item>Aa</item>
+        <item>Ab</item>
+        <item>Ba</item>
+        <item>Bb</item>
+        <item>Ca</item>
+        <item>Cb</item>
+        <item>Da</item>
+        <item>Db</item>
+    </string-array>
+    <string-array name="langue">
+        <item>Espagnol</item>
+        <item>Allemand</item>
+        <item>Italien</item>
+        <item>Russe</item>
+        <item>Chinois</item>
+        <item>Japonais</item>
+        <item>Portugais</item>
+    </string-array>
+    <string-array name="horraire">
+        <item>8h15-9h45</item>
+        <item>10h-11h30</item>
+        <item>12h-13h30</item>
+    </string-array>
+    <string-array name="horraire_italien">
+        <item>8h15-9h45</item>
+        <item>10h-11h30</item>
+        <item>11h45-13h15</item>
+    </string-array>
+    <string-array name="prof_anglais">
+        <item>Baker Roger</item>
+        <item>Barbe Phyllis</item>
+        <item>Dassargues Charlotte</item>
+        <item>Fenby Lena</item>
+        <item>Johnson Nicolas</item>
+        <item>Keramitas Dimitri</item>
+        <item>Moore Vicki</item>
+        <item>Perves Sarah</item>
+        <item>Powell Neville</item>
+        <item>Williams Sarah</item>
+    </string-array>
+    <string-array name="prof_allemand">
+        <item>Baum Ursula</item>
+        <item>Genin Cornelia</item>
+        <item>Eva Woescher</item>
+    </string-array>
+    <string-array name="prof_espagnol">
+        <item>Alvarez Esther</item>
+        <item>Balmaceda</item>
+        <item>Belotto Mari-Angeles</item>
+        <item>Camarero Julia</item>
+        <item>Citores Maria</item>
+        <item>Galbete Josefa</item>
+        <item>Quintero Andrea</item>
+    </string-array>
+    <string-array name="prof_italien">
+        <item>Brunelli Bianca-Maria</item>
+    </string-array>
+    <string-array name="prof_russe">
+        <item>Izabel Tatiana</item>
+    </string-array>
+    <string-array name="prof_chinois">
+        <item>Alhant Yizhen</item>
+    </string-array>
+    <string-array name="prof_japonais">
+        <item>Saito Junko</item>
+    </string-array>
+    <string-array name="prof_portugais">
+        <item>Wagner-Rauth Hanelise</item>
+    </string-array>
+    <string-array name="salle">
+        <item>S</item>
+        <item>S</item>
+        <item>S</item>
+        <item>S</item>
+        <item>S</item>
+        <item>S</item>
+    </string-array>
+</resources>

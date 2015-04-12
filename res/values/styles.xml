@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Theme.MyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+	    <item name="colorPrimary">@color/action_bar</item>
+	    <item name="colorPrimaryDark">@color/notification_bar</item>
+	    <item name="colorAccent">@color/accent_color</item>
+	</style>
+
+    
+
+    
+    <style name="navigation_drawer_list_item">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:clickable">true</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">35dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginLeft">20dp</item>
+    </style>
+
+    
+</resources>

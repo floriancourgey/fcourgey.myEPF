@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">myEPF</string>
+    
+    <string name="ok">OK</string>
+    <string name="annuler">Annuler</string>
+    
+    <!-- Activité Bulletin -->
+    <string name="bulletin_nopdf_titre">Impossible d\'ouvrir le bulletin</string>
+    <string name="bulletin_nopdf_message">Tu n\'as aucune application pour ouvrir le bulletin en PDF. Tu peux trouver Adobe Reader sur le play store.</string>
+    
+	<!-- popup Identifiants -->
+    <string name="popup_identifiants_titre">Entre tes identifiants myEPF</string>
+    
+    <!-- navigation drawer -->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+</resources>

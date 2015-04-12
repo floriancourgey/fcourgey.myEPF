@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" >
+    <PreferenceCategory 
+        android:title="@string/categorie_connexion">
+	    <EditTextPreference
+	        android:key="@string/key_login"
+	        android:title="@string/titre_login"
+	        android:summary="@string/desc_login"
+	        android:dialogTitle="@string/desc_login"
+	        android:defaultValue="" />
+	    <EditTextPreference
+		    android:key="@string/key_mdp"
+		    android:title="@string/titre_mdp"
+		    android:summary="@string/desc_mdp"   
+		    android:dialogTitle="@string/desc_mdp"
+		    android:inputType="textPassword" />
+	    
+	    <ListPreference
+	        android:key="@string/key_nb_semaines_to_dl"
+	        android:title="@string/titre_nb_semaines_to_dl"
+	        android:dialogTitle="@string/titre_nb_semaines_to_dl"
+	        android:summary="@string/desc_nb_semaines_to_dl" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory 
+        android:title="@string/categorie_design">
+	    <CheckBoxPreference
+	        android:key="@string/key_heures"
+	        android:title="@string/titre_heures"
+	        android:summary="@string/desc_heures"
+	        android:defaultValue="true" />
+	    
+		<EditTextPreference
+		    android:key="@string/key_photo_x"
+			android:title="@string/titre_photo_x"
+			android:summary="@string/desc_photo_x" />
+		<EditTextPreference
+		    android:key="@string/key_photo_y"
+			android:title="@string/titre_photo_y"
+			android:summary="@string/desc_photo_y" />
+	    
+	    <PreferenceScreen
+	        android:title="@string/couleurs"
+	        android:persistent="false">
+		    <com.yuku.colorpicker.widget.AmbilWarnaPreference
+			    android:key="@string/key_c_exam"
+			    android:title="@string/titre_c_exam" />
+		    <com.yuku.colorpicker.widget.AmbilWarnaPreference
+			    android:key="@string/key_c_tp"
+			    android:title="@string/titre_c_tp" />
+		    <com.yuku.colorpicker.widget.AmbilWarnaPreference
+			    android:key="@string/key_c_td"
+			    android:title="@string/titre_c_td" />
+		    <com.yuku.colorpicker.widget.AmbilWarnaPreference
+			    android:key="@string/key_c_cm"
+			    android:title="@string/titre_c_cm" />
+		    <com.yuku.colorpicker.widget.AmbilWarnaPreference
+			    android:key="@string/key_c_autre"
+			    android:title="@string/titre_c_autre" />
+		    <com.yuku.colorpicker.widget.AmbilWarnaPreference
+			    android:key="@string/key_c_devoirs"
+			    android:title="@string/titre_c_devoirs" />
+	    </PreferenceScreen>
+    </PreferenceCategory>
+    
+    
+    <PreferenceCategory 
+        android:title="@string/categorie_autre">
+	    <Preference
+	        android:key="@string/key_cache"
+			android:title="@string/titre_cache"
+			android:summary="@string/desc_cache">
+	    </Preference>
+	</PreferenceCategory>
+</PreferenceScreen>

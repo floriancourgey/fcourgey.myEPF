@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="TrulyRandom">
+        <ignore path="src/com/fcourgey/myepfnew/outil/Securite.java" />
+    </issue>
+</lint>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer"
+    android:layout_width="256dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="#333"
+    android:orientation="vertical" >
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/photo_profil"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:src="@drawable/ic_user64"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        app:border="true"
+        app:border_color="#111"
+        app:border_width="2dp"
+        app:shadow="true" />
+    <TextView
+        android:id="@+id/nom_profil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#ddd"
+        android:layout_marginBottom="25dp"
+        android:text="fcourgey" />
+    
+    <TextView
+        android:id="@+id/edt"
+        style="@style/navigation_drawer_list_item"
+        android:text="Emploi du temps" />
+    
+    <TextView
+        android:id="@+id/bulletin"
+        style="@style/navigation_drawer_list_item"
+        android:text="Bulletin" />
+    
+    <TextView
+        android:id="@+id/preferences"
+        style="@style/navigation_drawer_list_item"
+        android:text="Préférences" />
+
+    <TextView
+        android:id="@+id/apropos"
+        style="@style/navigation_drawer_list_item"
+        android:text="A propos" />
+
+    <TextView
+        android:id="@+id/quitter"
+        style="@style/navigation_drawer_list_item"
+        android:text="Quitter" />
+
+</LinearLayout>

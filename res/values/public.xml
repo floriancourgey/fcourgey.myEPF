@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public type="array" name="groupe" id="0x7f040000" />
+    <public type="array" name="langue" id="0x7f040001" />
+    <public type="array" name="horraire" id="0x7f040002" />
+    <public type="array" name="horraire_italien" id="0x7f040003" />
+    <public type="array" name="prof_anglais" id="0x7f040004" />
+    <public type="array" name="prof_allemand" id="0x7f040005" />
+    <public type="array" name="prof_espagnol" id="0x7f040006" />
+    <public type="array" name="prof_italien" id="0x7f040007" />
+    <public type="array" name="prof_russe" id="0x7f040008" />
+    <public type="array" name="prof_chinois" id="0x7f040009" />
+    <public type="array" name="prof_japonais" id="0x7f04000a" />
+    <public type="array" name="prof_portugais" id="0x7f04000b" />
+    <public type="array" name="salle" id="0x7f04000c" />
+    <public type="string" name="app_name" id="0x7f050001" />
+    <public type="id" name="webView1" id="0x7f060000" />
+    <public type="id" name="PB_bulletin" id="0x7f060001" />
+    <public type="id" name="TV_bulletin" id="0x7f060002" />
+    <public type="id" name="TV_id" id="0x7f060003" />
+    <public type="id" name="ET_id" id="0x7f060004" />
+    <public type="id" name="TV_mdp" id="0x7f060005" />
+    <public type="id" name="ET_mdp" id="0x7f060006" />
+    <public type="id" name="CB_save" id="0x7f060007" />
+    <public type="id" name="linearLayout1" id="0x7f060008" />
+    <public type="id" name="B_dl" id="0x7f060009" />
+    <public type="id" name="majlayout" id="0x7f06000a" />
+    <public type="id" name="tv_st" id="0x7f06000b" />
+    <public type="id" name="tv_pb" id="0x7f06000c" />
+    <public type="id" name="ed_edt" id="0x7f06000d" />
+    <public type="id" name="pb_edt" id="0x7f06000e" />
+    <public type="id" name="b_config" id="0x7f06000f" />
+    <public type="id" name="tv_sem" id="0x7f060010" />
+    <public type="id" name="username_view" id="0x7f060011" />
+    <public type="id" name="pagenum_edit" id="0x7f060012" />
+    <public type="id" name="tl_main" id="0x7f060013" />
+    <public type="id" name="etPassword" id="0x7f060014" />
+    <public type="id" name="btExit" id="0x7f060015" />
+    <public type="id" name="btOK" id="0x7f060016" />
+    <public type="id" name="view_pager" id="0x7f060017" />
+    <public type="id" name="pagerAndroid" id="0x7f060018" />
+</resources>

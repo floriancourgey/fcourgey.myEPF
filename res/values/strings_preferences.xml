@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categorie_connexion">Connexion</string>
+    
+	<string name="key_login">login</string>
+	<string name="titre_login">Identifiant</string>
+	<string name="desc_login">Ton identifiant myEPF</string>
+	
+	<string name="key_mdp">mdp</string>
+	<string name="titre_mdp">Mot de passe </string>
+	<string name="desc_mdp">Ton mot de passe myEPF</string>
+	
+	<string name="key_nb_semaines_to_dl">nb_semaines_to_dl</string>
+	<string name="titre_nb_semaines_to_dl">Nombre de semaines à télécharger</string>
+	<string name="desc_nb_semaines_to_dl"></string>
+	
+	<!--  -->
+	
+	<string name="categorie_design">Design</string>
+	
+	<string name="key_cm">afficher_cm</string>
+	<string name="titre_cm">CM</string>
+	<string name="desc_cm">Afficher les CM ?</string>
+	
+	<string name="key_heures">afficher_heures</string>
+	<string name="titre_heures">Heures</string>
+	<string name="desc_heures">Afficher les heures sur la gauche ?</string>
+	
+	<string name="key_photo_x">photo_x</string>
+	<string name="titre_photo_x">Décaler la photo de profil (gauche/droite)</string>
+	<string name="desc_photo_x">Exemple : "15" => décalage de 15px vers la droite</string>
+	<string name="key_photo_y">photo_y</string>
+	<string name="titre_photo_y">Décaler la photo de profil (haut/bas)</string>
+	<string name="desc_photo_y">Exemple : "15" => décalage de 15px vers le bas</string>
+	
+	<string name="couleurs">Couleurs</string>
+	<string name="key_c_exam">c_exam</string>
+	<string name="titre_c_exam">Couleur des examens</string>
+	<string name="key_c_tp">c_tp</string>
+	<string name="titre_c_tp">Couleur des TP</string>
+	<string name="key_c_td">c_td</string>
+	<string name="titre_c_td">Couleur des TD</string>
+	<string name="key_c_cm">c_cm</string>
+	<string name="titre_c_cm">Couleur des CM</string>
+	<string name="key_c_autre">c_autres</string>
+	<string name="titre_c_autre">Couleur des autres</string>
+	<string name="key_c_devoirs">c_devoirs</string>
+	<string name="titre_c_devoirs">Couleur des devoirs</string>
+	
+	<string name="categorie_autre">Autre</string>
+	<string name="key_cache">cache</string>
+	<string name="titre_cache">Vider le cache</string>
+	<string name="desc_cache"></string>
+</resources>

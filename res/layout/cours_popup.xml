@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:baselineAligned="false"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    <LinearLayout 
+        android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:orientation="vertical"
+    	android:gravity="right"
+    	android:layout_weight="3">
+    	<TextView 
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="Nom :"/>
+        <TextView 
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="Horaire :"/>
+        <TextView 
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="Prof :"/>
+        <TextView 
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="Lieu :"/>
+        <TextView 
+            android:id="@+id/tvLabelExtra"
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="Extra :"/>
+        <TextView 
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="Devoirs :"/>
+    </LinearLayout>
+    <LinearLayout 
+        android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:orientation="vertical"
+    	android:layout_weight="1">
+        <TextView 
+            android:id="@+id/tvNom"
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="Allemand 2 (TD)"/>
+        <TextView  
+            android:id="@+id/tvHoraire"
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="10:00 à 11:30"/>
+        <TextView  
+            android:id="@+id/tvProf"
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="Cornelia Genin"/>
+        <TextView  
+            android:id="@+id/tvLieu"
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="2P (poinca)"/>
+        <TextView  
+            android:id="@+id/tvExtra"
+            android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:text="XXX"/>
+
+        <EditText
+            android:id="@+id/etDEvoirs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine" 
+            android:hint="Devoirs, todos, interro..">
+
+            <requestFocus />
+        </EditText>
+
+    </LinearLayout>
+
+</LinearLayout>

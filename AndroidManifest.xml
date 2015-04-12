@@ -1,0 +1,23 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.fcourgey.myepfnew"
+    android:versionName="14"
+    android:versionCode="14000" >
+
+        <uses-sdk 	android:minSdkVersion="15"
+             		android:targetSdkVersion="22"
+              		android:maxSdkVersion="22" />
+    
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application android:theme="@style/Theme.MyTheme" android:label="@string/app_name" android:icon="@drawable/ic_app512" android:allowBackup="false">
+        <activity android:label="@string/app_name" android:name=".activite.AccueilActivite">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activite.MainActivite"/>
+        <activity android:name=".activite.PreferencesActivite" />
+    </application>
+
+</manifest>

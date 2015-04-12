@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="webView1">false</item>
+    <item type="id" name="PB_bulletin">false</item>
+    <item type="id" name="TV_bulletin">false</item>
+    <item type="id" name="TV_id">false</item>
+    <item type="id" name="ET_id">false</item>
+    <item type="id" name="TV_mdp">false</item>
+    <item type="id" name="ET_mdp">false</item>
+    <item type="id" name="CB_save">false</item>
+    <item type="id" name="linearLayout1">false</item>
+    <item type="id" name="B_dl">false</item>
+    <item type="id" name="majlayout">false</item>
+    <item type="id" name="tv_st">false</item>
+    <item type="id" name="tv_pb">false</item>
+    <item type="id" name="ed_edt">false</item>
+    <item type="id" name="pb_edt">false</item>
+    <item type="id" name="b_config">false</item>
+    <item type="id" name="tv_sem">false</item>
+    <item type="id" name="username_view">false</item>
+    <item type="id" name="pagenum_edit">false</item>
+    <item type="id" name="tl_main">false</item>
+    <item type="id" name="etPassword">false</item>
+    <item type="id" name="btExit">false</item>
+    <item type="id" name="btOK">false</item>
+    <item type="id" name="view_pager">false</item>
+    <item type="id" name="pagerAndroid">false</item>
+</resources>
