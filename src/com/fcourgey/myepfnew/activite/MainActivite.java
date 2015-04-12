@@ -20,6 +20,8 @@ import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
@@ -37,6 +40,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.controleur.DrawerControleur;
@@ -67,11 +71,16 @@ public class MainActivite extends _MereActivite {
 	
 	public static boolean serverOk;
 	
+	private ProgressBar pbConnexionMyEpf;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.main_activite);
+		
+		pbConnexionMyEpf = (ProgressBar)findViewById(R.id.pbConnexionMyEpf);
+		pbConnexionMyEpf.getProgressDrawable().setColorFilter(Color.CYAN, Mode.SRC_IN);
 		
 		CHEMIN_PHOTO_PROFIL = getFilesDir()+"/photoprofil.jpg";
 		
@@ -183,15 +192,38 @@ public class MainActivite extends _MereActivite {
 		});
 	}
 	
-	private void avancement(String string, int i) {
-		Log.i(TAG, "avancement "+i+" : "+string);
+	private void avancement(final String texte, final int pourcentage) {
+		try{
+			runOnUiThread(new Runnable() {
+				public void run() {
+					if(pourcentage >= 100){
+						Log.i(TAG, "Avancement terminé : "+texte);
+						MainActivite.this.pbConnexionMyEpf.setVisibility(View.GONE);
+						
+					} else if(pourcentage > 0){
+						Log.i(TAG, "Avancement "+pourcentage+" : "+texte);
+						MainActivite.this.pbConnexionMyEpf.setProgress(pourcentage);
+						MainActivite.this.pbConnexionMyEpf.setVisibility(View.VISIBLE);
+						
+					} else {
+						Log.i(TAG, "Avancement erreur : "+texte);
+						EdtFragment.setTelechargementEdtEnCours(false);
+						MainActivite.this.pbConnexionMyEpf.setVisibility(View.GONE);
+					}
+
+				}
+			});
+		} catch (Exception e){
+			e.printStackTrace();
+			Log.w(TAG, "Erreur inconnue dans avancement..");
+		}
 	}
 
 	/**
 	 * Est exécuté lorsque la connexion à myEPF a réussi
 	 */
 	private void onMyEPFConnected(){
-		avancement("my.epf connecté", 50);
+		avancement("my.epf connecté", 100);
 		enTrainDeSeConnecterAMyEPF = false;
 		connecteAMyEpf = true;
 		serverOk = true;
@@ -254,6 +286,12 @@ public class MainActivite extends _MereActivite {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle item selection
 	    switch (item.getItemId()) {
+		    case R.id.edt:
+	            drawer.onEdtClicked();
+	            return true;
+		    case R.id.bulletin:
+	            drawer.onBulletinClicked();
+	            return true;
 	        case R.id.preferences:
 	            drawer.onPreferencesClicked();
 	            return true;

@@ -42,9 +42,8 @@ public class DrawerControleur extends Fragment {
 	 * au clic sur l'emploi du temps
 	 */
 	public void onEdtClicked(){
-		Fragment newFragment;
+		Fragment newFragment = new EdtFragment();
         FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
-		newFragment = new EdtFragment();
         transaction.replace(R.id.content_frame, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -54,9 +53,8 @@ public class DrawerControleur extends Fragment {
 	 * au clic sur le bulletin
 	 */
 	public void onBulletinClicked(){
-		Fragment newFragment;
+		Fragment newFragment = new BulletinFragment();
         FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
-		newFragment = new BulletinFragment();
         transaction.replace(R.id.content_frame, newFragment);
         transaction.addToBackStack(null);
         transaction.commit();

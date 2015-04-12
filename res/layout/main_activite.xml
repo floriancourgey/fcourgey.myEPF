@@ -19,7 +19,21 @@
             android:id="@+id/wvCachee"
             android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:visibility="gone"/>"
+            android:visibility="gone"/>
+        
+        <!-- ProgressBar connexion my.epf -->
+        <RelativeLayout 
+            android:layout_width="fill_parent"
+	        android:layout_height="fill_parent">
+	        <ProgressBar
+		        android:id="@+id/pbConnexionMyEpf"
+		        style="?android:attr/progressBarStyleHorizontal"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:max="100"
+		        android:layout_alignParentTop="true"
+		        android:layout_marginTop="-6dp" />
+        </RelativeLayout>"
 	    
 	<!--     <include layout="@layout/drawer" /> -->
 	    

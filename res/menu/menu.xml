@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/edt"
+          android:title="Emploi du temps"/>
+    <item android:id="@+id/bulletin"
+          android:title="Bulletin"/>
     <item android:id="@+id/preferences"
           android:title="Préférences"/>
     <item android:id="@+id/apropos"
