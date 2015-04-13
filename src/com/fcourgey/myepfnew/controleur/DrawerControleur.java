@@ -8,9 +8,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -23,19 +20,19 @@ import com.fcourgey.myepfnew.activite.PreferencesActivite;
 import com.fcourgey.myepfnew.outils.Android;
 import com.fcourgey.myepfnew.vue.DrawerVue;
 
-public class DrawerControleur extends Fragment {
-	
-	private boolean activerDrawer = false;
+public class DrawerControleur {
 	
 	private MainActivite a;
 	
 	private DrawerVue vue;
 	
-	public DrawerControleur(MainActivite a) {
+	public DrawerControleur(MainActivite a, Bundle savedInstanceState) {
 		this.a = a;
-//		vue = new DrawerVue(a, a.getIdentifiant());
-		if(activerDrawer)
-			initOnDrawerListeners();
+		vue = new DrawerVue(a, a.getIdentifiant());
+		initOnDrawerListeners();
+		if(savedInstanceState == null){
+			onEdtClicked();
+		}
 	}
 	
 	/**
@@ -110,42 +107,56 @@ public class DrawerControleur extends Fragment {
 	private void initOnDrawerListeners() {
 		((TextView)a.findViewById(R.id.edt)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				fermerDrawer();
 				onEdtClicked();
 			}
 		});
 		((TextView)a.findViewById(R.id.bulletin)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				fermerDrawer();
 				onBulletinClicked();
 			}
 		});
 		((TextView)a.findViewById(R.id.preferences)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				fermerDrawer();
 				onPreferencesClicked();
 			}
 		});
         ((TextView)a.findViewById(R.id.apropos)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				fermerDrawer();
 				onAProposClicked();
 			}
 		});
         ((TextView)a.findViewById(R.id.quitter)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				fermerDrawer();
 				onQuitterClicked();
 			}
 		});
 	}
 
+	private void fermerDrawer(){
+		vue.getLayoutGeneral().closeDrawer(vue.getVue());
+	}
+	
 	/**
 	 * ouvre/ferme le drawer au clic sur le bouton menu
 	 */
 	public void clicSurBoutonMenu() {
+		ouvrirFermerDrawer();
+	}
+
+	
+	public void ouvrirFermerDrawer() {
 		if (!vue.getLayoutGeneral().isDrawerOpen(vue.getVue())) {
 			vue.getLayoutGeneral().openDrawer(vue.getVue());
         } else {
         	vue.getLayoutGeneral().closeDrawer(vue.getVue());
         }
 	}
-
+	
 	/**
 	 * ?
 	 */
@@ -166,6 +177,4 @@ public class DrawerControleur extends Fragment {
 	public DrawerVue getVue() {
 		return vue;
 	}
-
-	
 }

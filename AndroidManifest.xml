@@ -1,22 +1,33 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.fcourgey.myepfnew"
-    android:versionName="14"
-    android:versionCode="14000" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fcourgey.myepfnew"
+    android:versionCode="14001"
+    android:versionName="14" >
 
-        <uses-sdk 	android:minSdkVersion="15"
-             		android:targetSdkVersion="22"
-              		android:maxSdkVersion="22" />
-    
+    <uses-sdk
+        android:maxSdkVersion="22"
+        android:minSdkVersion="15"
+        android:targetSdkVersion="22" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <application android:theme="@style/Theme.MyTheme" android:label="@string/app_name" android:icon="@drawable/ic_app512" android:allowBackup="false">
-        <activity android:label="@string/app_name" android:name=".activite.AccueilActivite">
+
+    <application
+        android:allowBackup="false"
+        android:icon="@drawable/ic_app512"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.MyTheme" 
+        >
+        <activity
+            android:name=".activite.AccueilActivite"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activite.MainActivite"/>
+        <activity android:name=".activite.MainActivite" />
         <activity android:name=".activite.PreferencesActivite" />
     </application>
 

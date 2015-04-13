@@ -91,11 +91,7 @@ public class MainActivite extends _MereActivite {
 			e.printStackTrace();
 		}
 		
-		drawer = new DrawerControleur(this);
-		
-		if (getSupportFragmentManager().findFragmentById(android.R.id.content) == null) {
-			getSupportFragmentManager().beginTransaction().add(android.R.id.content, new EdtFragment()).commit();
-		}
+		drawer = new DrawerControleur(this,savedInstanceState);
 	}
 	
 	/**
@@ -260,7 +256,7 @@ public class MainActivite extends _MereActivite {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 	    super.onPostCreate(savedInstanceState);
-//	    drawer.onPostCreate(savedInstanceState);
+	    drawer.onPostCreate(savedInstanceState);
 	}
 	/**
 	 * pour le drawer
@@ -268,23 +264,14 @@ public class MainActivite extends _MereActivite {
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-//        drawer.onConfigurationChanged(newConfig);
+        drawer.onConfigurationChanged(newConfig);
     }
-	/**
-	 * Menu
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.menu, menu);
-	    return true;
-	}
+
 	/**
 	 * Menu et drawer
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle item selection
 	    switch (item.getItemId()) {
 		    case R.id.edt:
 	            drawer.onEdtClicked();
@@ -301,11 +288,14 @@ public class MainActivite extends _MereActivite {
 	        case R.id.quitter:
 	        	drawer.onQuitterClicked();
 	            return true;
+	        case android.R.id.home:
+	        	drawer.ouvrirFermerDrawer();
+	        	return true;
 	        default:
-	        	return drawer.getVue().getToggleBouton().onOptionsItemSelected(item);
+	        	return super.onOptionsItemSelected(item);
 	    }
 	}
-	
+
 	private void afficherPhotoProfil(){
 		CircularImageView photoProfil = (CircularImageView)findViewById(R.id.photo_profil);
 		BitmapFactory.Options options = new BitmapFactory.Options();
@@ -412,7 +402,7 @@ public class MainActivite extends _MereActivite {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent e) {
 	    if (keyCode == KeyEvent.KEYCODE_MENU) {
-//	    	drawer.clicSurBoutonMenu();
+	    	drawer.clicSurBoutonMenu();
 	        return true;
 	    }
 	    return super.onKeyDown(keyCode, e);

@@ -1,6 +1,7 @@
 package com.fcourgey.myepfnew.vue;
 
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,9 @@ public class DrawerVue {
 	private void initDrawer(){
 		layoutGeneral = (DrawerLayout) a.findViewById(R.id.drawer_layout);
 		vue = (LinearLayout) a.findViewById(R.id.drawer);
+		
+		// Set a custom shadow that overlays the main content when the drawer opens
+		layoutGeneral.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 	}
 	
 	private void initToggleButton(){
@@ -70,5 +74,7 @@ public class DrawerVue {
 	public ActionBarDrawerToggle getToggleBouton() {
 		return toggleBouton;
 	}
+
+	
 	
 }

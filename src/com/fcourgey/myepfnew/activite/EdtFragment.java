@@ -51,7 +51,7 @@ public class EdtFragment extends Fragment {
 		vue=inflater.inflate(R.layout.semaines_activite, container, false);
 		
 		ViewPager viewPager = (ViewPager) vue.findViewById(R.id.accueil_pager);
-		semainesPagerAdapter = new SemainesPagerAdapter(getActivity().getSupportFragmentManager(), a);
+		semainesPagerAdapter = new SemainesPagerAdapter(getChildFragmentManager(), a);
         viewPager.setOffscreenPageLimit(SemainesPagerAdapter.NOMBRE_DE_SEMAINES_MAX+1);
         viewPager.setAdapter(semainesPagerAdapter);
         

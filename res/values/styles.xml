@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="Theme.MyTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.MyTheme" parent="Theme.AppCompat.Light">
 	    <item name="colorPrimary">@color/action_bar</item>
 	    <item name="colorPrimaryDark">@color/notification_bar</item>
 	    <item name="colorAccent">@color/accent_color</item>
 	</style>
-
     
 
     
