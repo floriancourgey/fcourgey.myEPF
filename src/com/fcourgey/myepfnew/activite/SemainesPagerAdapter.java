@@ -18,7 +18,7 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	
 	private static MainActivite mere;
 	
-	public static final int NOMBRE_DE_SEMAINES_MAX_DEFAUT = 0;
+	public static final int NOMBRE_DE_SEMAINES_MAX_DEFAUT = 5;
 	public static int NOMBRE_DE_SEMAINES_MAX;
 
     public SemainesPagerAdapter(FragmentManager fm, MainActivite mere) {
