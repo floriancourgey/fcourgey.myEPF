@@ -272,6 +272,13 @@ public class MainActivite extends _MereActivite {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		if (drawer.getVue().getToggleBouton().onOptionsItemSelected(item)) {
+	      return true;
+	    }
+		if (item.getItemId() == android.R.id.home) {
+			drawer.ouvrirFermerDrawer();
+		}
+		
 	    switch (item.getItemId()) {
 		    case R.id.edt:
 	            drawer.onEdtClicked();

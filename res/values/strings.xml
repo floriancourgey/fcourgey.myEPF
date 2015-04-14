@@ -7,7 +7,7 @@
     
     <!-- Activité Bulletin -->
     <string name="bulletin_nopdf_titre">Impossible d\'ouvrir le bulletin</string>
-    <string name="bulletin_nopdf_message">Tu n\'as aucune application pour ouvrir le bulletin en PDF. Tu peux trouver Adobe Reader sur le play store.</string>
+    <string name="bulletin_nopdf_message">Tu n\'as aucune application pour ouvrir le bulletin en PDF. Il a tout de même été sauvegardé dans {CHEMIN_BULLETIN}.\n\nTu peux trouver Adobe Reader sur le play store.</string>
     
 	<!-- popup Identifiants -->
     <string name="popup_identifiants_titre">Entre tes identifiants myEPF</string>
