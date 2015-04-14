@@ -29,12 +29,12 @@ public class AccueilControleur {
 		// locale
 		Locale.setDefault(Locale.FRANCE);
 		
-		// si c'est la première fois qu'on lance la versionName 14 / versionCode 14000
+		// si c'est la première fois qu'on lance la versionName 14 / versionCode 14001
 		// on écrit le login hashé dans les pref
 		try {
 			PackageInfo pinfo = activite.getPackageManager().getPackageInfo(activite.getPackageName(), 0);
 			int versionCode = pinfo.versionCode;
-			if(versionCode == 14000 && activite.getPrefs().getBoolean(PreferencesModele.V14_MDP_HASHE, false)==false){
+			if(versionCode == 14001 && activite.getPrefs().getBoolean(PreferencesModele.V14_MDP_HASHE, false)==false){
 				String mdp = activite.getPrefs().getMdp();
 //				System.out.println("Mdp avant hash : " + mdp);
 				try {
