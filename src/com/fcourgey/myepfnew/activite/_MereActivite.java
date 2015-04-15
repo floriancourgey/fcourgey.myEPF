@@ -22,6 +22,7 @@ public class _MereActivite extends ActionBarActivity {
 			prefs = new PreferencesModele(this);
 		}
 	}
+	
 
 	public Context getContext(){
 		return context;
