@@ -223,6 +223,7 @@ public class MainActivite extends _MereActivite {
 		enTrainDeSeConnecterAMyEPF = false;
 		connecteAMyEpf = true;
 		serverOk = true;
+		initPhotoEtNomProfil();
 	}	
 	
 	/**
@@ -322,7 +323,7 @@ public class MainActivite extends _MereActivite {
 		photoProfil.setImageBitmap(bmp);
 		Log.i(TAG, "màj photo de profil ok");
 	}
-	@SuppressWarnings("unused")
+
 	private void initPhotoEtNomProfil(){
 		// check si existe
 		File file = new File(CHEMIN_PHOTO_PROFIL);

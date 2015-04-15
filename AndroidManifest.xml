@@ -16,7 +16,8 @@
         android:allowBackup="false"
         android:icon="@drawable/ic_app512"
         android:label="@string/app_name"
-        android:theme="@style/Theme.MyTheme" 
+        android:theme="@style/Theme.MyTheme"
+        android:name="MonApplication"
         >
         <activity
             android:name=".activite.AccueilActivite"

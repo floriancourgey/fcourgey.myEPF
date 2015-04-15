@@ -5,6 +5,8 @@
     <string name="ok">OK</string>
     <string name="annuler">Annuler</string>
     
+    <string name="crash_toast_text">Crash. Envoi d\'un rapport de bug</string>
+    
     <!-- Activité Bulletin -->
     <string name="bulletin_nopdf_titre">Impossible d\'ouvrir le bulletin</string>
     <string name="bulletin_nopdf_message">Tu n\'as aucune application pour ouvrir le bulletin en PDF. Il a tout de même été sauvegardé dans {CHEMIN_BULLETIN}.\n\nTu peux trouver Adobe Reader sur le play store.</string>
