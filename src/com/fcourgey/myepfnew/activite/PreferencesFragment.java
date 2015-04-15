@@ -11,9 +11,12 @@ import android.preference.PreferenceFragment;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.modele.PreferencesModele;
 import com.fcourgey.myepfnew.outils.Android;
+import com.fcourgey.myepfnew.outils.Securite;
 import com.fcourgey.myepfnew.vue.ViderCacheVue;
 
 public class PreferencesFragment extends PreferenceFragment {
+	
+	private String mdpDansPreferences;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -43,5 +46,26 @@ public class PreferencesFragment extends PreferenceFragment {
 				return false;
 			}
 		});
+        /// hash mdp
+        mdpDansPreferences = ((_MereActivite)getActivity()).getPrefs().getMdp();
+        findPreference(PreferencesModele.KEY_MDP).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+            	// try catch au cas où pour le o.toString()
+            	try{
+	                // si mdp identiques, on touche à rien
+	                String nouveauMdp = o.toString();
+	                if(nouveauMdp.equals(mdpDansPreferences)){
+	                	return false;
+	                }
+	                // sinon on le sauvegarde haché
+	                ((_MereActivite)getActivity()).getPrefs().setMdp(Securite.encrypt(nouveauMdp));
+            	} catch(Exception e){
+            		e.printStackTrace();
+            	}
+                return false;
+            }
+            
+        });
 	}
 }

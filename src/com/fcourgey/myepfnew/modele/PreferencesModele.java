@@ -36,6 +36,7 @@ public class PreferencesModele {
 	public static String KEY_DOIT_VIDER_CACHE_SUITE_AU_BUG_20 = "KEY_DOIT_VIDER_CACHE_SUITE_AU_BUG_20";
 	
 	public static String V14_MDP_HASHE="V14_MDP_HASHE";
+	public static String V14A_MDP_HASHE="V14A_MDP_HASHE";
 	
 	private static _MereActivite mere;
 	

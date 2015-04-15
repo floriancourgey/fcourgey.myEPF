@@ -11,6 +11,7 @@ import android.widget.EditText;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.AccueilActivite;
+import com.fcourgey.myepfnew.outils.Securite;
 
 public class IdentifiantsVue {
 	
@@ -20,14 +21,11 @@ public class IdentifiantsVue {
 		final EditText etIdentifiant = (EditText)v.findViewById(R.id.etIdentifiant);
 		final EditText etMdp = (EditText)v.findViewById(R.id.etMdp);
 		AlertDialog.Builder builder = new AlertDialog.Builder(activite);
-		builder	.setView(v)
+		builder.setView(v)
 		.setTitle(R.string.popup_identifiants_titre)
 		.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				activite.getPrefs().setLogin(etIdentifiant.getText().toString());
-				activite.getPrefs().setMdp(etMdp.getText().toString());
-				activite.lancerSemainesActivite();
-				dialog.dismiss();
+				onOkClicked(activite, etIdentifiant, etMdp, dialog);
 			}
 		});  
 		// show keyboard
@@ -39,6 +37,16 @@ public class IdentifiantsVue {
 		etMdp.addTextChangedListener(listener);
 		d.show();
 		d.getButton(AlertDialog.BUTTON_POSITIVE).setVisibility(View.GONE);
+	}
+	
+	private static void onOkClicked(AccueilActivite activite, EditText etIdentifiant, EditText etMdp, DialogInterface dialog){
+		String login = etIdentifiant.getText().toString();
+		String mdp = etMdp.getText().toString();
+		String mdpHashe = Securite.encrypt(mdp);
+		activite.getPrefs().setLogin(login);
+		activite.getPrefs().setMdp(mdpHashe);
+		activite.lancerSemainesActivite();
+		dialog.dismiss();
 	}
 	
 	private static class ListenerAfficherBoutonOK implements TextWatcher{
