@@ -8,7 +8,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 
 import com.fcourgey.myepfnew.activite.AccueilActivite;
 import com.fcourgey.myepfnew.modele.PreferencesModele;
-import com.fcourgey.myepfnew.outils.Securite;
 import com.fcourgey.myepfnew.vue.IdentifiantsVue;
 
 public class AccueilControleur {
@@ -28,35 +27,23 @@ public class AccueilControleur {
 	public AccueilControleur(final AccueilActivite activite){
 		// locale
 		Locale.setDefault(Locale.FRANCE);
-		
-		// si c'est la première fois qu'on lance la versionName 14 / versionCode 14001
-		// on écrit le login hashé dans les pref
+			
+		// si c'est la première fois qu'on lance la version 14a
+		// on supprime le login+mdp pour éviter toute erreur de hash
 		try {
 			PackageInfo pinfo = activite.getPackageManager().getPackageInfo(activite.getPackageName(), 0);
 			int versionCode = pinfo.versionCode;
-			if(versionCode == 14001 && activite.getPrefs().getBoolean(PreferencesModele.V14_MDP_HASHE, false)==false){
-				String mdp = activite.getPrefs().getMdp();
-//				System.out.println("Mdp avant hash : " + mdp);
-				try {
-					String mdpHashe = Securite.encrypt(mdp);
-//					System.out.println("Mdp apres hash: " + mdpHashe);
-					activite.getPrefs().setMdp(mdpHashe);
-					String mdpVerif = activite.getPrefs().getMdp();
-					if(mdpVerif.equals(mdpHashe)){
-						activite.getPrefs().putBoolean(PreferencesModele.V14_MDP_HASHE, true);
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			if(versionCode == 14002 && activite.getPrefs().getBoolean(PreferencesModele.V14A_MDP_HASHE, false)==false){
+				activite.getPrefs().setLogin("");
+				activite.getPrefs().setMdp("");
+				if(activite.getPrefs().getMdp().equals("")){
+					activite.getPrefs().putBoolean(PreferencesModele.V14A_MDP_HASHE, true);
 				}
-		        
 			}
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}  
-		
-		
+		} 
 
 		// on lit le login
 		String login = activite.getPrefs().getIdentifiant();
