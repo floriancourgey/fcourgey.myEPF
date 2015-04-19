@@ -1,20 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Application -->
     <string name="app_name">myEPF</string>
+    <string name="crash_toast_text">Crash. Envoi d\'un rapport de bug</string>
     
+    <!-- Général -->
     <string name="ok">OK</string>
     <string name="annuler">Annuler</string>
     
-    <string name="crash_toast_text">Crash. Envoi d\'un rapport de bug</string>
+    <!-- Drawer -->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
     
-    <!-- Activité Bulletin -->
+    <!-- Emploi du temps -->
+    <string name="edt_titre">Emploi du temps</string>
+    
+    <!-- Bulletin -->
+    <string name="bulletin_titre">Bulletin</string>
     <string name="bulletin_nopdf_titre">Impossible d\'ouvrir le bulletin</string>
     <string name="bulletin_nopdf_message">Tu n\'as aucune application pour ouvrir le bulletin en PDF. Il a tout de même été sauvegardé dans {CHEMIN_BULLETIN}.\n\nTu peux trouver Adobe Reader sur le play store.</string>
     
-	<!-- popup Identifiants -->
+    <!-- Préférences -->
+    <string name="pref_titre">Préférences</string>
+    
+    <!-- A propos -->
+    <string name="apropos_titre">À propos</string>
+    <string name="apropos_contenu">myEPF {versionName}développé par Florian Courgey pour l\'EPF École d\'ingénieur-e-s.</string>
+    
+    <!-- Clause de non responsabilité -->
+    <string name="clause_titre">Clause de non responsabilité</string>
+    
+    <!-- Quitter -->
+    <string name="quitter_titre">Quitter</string>
+    
+	<!-- ??? popup Identifiants -->
     <string name="popup_identifiants_titre">Entre tes identifiants myEPF</string>
     
-    <!-- navigation drawer -->
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    
 </resources>
