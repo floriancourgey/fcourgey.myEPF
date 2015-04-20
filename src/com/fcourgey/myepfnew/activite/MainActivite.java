@@ -60,8 +60,6 @@ public class MainActivite extends _MereActivite {
 	public static boolean connecteAMyEpf = false;
 	public static boolean enTrainDeSeConnecterAMyEPF = false;
 		
-	public static String CHEMIN_PHOTO_PROFIL;
-	
 	private static String identifiant;
 	private static String mdp;
 	
@@ -79,8 +77,6 @@ public class MainActivite extends _MereActivite {
 		
 		pbConnexionMyEpf = (ProgressBar)findViewById(R.id.pbConnexionMyEpf);
 		pbConnexionMyEpf.getProgressDrawable().setColorFilter(Color.CYAN, Mode.SRC_IN);
-		
-		CHEMIN_PHOTO_PROFIL = getFilesDir()+"/photoprofil.jpg";
 		
 		identifiant = getPrefs().getIdentifiant();
 		try {
@@ -221,7 +217,7 @@ public class MainActivite extends _MereActivite {
 		enTrainDeSeConnecterAMyEPF = false;
 		connecteAMyEpf = true;
 		serverOk = true;
-		initPhotoEtNomProfil();
+		drawer.initPhotoProfil();
 	}	
 	
 	/**
@@ -302,106 +298,6 @@ public class MainActivite extends _MereActivite {
 	    }
 	}
 
-	private void afficherPhotoProfil(){
-		CircularImageView photoProfil = (CircularImageView)findViewById(R.id.photo_profil);
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-		Bitmap bmp = BitmapFactory.decodeFile(CHEMIN_PHOTO_PROFIL, options);
-		// crop du bmp
-		int decalage_x = getPrefs().getInt(PreferencesModele.KEY_PHOTO_X, 0);
-		if(decalage_x < 0)
-			decalage_x = Math.abs(decalage_x);
-		int decalage_y = getPrefs().getInt(PreferencesModele.KEY_PHOTO_Y, 0);
-		if(decalage_y < 0)
-			decalage_y = Math.abs(decalage_y);
-		if(bmp.getWidth() < bmp.getHeight())
-			bmp=Bitmap.createBitmap(bmp, decalage_x, decalage_y,bmp.getWidth(), bmp.getWidth());
-		else
-			bmp=Bitmap.createBitmap(bmp, decalage_x, decalage_y,bmp.getHeight(), bmp.getHeight());
-		photoProfil.setImageBitmap(bmp);
-		Log.i(TAG, "màj photo de profil ok");
-	}
-
-	private void initPhotoEtNomProfil(){
-		// check si existe
-		File file = new File(CHEMIN_PHOTO_PROFIL);
-		if(file.exists()){
-			Log.i(TAG, "photo de profil existante");
-			afficherPhotoProfil();
-		} else {
-			Log.i(TAG, "photo de profil non existante, téléchargement");
-			// download photo de profil
-			// +
-			// afficherPhotoProfil()
-			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-			StrictMode.setThreadPolicy(policy);
-			runOnUiThread(new Runnable() {
-				public void run() {
-					HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
-					HttpContext localContext = new BasicHttpContext();
-					HttpGet httpGet = new HttpGet(URL_PROFIL);
-					String cookies = CookieManager.getInstance().getCookie(URL_MYDATA);
-					httpGet.setHeader(SM.COOKIE, cookies);
-					InputStream is = null;
-					try {
-						is = httpClient.execute((HttpUriRequest) httpGet, localContext).getEntity().getContent();
-					} catch (Exception e) {
-						e.printStackTrace();
-						System.out.println("Impossible de joindre le serveur EPF (étonnant à ce stade)");
-					} 
-					try {
-						String line;
-						BufferedReader br = new BufferedReader(new InputStreamReader(is));
-						while ((line = br.readLine()) != null) {
-							if(line.contains("id=\"photo\"")){
-								break;
-							}
-						}
-						br.close();
-
-						String regex = "id=\"photo\" src=\"([/\\w-]*.jpg)\"";
-						Pattern pattern = Pattern.compile(regex);
-						Matcher matcher;
-						try{
-							matcher = pattern.matcher(line);
-						}catch(Exception e){
-							e.printStackTrace();
-							return;
-						}
-
-						if(matcher.find()){
-							String urlPhotoRelatif = matcher.group(0);
-							urlPhotoRelatif = urlPhotoRelatif.split("\"")[3];
-
-							System.out.println(urlPhotoRelatif);
-
-							String urlPhoto = URL_MYDATA+urlPhotoRelatif;
-
-							httpGet = new HttpGet(urlPhoto);
-							httpGet.setHeader(SM.COOKIE, cookies);
-							try {
-								is = httpClient.execute((HttpUriRequest) httpGet, localContext).getEntity().getContent();
-								FileOutputStream fos = new FileOutputStream(new File(CHEMIN_PHOTO_PROFIL));
-								int inByte;
-								while((inByte = is.read()) != -1) fos.write(inByte);
-								is.close();
-								fos.close();
-								Log.i(TAG, "photo de profil non existante, téléchargement OK");
-								afficherPhotoProfil();
-							} catch (Exception e) {
-								e.printStackTrace();
-								System.out.println("Impossible de joindre le serveur EPF (2) (étonnant à ce stade)");
-							}
-						}
-					} catch(IOException e){
-						e.printStackTrace();
-						System.out.println("Impossible de lire la réponse finale");
-					}
-				}
-			});
-		}
-	}
-	
 	/**
 	 * au clic sur le bouton menu du téléphone => drawer
 	 */
