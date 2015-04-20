@@ -200,7 +200,7 @@ public class DrawerControleur {
 						is = httpClient.execute((HttpUriRequest) httpGet, localContext).getEntity().getContent();
 					} catch (Exception e) {
 						e.printStackTrace();
-						System.out.println("Impossible de joindre le serveur EPF (étonnant à ce stade)");
+						Log.i(TAG, "Impossible de joindre le serveur EPF (étonnant à ce stade)");
 					} 
 					try {
 						String line;
@@ -226,7 +226,7 @@ public class DrawerControleur {
 							String urlPhotoRelatif = matcher.group(0);
 							urlPhotoRelatif = urlPhotoRelatif.split("\"")[3];
 
-							System.out.println(urlPhotoRelatif);
+							Log.i(TAG, urlPhotoRelatif);
 
 							String urlPhoto = MainActivite.URL_MYDATA+urlPhotoRelatif;
 
@@ -243,12 +243,12 @@ public class DrawerControleur {
 								afficherPhotoProfil();
 							} catch (Exception e) {
 								e.printStackTrace();
-								System.out.println("Impossible de joindre le serveur EPF (2) (étonnant à ce stade)");
+								Log.i(TAG, "Impossible de joindre le serveur EPF (2) (étonnant à ce stade)");
 							}
 						}
 					} catch(IOException e){
 						e.printStackTrace();
-						System.out.println("Impossible de lire la réponse finale");
+						Log.i(TAG, "Impossible de lire la réponse finale");
 					}
 				}
 			});

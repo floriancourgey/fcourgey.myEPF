@@ -60,7 +60,7 @@ public class EdtFragment extends Fragment {
 	
 	/**
 	 * Affiche l'avancement sur la progressBar et son textview correspondant
-	 * Fait un system.out.println également
+	 * Fait un print log également
 	 */
 	public void avancement(final String texte, final int pourcentage){
 		if(semainesPagerAdapter != null){
