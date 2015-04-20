@@ -34,6 +34,9 @@ public class PreferencesModele {
 	public static String KEY_PHOTO_Y;
 	public static String KEY_CACHE;
 	public static String KEY_DOIT_VIDER_CACHE_SUITE_AU_BUG_20 = "KEY_DOIT_VIDER_CACHE_SUITE_AU_BUG_20";
+	public static String KEY_NOM_PRENOM = "KEY_NOM_PRENOM";
+//	public static String KEY_NOM = "KEY_NOM";
+//	public static String KEY_PRENOM = "KEY_PRENOM";
 	
 	public static String V14_MDP_HASHE="V14_MDP_HASHE";
 	public static String V14A_MDP_HASHE="V14A_MDP_HASHE";
@@ -156,6 +159,9 @@ public class PreferencesModele {
 	
 	public void putBoolean(String key, boolean b){
 		pref.edit().putBoolean(key, b).apply();
+	}
+	public void putString(String key, String s){
+		pref.edit().putString(key, s).apply();
 	}
 	
 	// les pref

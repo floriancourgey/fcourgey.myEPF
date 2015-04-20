@@ -132,13 +132,6 @@ public class SemaineFragment extends Fragment {
 		// chargement du json si présent
 		chargerDepuisJsonSauvegarde();
 		
-		// connexion à myEPF si pas fait et pas en cours
-		if(!MainActivite.connecteAMyEpf && !MainActivite.enTrainDeSeConnecterAMyEPF){
-			Log.i(tag(), "Connexion à myEPF");
-			mere.connexionMyEPF();
-		}
-		
-		
 //		if(now.after(ceSamedi)){
 //			// si on est plus tard que samedi 14h, on décale
 //			lancerTelechargement(true, true);

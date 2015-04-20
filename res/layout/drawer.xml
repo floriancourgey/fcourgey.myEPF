@@ -20,46 +20,23 @@
         app:border_width="2dp"
         app:shadow="true" />
     <TextView
+        android:id="@+id/tvNomPrenom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#ddd"
+        android:text="Prenom NOM" />
+    <TextView
         android:id="@+id/nom_profil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="#ddd"
-        android:layout_marginBottom="25dp"
-        android:text="fcourgey" />
-    
-    <TextView
-        android:id="@+id/edt"
-        android:visibility="gone"
-        style="@style/navigation_drawer_list_item"
-        android:text="Emploi du temps" />
-    
-    <TextView
-        android:id="@+id/bulletin"
-        android:visibility="gone"
-        style="@style/navigation_drawer_list_item"
-        android:text="Bulletin" />
-    
-    <TextView
-        android:id="@+id/preferences"
-        android:visibility="gone"
-        style="@style/navigation_drawer_list_item"
-        android:text="Préférences" />
-
-    <TextView
-        android:id="@+id/apropos"
-        android:visibility="gone"
-        style="@style/navigation_drawer_list_item"
-        android:text="A propos" />
-
-    <TextView
-        android:id="@+id/quitter"
-        android:visibility="gone"
-        style="@style/navigation_drawer_list_item"
-        android:text="Quitter" />
+        android:text="identifiant" />
 
     <ListView
         android:id="@+id/lTitres"
+        android:layout_marginTop="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>

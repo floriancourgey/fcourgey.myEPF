@@ -63,6 +63,12 @@ public class MainActivite extends _MereActivite {
 			e.printStackTrace();
 		}
 		
+		// connexion à myEPF si pas fait et pas en cours
+		if(!connecteAMyEpf && !enTrainDeSeConnecterAMyEPF){
+			Log.i(TAG, "Connexion à myEPF");
+			connexionMyEPF();
+		}
+		
 		drawer = new DrawerControleur(this,savedInstanceState);
 	}
 	
@@ -195,7 +201,7 @@ public class MainActivite extends _MereActivite {
 		enTrainDeSeConnecterAMyEPF = false;
 		connecteAMyEpf = true;
 		serverOk = true;
-		drawer.initPhotoProfil();
+		drawer.onMyEPFConnected();
 	}	
 	
 	/**

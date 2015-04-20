@@ -32,6 +32,7 @@ import android.view.View;
 import android.webkit.CookieManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.BulletinFragment;
@@ -54,6 +55,11 @@ public class DrawerControleur {
 	
 	public static String CHEMIN_PHOTO_PROFIL;
 	
+	private static final String REGEX_PHOTO = "id=\"photo\" src=\"([/\\w-]*.jpg)\"";
+	private static final String STOP_PHOTO = "id=\"photo\"";
+	private static final String REGEX_NOM = "<div class=\"user-name font2\">[\\w]* (.*) \\(.*\\) </div> -->";
+	private static final String STOP_NOM = "font2";
+	
 	public DrawerControleur(MainActivite a, Bundle savedInstanceState) {
 		this.a = a;
 		CHEMIN_PHOTO_PROFIL = a.getFilesDir()+"/photoprofil.jpg";
@@ -63,6 +69,11 @@ public class DrawerControleur {
 		if(isPhotoProfilDownloaded()){
 			afficherPhotoProfil();
 		}
+		// affiche le nom prénom si existe
+		if(isNomPrenomDownloaded()){
+			afficherNomPrenom();
+		}
+		// lance le fragment EDT si l'appli vient de se lancer
 		if(savedInstanceState == null){
 			onEdtClicked();
 		}
@@ -146,6 +157,24 @@ public class DrawerControleur {
 	}
 	
 	/**
+	 * retourne vrai si la préférence NOM_PRENOM existe
+	 * faux sinon
+	 */
+	private boolean isNomPrenomDownloaded(){
+//		if(a.getPrefs().getString(PreferencesModele.KEY_NOM) ==null || a.getPrefs().getString(PreferencesModele.KEY_PRENOM) ==null){
+		if(a.getPrefs().getString(PreferencesModele.KEY_NOM_PRENOM)==null){
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	public void onMyEPFConnected(){
+		initPhotoProfil();
+		initNomPrenom();
+	}
+	
+	/**
 	 * Affiche la photo de profil
 	 */
 	private void afficherPhotoProfil(){
@@ -168,6 +197,10 @@ public class DrawerControleur {
 		Log.i(TAG, "màj photo de profil ok");
 	}
 	
+	/**
+	 * retourne vrai si /data/data/.../photo_profil.jpg existe
+	 * faux sinon
+	 */
 	private boolean isPhotoProfilDownloaded(){
 		File file = new File(CHEMIN_PHOTO_PROFIL);
 		if(file.exists()){
@@ -176,11 +209,16 @@ public class DrawerControleur {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * se connecte à my data
+	 * +
+	 * parse le html et cherche le chemin de la photo de profil
+	 * (appelle @see afficherPhotoProfil() )
+	 */
 	public void initPhotoProfil(){
 		if(isPhotoProfilDownloaded()){
 			Log.i(TAG, "photo de profil existante");
-			afficherPhotoProfil();
 		} else {
 			Log.i(TAG, "photo de profil non existante, téléchargement");
 			// download photo de profil
@@ -206,13 +244,13 @@ public class DrawerControleur {
 						String line;
 						BufferedReader br = new BufferedReader(new InputStreamReader(is));
 						while ((line = br.readLine()) != null) {
-							if(line.contains("id=\"photo\"")){
+							if(line.contains(STOP_PHOTO)){
 								break;
 							}
 						}
 						br.close();
 
-						String regex = "id=\"photo\" src=\"([/\\w-]*.jpg)\"";
+						String regex = REGEX_PHOTO;
 						Pattern pattern = Pattern.compile(regex);
 						Matcher matcher;
 						try{
@@ -252,6 +290,87 @@ public class DrawerControleur {
 					}
 				}
 			});
+		}
+	}
+	
+	/**
+	 * se connecte à my data
+	 * +
+	 * parse le html et cherche le nom du profil
+	 * (appelle @see afficherNomPrenomProfil() )
+	 */
+	public void initNomPrenom(){
+		if(isNomPrenomDownloaded()){
+			Log.i(TAG, "nom de profil existant");
+		} else {
+			Log.i(TAG, "nom de profil non existant, téléchargement");
+			// recherche nom de profil
+			// +
+			// afficherNomPrenomProfil()
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy);
+			a.runOnUiThread(new Runnable() {
+				public void run() {
+					HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
+					HttpContext localContext = new BasicHttpContext();
+					HttpGet httpGet = new HttpGet(MainActivite.URL_PROFIL);
+					String cookies = CookieManager.getInstance().getCookie(MainActivite.URL_MYDATA);
+					httpGet.setHeader(SM.COOKIE, cookies);
+					InputStream is = null;
+					try {
+						is = httpClient.execute((HttpUriRequest) httpGet, localContext).getEntity().getContent();
+					} catch (Exception e) {
+						e.printStackTrace();
+						Log.i(TAG, "Impossible de joindre le serveur EPF (étonnant à ce stade)");
+					} 
+					try {
+						String line;
+						BufferedReader br = new BufferedReader(new InputStreamReader(is));
+						while ((line = br.readLine()) != null) {
+							if(line.contains(STOP_NOM)){
+								System.out.print(line);
+								break;
+							}
+						}
+						br.close();
+
+						String regex = REGEX_NOM;
+						Pattern pattern = Pattern.compile(regex);
+						Matcher matcher;
+						try{
+							matcher = pattern.matcher(line);
+						}catch(Exception e){
+							e.printStackTrace();
+							return;
+						}
+
+						if(matcher.find()){
+							String nomPrenom = matcher.group(1);
+							// sauvegarde dans les pref
+							a.getPrefs().putString(PreferencesModele.KEY_NOM_PRENOM, nomPrenom);
+							// affichage
+							afficherNomPrenom();
+						}
+					} catch(IOException e){
+						e.printStackTrace();
+						Log.i(TAG, "Impossible de lire la réponse finale");
+					}
+				}
+			});
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void afficherNomPrenom(){
+		String nomPrenom = a.getPrefs().getString(PreferencesModele.KEY_NOM_PRENOM);
+		TextView tvNomPrenom = (TextView)a.findViewById(R.id.tvNomPrenom);
+		if(nomPrenom == null){
+			tvNomPrenom.setVisibility(View.GONE);
+			Log.e(TAG, "nomPrenom null");
+		} else {
+			tvNomPrenom.setText(nomPrenom);
 		}
 	}
 	
