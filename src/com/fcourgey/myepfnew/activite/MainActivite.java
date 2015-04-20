@@ -1,32 +1,13 @@
 package com.fcourgey.myepfnew.activite;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.cookie.SM;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -42,10 +23,7 @@ import android.widget.ProgressBar;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.controleur.DrawerControleur;
-import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
-import com.fcourgey.myepfnew.modele.PreferencesModele;
 import com.fcourgey.myepfnew.outils.Securite;
-import com.mikhaellopez.circularimageview.CircularImageView;
 
 @SuppressWarnings("deprecation")
 public class MainActivite extends _MereActivite {

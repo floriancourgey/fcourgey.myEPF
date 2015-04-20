@@ -262,8 +262,10 @@ public class DrawerControleur {
 			int position, long id, ListView lTitres){
 		String titre = (String) lTitres.getItemAtPosition(position);
 		if(titre.equals(a.getResources().getString(R.string.edt_titre))){
+			lTitres.setItemChecked(position, true);
 			onEdtClicked();
 		} else if(titre.equals(a.getResources().getString(R.string.bulletin_titre))){
+			lTitres.setItemChecked(position, true);
 			onBulletinClicked();
 		} else if(titre.equals(a.getResources().getString(R.string.pref_titre))){
 			onPreferencesClicked();

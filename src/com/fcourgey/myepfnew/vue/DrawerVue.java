@@ -70,7 +70,7 @@ public class DrawerVue {
         lTitres = (ListView) a.findViewById(R.id.lTitres);
         String[] titres = a.getResources().getStringArray(R.array.titres);
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(a, R.layout.drawer_list_item, android.R.id.text1, titres);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(a, android.R.layout.simple_list_item_1, android.R.id.text1, titres);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(a, android.R.layout.simple_list_item_activated_1, titres);
         lTitres.setAdapter(adapter);
         lTitres.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view,
@@ -78,7 +78,8 @@ public class DrawerVue {
         		controleur.onTitresClicked(parent, view,
         				position, id, lTitres);
         	}
-        }); 
+        });
+        lTitres.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 	}
 
 	public DrawerLayout getLayoutGeneral() {
