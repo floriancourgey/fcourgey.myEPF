@@ -3,27 +3,35 @@ package com.fcourgey.myepfnew.vue;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
+import com.fcourgey.myepfnew.controleur.DrawerControleur;
 
 @SuppressWarnings("deprecation")
 public class DrawerVue {
 	
+	@SuppressWarnings("unused")
 	private static final String TAG = "DrawerVue"; 
 	
 	private MainActivite a;
+	private DrawerControleur controleur;
 	
 	private DrawerLayout layoutGeneral; // contient la vue principale et la vue du drawer
 	private LinearLayout vue; //vue du drawer
 	private ActionBarDrawerToggle toggleBouton; // bouton toggle en haut à gauche dans l'action bar
+	private ListView lTitres; // listView des titres sur la gauche : Edt, bulletin, ...
 	
-	public DrawerVue(MainActivite a, String identifiant) {
-		this.a = a;
+	public DrawerVue(DrawerControleur controleur, String identifiant) {
+		this.controleur = controleur;
+		this.a = controleur.getActivite();
 		initDrawer();
 		initToggleButton();
 		initContenu(identifiant);
@@ -42,13 +50,10 @@ public class DrawerVue {
             /** Called when a drawer has settled in a completely closed state. */
 			public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                Log.i(TAG, "fermeture");
             }
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                vue.bringToFront();
-                Log.i(TAG, "ouverture");
             }
         };
         // Set the drawer toggle as the DrawerListener
@@ -61,6 +66,19 @@ public class DrawerVue {
 	private void initContenu(String identifiant) {
         // init textview
         ((TextView)a.findViewById(R.id.nom_profil)).setText(identifiant);
+        // init titres
+        lTitres = (ListView) a.findViewById(R.id.lTitres);
+        String[] titres = a.getResources().getStringArray(R.array.titres);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(a, R.layout.drawer_list_item, android.R.id.text1, titres);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(a, android.R.layout.simple_list_item_1, android.R.id.text1, titres);
+        lTitres.setAdapter(adapter);
+        lTitres.setOnItemClickListener(new OnItemClickListener() {
+        	public void onItemClick(AdapterView<?> parent, View view,
+        			int position, long id) {
+        		controleur.onTitresClicked(parent, view,
+        				position, id, lTitres);
+        	}
+        }); 
 	}
 
 	public DrawerLayout getLayoutGeneral() {

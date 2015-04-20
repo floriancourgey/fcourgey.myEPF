@@ -30,27 +30,38 @@
     
     <TextView
         android:id="@+id/edt"
+        android:visibility="gone"
         style="@style/navigation_drawer_list_item"
         android:text="Emploi du temps" />
     
     <TextView
         android:id="@+id/bulletin"
+        android:visibility="gone"
         style="@style/navigation_drawer_list_item"
         android:text="Bulletin" />
     
     <TextView
         android:id="@+id/preferences"
+        android:visibility="gone"
         style="@style/navigation_drawer_list_item"
         android:text="Préférences" />
 
     <TextView
         android:id="@+id/apropos"
+        android:visibility="gone"
         style="@style/navigation_drawer_list_item"
         android:text="A propos" />
 
     <TextView
         android:id="@+id/quitter"
+        android:visibility="gone"
         style="@style/navigation_drawer_list_item"
         android:text="Quitter" />
+
+    <ListView
+        android:id="@+id/lTitres"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
 
 </LinearLayout>

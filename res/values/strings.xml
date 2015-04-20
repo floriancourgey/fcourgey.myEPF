@@ -9,6 +9,14 @@
     <string name="annuler">Annuler</string>
     
     <!-- Drawer -->
+    <string-array name="titres">
+        <item>@string/edt_titre</item>
+        <item>@string/bulletin_titre</item>
+        <item>@string/pref_titre</item>
+        <item>@string/apropos_titre</item>
+<!--         <item>@string/clause_titre</item> -->
+        <item>@string/quitter_titre</item>
+    </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     

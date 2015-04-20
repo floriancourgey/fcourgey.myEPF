@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.BulletinFragment;
@@ -28,8 +28,7 @@ public class DrawerControleur {
 	
 	public DrawerControleur(MainActivite a, Bundle savedInstanceState) {
 		this.a = a;
-		vue = new DrawerVue(a, a.getIdentifiant());
-		initOnDrawerListeners();
+		vue = new DrawerVue(this, a.getIdentifiant());
 		if(savedInstanceState == null){
 			onEdtClicked();
 		}
@@ -100,42 +99,6 @@ public class DrawerControleur {
 	public void onQuitterClicked(){
 		Android.quitter();
 	}
-	
-	/**
-	 * initialise les listeners
-	 */
-	private void initOnDrawerListeners() {
-		((TextView)a.findViewById(R.id.edt)).setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				fermerDrawer();
-				onEdtClicked();
-			}
-		});
-		((TextView)a.findViewById(R.id.bulletin)).setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				fermerDrawer();
-				onBulletinClicked();
-			}
-		});
-		((TextView)a.findViewById(R.id.preferences)).setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				fermerDrawer();
-				onPreferencesClicked();
-			}
-		});
-        ((TextView)a.findViewById(R.id.apropos)).setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				fermerDrawer();
-				onAProposClicked();
-			}
-		});
-        ((TextView)a.findViewById(R.id.quitter)).setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				fermerDrawer();
-				onQuitterClicked();
-			}
-		});
-	}
 
 	private void fermerDrawer(){
 		vue.getLayoutGeneral().closeDrawer(vue.getVue());
@@ -146,6 +109,23 @@ public class DrawerControleur {
 	 */
 	public void clicSurBoutonMenu() {
 		ouvrirFermerDrawer();
+	}
+	
+	public void onTitresClicked(AdapterView<?> parent, View view,
+			int position, long id, ListView lTitres){
+		String titre = (String) lTitres.getItemAtPosition(position);
+		if(titre.equals(a.getResources().getString(R.string.edt_titre))){
+			onEdtClicked();
+		} else if(titre.equals(a.getResources().getString(R.string.bulletin_titre))){
+			onBulletinClicked();
+		} else if(titre.equals(a.getResources().getString(R.string.pref_titre))){
+			onPreferencesClicked();
+		} else if(titre.equals(a.getResources().getString(R.string.apropos_titre))){
+			onAProposClicked();
+		} else if(titre.equals(a.getResources().getString(R.string.quitter_titre))){
+			onQuitterClicked();
+		}
+		fermerDrawer();
 	}
 
 	
@@ -176,5 +156,9 @@ public class DrawerControleur {
 
 	public DrawerVue getVue() {
 		return vue;
+	}
+
+	public MainActivite getActivite() {
+		return a;
 	}
 }
