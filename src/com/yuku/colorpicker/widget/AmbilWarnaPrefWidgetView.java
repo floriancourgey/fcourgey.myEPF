@@ -1,5 +1,6 @@
 package com.yuku.colorpicker.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -8,6 +9,8 @@ import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.view.View;
 
+@SuppressLint("FloatMath")
+@SuppressWarnings("deprecation")
 public class AmbilWarnaPrefWidgetView extends View {
 	Paint paint;
 	float rectSize;
