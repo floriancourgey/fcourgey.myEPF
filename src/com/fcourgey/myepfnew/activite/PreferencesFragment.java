@@ -9,6 +9,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.framework.Activite;
 import com.fcourgey.myepfnew.modele.PreferencesModele;
 import com.fcourgey.myepfnew.outils.Android;
 import com.fcourgey.myepfnew.outils.Securite;
@@ -47,7 +48,7 @@ public class PreferencesFragment extends PreferenceFragment {
 			}
 		});
         /// hash mdp
-        mdpDansPreferences = ((_MereActivite)getActivity()).getPrefs().getMdp();
+        mdpDansPreferences = ((Activite)getActivity()).getPrefs().getMdp();
         findPreference(PreferencesModele.KEY_MDP).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
@@ -59,7 +60,7 @@ public class PreferencesFragment extends PreferenceFragment {
 	                	return false;
 	                }
 	                // sinon on le sauvegarde haché
-	                ((_MereActivite)getActivity()).getPrefs().setMdp(Securite.encrypt(nouveauMdp));
+	                ((Activite)getActivity()).getPrefs().setMdp(Securite.encrypt(nouveauMdp));
             	} catch(Exception e){
             		e.printStackTrace();
             	}

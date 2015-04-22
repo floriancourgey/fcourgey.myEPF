@@ -1,4 +1,4 @@
-package com.fcourgey.myepfnew.activite;
+package com.fcourgey.myepfnew.framework;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 
 import com.fcourgey.myepfnew.modele.PreferencesModele;
 
-public class _MereActivite extends ActionBarActivity {
+public class Activite extends ActionBarActivity {
 	
 	public static final String logcatFilter = "tag:^(?!.*(dalvik|EGL|Choreo)).*$";
 	

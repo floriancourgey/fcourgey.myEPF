@@ -3,8 +3,9 @@ package com.fcourgey.myepfnew.activite;
 import android.os.Bundle;
 
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.framework.Activite;
 
-public class PreferencesActivite extends _MereActivite {
+public class PreferencesActivite extends Activite {
 	@Override
 	public void onCreate(Bundle b){
 		super.onCreate(b);

@@ -23,10 +23,11 @@ import android.widget.ProgressBar;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.controleur.DrawerControleur;
+import com.fcourgey.myepfnew.framework.Activite;
 import com.fcourgey.myepfnew.outils.Securite;
 
 @SuppressWarnings("deprecation")
-public class MainActivite extends _MereActivite {
+public class MainActivite extends Activite {
 	
 	private static final String TAG = "MainActivite";
 	

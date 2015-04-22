@@ -10,18 +10,20 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.controleur.SemaineControleur;
+import com.fcourgey.myepfnew.framework.Activite;
 import com.fcourgey.myepfnew.vue.CoursVue;
 
 public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	
 	private static SparseArray<Fragment> lFrags = new SparseArray<Fragment>();
 	
-	private static MainActivite mere;
+	private static Activite mere;
 	
 	public static final int NOMBRE_DE_SEMAINES_MAX_DEFAUT = 5;
 	public static int NOMBRE_DE_SEMAINES_MAX;
 
-    public SemainesPagerAdapter(FragmentManager fm, MainActivite mere) {
+    public SemainesPagerAdapter(FragmentManager fm, Activite mere) {
         super(fm);
         SemainesPagerAdapter.mere = mere;
     	NOMBRE_DE_SEMAINES_MAX = mere.getPrefs().getNbSemainesToDl();
@@ -29,8 +31,6 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
     
     /**
 	 * affiche/cache les CM pour tous les fragments
-	 * 
-	 * @param appelant, le frag qui appelle la fonction
 	 * 
 	 * @param null : lit les param depuis les pref
 	 * @param true/false : affiche/cache + enregistre dans les pref
@@ -43,21 +43,22 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 		}
 		for(int i=0 ; i<NOMBRE_DE_SEMAINES_MAX ; i++){
 			SemaineFragment frag = (SemaineFragment) lFrags.get(i);
-			if(frag == null || frag.getLCoursVues() == null){
+			SemaineControleur controleur = (SemaineControleur)frag.getControleur();
+			if(frag == null || controleur.getLCoursVues() == null){
 				continue;
 			}
 			// set checked
 			if(frag.getView() != null)
 				((Switch)frag.getView().findViewById(R.id.sCm)).setChecked(actif);
 			// afficher/cacher cours (si CM && si pas de devoirs
-			for(CoursVue cv : frag.getLCoursVues()){
+			for(CoursVue cv : controleur.getLCoursVues()){
 				if(cv.getCours().isCm() && cv.getCours().getDevoirs()==null){
 					int visibility = (actif)?View.VISIBLE:View.GONE;
 					cv.setVisibility(visibility);
 				}
 			}
 			// update prochain site
-			frag.updateProchainSite();
+			controleur.updateProchainSite();
 		}
 	}
  
@@ -94,10 +95,11 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
     	Log.i("SemainesPagerAdapter", "Avancement "+pourcentage+" : "+texte);
     	for(int i=0 ; i<NOMBRE_DE_SEMAINES_MAX ; i++){
 			SemaineFragment frag = (SemaineFragment) lFrags.get(i);
-			if(frag == null || frag.getLCoursVues() == null){
+			SemaineControleur controleur = (SemaineControleur)frag.getControleur();
+			if(frag == null || controleur.getLCoursVues() == null){
 				continue;
 			}
-			frag.avancement(texte, pourcentage, true);
+			controleur.avancement(texte, pourcentage, true);
     	}
 	}
  

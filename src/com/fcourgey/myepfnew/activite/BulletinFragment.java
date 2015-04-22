@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 
+@SuppressWarnings("deprecation")
 public class BulletinFragment extends Fragment {
 	
 	private static MainActivite a;

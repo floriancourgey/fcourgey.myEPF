@@ -5,7 +5,7 @@ import android.preference.PreferenceManager;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.SemainesPagerAdapter;
-import com.fcourgey.myepfnew.activite._MereActivite;
+import com.fcourgey.myepfnew.framework.Activite;
 
 public class PreferencesModele {
 	
@@ -41,12 +41,12 @@ public class PreferencesModele {
 	public static String V14_MDP_HASHE="V14_MDP_HASHE";
 	public static String V14A_MDP_HASHE="V14A_MDP_HASHE";
 	
-	private static _MereActivite mere;
+	private static Activite mere;
 	
 	/**
 	 * doit être créé en premier pour tout initialiser
 	 */
-	public PreferencesModele(_MereActivite pMere){
+	public PreferencesModele(Activite pMere){
 		if(mere == null){
 			mere = pMere;
 			KEY_IDENTIFIANT = mere.getResources().getString(R.string.key_login);

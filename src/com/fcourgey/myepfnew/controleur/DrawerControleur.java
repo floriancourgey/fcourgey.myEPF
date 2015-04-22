@@ -45,6 +45,7 @@ import com.fcourgey.myepfnew.outils.Android;
 import com.fcourgey.myepfnew.vue.DrawerVue;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+@SuppressWarnings("deprecation")
 public class DrawerControleur {
 	
 	private static final String TAG = "DrawerControleur";

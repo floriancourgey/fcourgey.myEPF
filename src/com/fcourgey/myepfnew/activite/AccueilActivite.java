@@ -4,8 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.fcourgey.myepfnew.controleur.AccueilControleur;
+import com.fcourgey.myepfnew.framework.Activite;
 
-public class AccueilActivite extends _MereActivite {
+public class AccueilActivite extends Activite {
 	
 	/**
 	 * Point de départ de l'appli
