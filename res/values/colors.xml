@@ -3,7 +3,7 @@
     <!-- notification bar -->
     <color name="notification_bar">@color/material_blue_700</color>
     <!-- action bar -->
-	<color name="action_bar">@color/material_blue_500</color>    
+	<color name="action_bar">@color/material_blue_500</color>  
     <!-- accent color -->
     <color name="accent_color">@color/material_pink_500</color>
     
@@ -27,9 +27,16 @@
     <!-- barre now -->
     <color name="barre_now">@color/material_lime_A400</color>
     
+    <!-- drawer -->
+    <color name="drawer_header">@color/material_blue_100</color>
+    <color name="drawer_liste">@color/blanc</color>
+    <color name="drawer_h1">@color/blanc</color>
+    <color name="drawer_h2">@color/blanc</color>
+    <color name="drawer_logo">@color/secondary_text_material_light</color>
+    <color name="drawer_titre">@color/primary_text_default_material_light</color>
+    <color name="drawer_bordure_profil">@color/material_grey_200</color>
+    
     <!-- séparateur -->
-<!--     <color name="separateur_clair">@color/material_blue_grey_100</color> -->
-<!--     <color name="separateur_fonce">@color/material_blue_grey_200</color> -->
 	<color name="separateur_clair">@color/material_grey_300</color>
     <color name="separateur_fonce">@color/material_grey_400</color>
 </resources>

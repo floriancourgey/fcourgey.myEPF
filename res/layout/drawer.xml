@@ -5,39 +5,50 @@
     android:layout_width="256dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:background="#333"
+    android:background="#fff"
     android:orientation="vertical" >
-
-    <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/photo_profil"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:src="@drawable/ic_user64"
-        android:layout_gravity="center"
-        android:layout_marginTop="15dp"
-        app:border="true"
-        app:border_color="#111"
-        app:border_width="2dp"
-        app:shadow="true" />
-    <TextView
-        android:id="@+id/tvNomPrenom"
+	
+    <LinearLayout 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#ddd"
-        android:text="Prenom NOM" />
-    <TextView
-        android:id="@+id/nom_profil"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#aaa"
-        android:text="identifiant" />
+        android:layout_height="140dp"
+        android:background="@color/drawer_header"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:orientation="vertical">
+	    <com.mikhaellopez.circularimageview.CircularImageView
+	        android:id="@+id/photo_profil"
+	        android:layout_width="64dp"
+	        android:layout_height="64dp"
+	        android:src="@drawable/ic_user64"
+	        app:border="true"
+	        app:border_color="@color/drawer_bordure_profil"
+        	app:border_width="2dp"
+	        />
+	    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="56dp"
+	        android:orientation="vertical"
+	        android:gravity="center_vertical">
+		    <TextView
+		        android:id="@+id/tvNomPrenom"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:textColor="@color/drawer_h1"
+		        android:text="Prenom NOM" />
+		    <TextView
+		        android:id="@+id/nom_profil"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:textColor="@color/drawer_h2"
+		        android:text="identifiant" />
+	    </LinearLayout>
+	</LinearLayout>
 
     <ListView
         android:id="@+id/lTitres"
-        android:layout_marginTop="25dp"
         android:layout_width="match_parent"
+        android:dividerHeight="0dp"
+		android:divider="@null"
         android:layout_height="wrap_content" >
     </ListView>
 

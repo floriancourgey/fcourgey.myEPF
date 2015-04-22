@@ -1,9 +1,13 @@
 package com.fcourgey.myepfnew.vue;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -14,6 +18,8 @@ import android.widget.TextView;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.controleur.DrawerControleur;
+import com.fcourgey.myepfnew.framework.Activite;
+import com.joanzapata.android.iconify.Iconify;
 
 @SuppressWarnings("deprecation")
 public class DrawerVue {
@@ -68,9 +74,8 @@ public class DrawerVue {
         ((TextView)a.findViewById(R.id.nom_profil)).setText(identifiant);
         // init titres
         lTitres = (ListView) a.findViewById(R.id.lTitres);
-        String[] titres = a.getResources().getStringArray(R.array.titres);
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(a, R.layout.drawer_list_item, android.R.id.text1, titres);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(a, android.R.layout.simple_list_item_activated_1, titres);
+        DrawerAdapter adapter = new DrawerAdapter(a);
         lTitres.setAdapter(adapter);
         lTitres.setOnItemClickListener(new OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view,
@@ -95,5 +100,44 @@ public class DrawerVue {
 	}
 
 	
-	
+	private class DrawerAdapter extends ArrayAdapter<String>{
+		private final Activite a;
+		private final String[] titres;
+		private final String[] logos;
+		
+		public DrawerAdapter(Activite a){
+			super(a, R.layout.drawer_list_item);
+			titres = a.getResources().getStringArray(R.array.titres);
+			logos = a.getResources().getStringArray(R.array.logos);
+			this.a = a;
+		}
+
+		@SuppressLint("ViewHolder")
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if(convertView == null){
+				LayoutInflater inflater = (LayoutInflater) a.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				convertView = inflater.inflate(R.layout.drawer_list_item, parent, false);
+			}
+			
+			
+			TextView tvTitre = (TextView) convertView.findViewById(R.id.tvTitre);
+			tvTitre.setText(titres[position]);
+			TextView tvLogo = (TextView) convertView.findViewById(R.id.tvLogo);
+			tvLogo.setText("{fa-"+logos[position]+"}");
+			Iconify.addIcons(tvLogo);
+
+			return convertView;
+		}
+		
+		@Override
+        public int getCount() {
+            return titres.length;
+        }
+
+		@Override
+		public String getItem(int position) {
+			return titres[position];
+		}
+	}
 }

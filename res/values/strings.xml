@@ -9,6 +9,14 @@
     <string name="annuler">Annuler</string>
     
     <!-- Drawer -->
+    <string-array name="logos">
+        <item>calendar</item>
+        <item>check-square-o</item>
+        <item>cogs</item>
+        <item>question</item>
+<!--         <item>@string/clause_titre</item> -->
+        <item>power-off</item>
+    </string-array>
     <string-array name="titres">
         <item>@string/edt_titre</item>
         <item>@string/bulletin_titre</item>
