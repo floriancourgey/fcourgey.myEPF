@@ -3,11 +3,11 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/flo/cloud/Mes documents/Programmation/Projets Java/lib/Jsoup/jsoup-1.8.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/flo/cloud/Mes documents/Programmation/Projets Android/lib/Cardview/libs/cardview-v7-21.0.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/flo/cloud/Mes documents/Programmation/Projets Android/lib/Sun Base64/sun.misc.BASE64Decoder.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/acra-4.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/android-iconify-1.0.9.jar"/>
+	<classpathentry kind="lib" path="libs/jsoup-1.8.1.jar"/>
+	<classpathentry kind="lib" path="libs/sun.misc.BASE64Decoder.jar"/>
+	<classpathentry kind="lib" path="libs/cardview-v7-21.0.0.jar"/>
+	<classpathentry kind="lib" path="libs/acra-4.6.1.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="C:/Users/flo/cloud/Mes documents/Programmation/Projets Android/lib/AppCompat/android-support-v4.jar"/>
