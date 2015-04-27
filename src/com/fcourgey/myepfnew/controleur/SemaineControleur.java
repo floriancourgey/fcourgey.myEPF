@@ -64,8 +64,8 @@ public class SemaineControleur extends FragmentControleur {
 	// index & décalages
 	private int indexFragment; 	// 0 ; SemainesPagerAdapter.NOMBRE_DE_SEMAINES_MAX
 	private int indexSemaine;	// 1 ; 52
-	@SuppressWarnings("unused")
-	private int décalage = 0;
+//	@SuppressWarnings("unused")
+//	private int décalage = 0;
 
 	// booléens
 	private boolean vueCompleteChargee = false;
@@ -194,7 +194,7 @@ public class SemaineControleur extends FragmentControleur {
 	
 	/**
 	 * Affiche :
-	 * - les intervalles
+	 * - les intervalles & les heures
 	 * - les cours
 	 * - la barre horizontale où on se trouve actuellement (barre now)
 	 */

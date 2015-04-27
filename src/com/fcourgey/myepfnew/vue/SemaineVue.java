@@ -86,6 +86,7 @@ public class SemaineVue extends FragmentVue {
 		for(int j=0 ; j<SemaineControleur.HAUTEUR_EDT/SemaineControleur.HAUTEUR_INTERVALLE ; j++){
         	View v;
         	RelativeLayout.LayoutParams paramsSeparateur;
+        	// heure
         	if(isContainerHeures && j%SemaineControleur.NB_INTERVALLE_PAR_HEURE==0 && j!=0){
         		TextView tv =new TextView(getActivite());
         		tv.setTextColor(getActivite().getResources().getColor(R.color.heures));
@@ -94,7 +95,9 @@ public class SemaineVue extends FragmentVue {
         		paramsSeparateur = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 	        	paramsSeparateur.topMargin = (int)(j*SemaineControleur.HAUTEUR_INTERVALLE-0.7*SemaineControleur.HAUTEUR_INTERVALLE);
         		v = tv;
-        	} else {
+        	} 
+        	// intervalle
+        	else {
     			v = (View)getActivite().getLayoutInflater().inflate(R.drawable.separateur_view, null);
 	        	int couleur = (j%SemaineControleur.NB_INTERVALLE_PAR_HEURE==0)?R.color.separateur_fonce:R.color.separateur_clair;
         		v.setBackgroundColor(getActivite().getResources().getColor(couleur));
