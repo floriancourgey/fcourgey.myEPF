@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fcourgey.myepfnew"
-    android:versionCode="14003"
-    android:versionName="14b" >
+    android:versionCode="14004"
+    android:versionName="14c" >
 
     <uses-sdk
         android:maxSdkVersion="22"
