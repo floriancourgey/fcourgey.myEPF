@@ -33,6 +33,7 @@ import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
+import com.fcourgey.myepfnew.entite.Url;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 
 @SuppressWarnings("deprecation")
@@ -42,10 +43,6 @@ public static String CHEMIN_BULLETIN;
 	
 	private boolean ecritureOK = false;
 	
-	public static final String URL_MY_EPF = EdtControleur.URL_MY_EPF;
-	public static final String URL_BULLETIN2 = URL_MY_EPF+"/_layouts/sharepointproject2/redirectionversbulletin.aspx";
-	public static String URL_BULLETIN = "https://my.epf.fr/parcoursscolaire/_layouts/SharePointProject2/AffichageBulletin.aspx?ANNEE={ANNEE}&LOGIN_RESEAU={LOGIN}";
-
 	public BulletinControlleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
 		super(f, inflater, container);
 
@@ -58,7 +55,7 @@ public static String CHEMIN_BULLETIN;
 		if(c.get(Calendar.MONTH)<=Calendar.SEPTEMBER){
 			iAnnee--;
 		}
-		URL_BULLETIN = URL_BULLETIN.replace("{ANNEE}", Integer.toString(iAnnee)).replace("{LOGIN}", identifiant);
+		Url.BULLETIN = Url.BULLETIN.replace("{ANNEE}", Integer.toString(iAnnee)).replace("{LOGIN}", identifiant);
 
 		try{
 			String state = Environment.getExternalStorageState();
@@ -114,9 +111,9 @@ public static String CHEMIN_BULLETIN;
 			public void run() {
 				HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
 				HttpContext localContext = new BasicHttpContext();
-				Log.i("Bulletin.telechargerEtAfficherBulletin", "url : "+URL_BULLETIN);
-				HttpGet httpGet = new HttpGet(URL_BULLETIN);
-				String cookies = CookieManager.getInstance().getCookie(URL_MY_EPF);
+				Log.i("Bulletin.telechargerEtAfficherBulletin", "url : "+Url.BULLETIN);
+				HttpGet httpGet = new HttpGet(Url.BULLETIN);
+				String cookies = CookieManager.getInstance().getCookie(Url.MY_EPF);
 				httpGet.setHeader(SM.COOKIE, cookies);
 				InputStream is = null;
 				OutputStream output = null;

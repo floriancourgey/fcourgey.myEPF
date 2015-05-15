@@ -20,16 +20,6 @@ public class EdtControleur extends AsyncFragmentControleur {
 	
 	public static final String TAG = "EdtFragment";
 
-	public static final String URL_MY_EPF = "https://my.epf.fr/";
-	public static final String URL_LOGIN_REQUETE = URL_MY_EPF;
-	public static final String URL_LOGIN_RESULTAT = "InternalSite/Login.asp";
-	public static final String URL_ACCUEIL_RESULTAT = URL_MY_EPF+"default.aspx";
-	public static final String URL_EDT_REQUETE = URL_MY_EPF+"_layouts/crypt/generer_cle.aspx?service=planning";
-	
-	public static final String URL_MYDATA = "https://mydata.epf.fr/";
-	public static final String URL_EDT_RESULTAT = URL_MYDATA;
-	
-	
 	public static boolean telechargementEdtEnCours = false;
 	
 	@SuppressWarnings("unused")

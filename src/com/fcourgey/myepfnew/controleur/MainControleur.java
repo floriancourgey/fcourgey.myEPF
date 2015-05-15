@@ -36,6 +36,7 @@ import android.widget.TextView;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.activite.PreferencesActivite;
+import com.fcourgey.myepfnew.entite.Url;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 import com.fcourgey.myepfnew.fragment.AProposFragment;
 import com.fcourgey.myepfnew.fragment.BulletinFragment;
@@ -247,8 +248,8 @@ public class MainControleur {
 				public void run() {
 					HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
 					HttpContext localContext = new BasicHttpContext();
-					HttpGet httpGet = new HttpGet(MainActivite.URL_PROFIL);
-					String cookies = CookieManager.getInstance().getCookie(MainActivite.URL_MYDATA);
+					HttpGet httpGet = new HttpGet(Url.PROFIL);
+					String cookies = CookieManager.getInstance().getCookie(Url.MYDATA);
 					httpGet.setHeader(SM.COOKIE, cookies);
 					InputStream is = null;
 					try {
@@ -283,7 +284,7 @@ public class MainControleur {
 
 							Log.i(TAG, urlPhotoRelatif);
 
-							String urlPhoto = MainActivite.URL_MYDATA+urlPhotoRelatif;
+							String urlPhoto = Url.MYDATA+urlPhotoRelatif;
 
 							httpGet = new HttpGet(urlPhoto);
 							httpGet.setHeader(SM.COOKIE, cookies);
@@ -330,8 +331,8 @@ public class MainControleur {
 				public void run() {
 					HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
 					HttpContext localContext = new BasicHttpContext();
-					HttpGet httpGet = new HttpGet(MainActivite.URL_PROFIL);
-					String cookies = CookieManager.getInstance().getCookie(MainActivite.URL_MYDATA);
+					HttpGet httpGet = new HttpGet(Url.PROFIL);
+					String cookies = CookieManager.getInstance().getCookie(Url.MYDATA);
 					httpGet.setHeader(SM.COOKIE, cookies);
 					InputStream is = null;
 					try {

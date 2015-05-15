@@ -37,6 +37,7 @@ import com.fcourgey.android.mylib.framework.PreferencesModele;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.entite.Cours;
+import com.fcourgey.myepfnew.entite.Url;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
@@ -57,9 +58,6 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	public static double HAUTEUR_INTERVALLE;
 	public static double HAUTEUR_EDT;
 	public static final String KEY_INDEX = "key_index";
-	public static final String URL_MAGIQUE = "https://mydata.epf.fr/pegasus/index.php?com=planning&job=get-cours&direction=";
-	public static final String URL_MAGIQUE_NONE = "none";
-	public static final String URL_MAGIQUE_NEXT = "next";
 
 	// index & décalages
 	private int indexFragment; 	// 0 ; SemainesPagerAdapter.NOMBRE_DE_SEMAINES_MAX
@@ -436,11 +434,11 @@ public class SemaineControleur extends AsyncFragmentControleur {
 
 			HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
 			HttpContext localContext = new BasicHttpContext();
-			String weekDirection = (firstTime)?URL_MAGIQUE_NONE:URL_MAGIQUE_NEXT;
-			String url = URL_MAGIQUE;
+			String weekDirection = (firstTime)?Url.EDT_JSON_VALUE_NONE:Url.EDT_JSON_VALUE_NEXT;
+			String url = Url.EDT_JSON+"&"+Url.EDT_JSON_KEY_DIRECTION+"=";
 			url += weekDirection;
 			HttpGet httpGet = new HttpGet(url);
-			String cookies = CookieManager.getInstance().getCookie(EdtControleur.URL_MYDATA);
+			String cookies = CookieManager.getInstance().getCookie(Url.MYDATA);
 			httpGet.setHeader(SM.COOKIE, cookies);
 			avancement("Requête finale", 90, false);
 			Log.i(tag(), "load get de l'url "+url);
