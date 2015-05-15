@@ -35,7 +35,7 @@ public class MainActivite extends Activite {
 	
 	private static final String TAG = "MainActivite";
 	
-	private MainControleur drawer;
+	private MainControleur controleur;
 	
 	public static final int NB_SEC_REQ_TIMEOUT = 15;
 
@@ -79,7 +79,7 @@ public class MainActivite extends Activite {
 			connexionMyEPF();
 		}
 		
-		drawer = new MainControleur(this, savedInstanceState);
+		controleur = new MainControleur(this, savedInstanceState);
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class MainActivite extends Activite {
 	private void onDelaiDAttenteDepassé(){
 		enTrainDeSeConnecterAMyEPF = false;
 		avancement("Délai d'attente dépassé", 0);
-		drawer.onDelaiDAttenteDepassé();
+		controleur.onDelaiDAttenteDepassé();
 	}
 	
 	private void avancement(final String texte, final int pourcentage) {
@@ -203,7 +203,6 @@ public class MainActivite extends Activite {
 						
 					} else {
 						Log.i(TAG, "Avancement erreur : "+texte);
-						EdtControleur.setTelechargementEdtEnCours(false);
 						MainActivite.this.pbConnexionMyEpf.setVisibility(View.GONE);
 					}
 
@@ -222,7 +221,7 @@ public class MainActivite extends Activite {
 		avancement("my.epf connecté", 100);
 		enTrainDeSeConnecterAMyEPF = false;
 		connecteAMyEpf = true;
-		drawer.onMyEPFConnected();
+		controleur.onMyEPFConnected();
 	}
 	
 	/**
@@ -256,7 +255,7 @@ public class MainActivite extends Activite {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 	    super.onPostCreate(savedInstanceState);
-	    drawer.onPostCreate(savedInstanceState);
+	    controleur.onPostCreate(savedInstanceState);
 	}
 	/**
 	 * pour le drawer
@@ -264,7 +263,7 @@ public class MainActivite extends Activite {
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        drawer.onConfigurationChanged(newConfig);
+        controleur.onConfigurationChanged(newConfig);
     }
 
 	/**
@@ -272,31 +271,31 @@ public class MainActivite extends Activite {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (drawer.getVue().getToggleBouton().onOptionsItemSelected(item)) {
+		if (controleur.getVue().getToggleBouton().onOptionsItemSelected(item)) {
 	      return true;
 	    }
 		if (item.getItemId() == android.R.id.home) {
-			drawer.ouvrirFermerDrawer();
+			controleur.ouvrirFermerDrawer();
 		}
 		
 	    switch (item.getItemId()) {
 		    case R.id.edt:
-	            drawer.onEdtClicked();
+	            controleur.onEdtClicked();
 	            return true;
 		    case R.id.bulletin:
-	            drawer.onBulletinClicked();
+	            controleur.onBulletinClicked();
 	            return true;
 	        case R.id.preferences:
-	            drawer.onPreferencesClicked();
+	            controleur.onPreferencesClicked();
 	            return true;
 	        case R.id.apropos:
-	        	drawer.onAProposClicked();
+	        	controleur.onAProposClicked();
 	            return true;
 	        case R.id.quitter:
-	        	drawer.onQuitterClicked();
+	        	controleur.onQuitterClicked();
 	            return true;
 	        case android.R.id.home:
-	        	drawer.ouvrirFermerDrawer();
+	        	controleur.ouvrirFermerDrawer();
 	        	return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
@@ -309,7 +308,7 @@ public class MainActivite extends Activite {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent e) {
 	    if (keyCode == KeyEvent.KEYCODE_MENU) {
-	    	drawer.clicSurBoutonMenu();
+	    	controleur.clicSurBoutonMenu();
 	        return true;
 	    }
 	    return super.onKeyDown(keyCode, e);

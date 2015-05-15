@@ -19,7 +19,7 @@ public class SemaineFragment extends Fragment {
 		SemaineFragment f = new SemaineFragment();
 		Bundle args = new Bundle();
 
-		args.putInt(SemaineControleur.KEY_INDEX, indexFragment);
+		args.putInt(SemaineControleur.KEY_INDEX_FRAGMENT, indexFragment);
 
 		f.setArguments(args);
 		return f;

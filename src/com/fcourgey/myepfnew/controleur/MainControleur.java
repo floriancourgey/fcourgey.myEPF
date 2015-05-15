@@ -188,7 +188,7 @@ public class MainControleur {
 			((EdtControleur)f.getControleur()).onMyEPFConnected();
 		} else if(fragmentActuel instanceof BulletinFragment) {
 			BulletinFragment f = (BulletinFragment)fragmentActuel;
-			((BulletinControlleur)f.getControleur()).onMyEPFConnected();
+			((BulletinControleur)f.getControleur()).onMyEPFConnected();
 		}
 	}
 	

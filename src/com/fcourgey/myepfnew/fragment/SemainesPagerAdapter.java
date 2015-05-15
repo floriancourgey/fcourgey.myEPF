@@ -36,6 +36,7 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	 * @param true/false : affiche/cache + enregistre dans les pref
 	 */
 	public static void definirCm(Boolean actif){
+		/*
 		if(actif == null){
 			actif = mere.getPrefs().getCm();
 		} else {
@@ -58,8 +59,9 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 				}
 			}
 			// update prochain site
-			controleur.updateProchainSite();
+//			controleur.updateProchainSite();
 		}
+		*/
 	}
  
     @Override
@@ -94,9 +96,9 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
     	for(int i=0 ; i<NOMBRE_DE_SEMAINES_MAX ; i++){
 			SemaineFragment frag = (SemaineFragment) lFrags.get(i);
 			SemaineControleur controleur = (SemaineControleur)frag.getControleur();
-			if(frag == null || controleur.getLCoursVues() == null){
-				continue;
-			}
+//			if(frag == null || controleur.getLCoursVues() == null){
+//				continue;
+//			}
 			controleur.avancement(texte, pourcentage, true);
     	}
 	}

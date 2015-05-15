@@ -44,6 +44,7 @@ public class SemaineVue extends AsyncFragmentVue {
 	 * init le header une fois l'edt downloaded
 	 */
 	public void initHeader(){
+		/*
 		controleur.getActivite().runOnUiThread(new Runnable() {
 			public void run() {
 				TextView tvSemaine2  =(TextView)vue.findViewById(R.id.tvSemaine2);
@@ -66,6 +67,7 @@ public class SemaineVue extends AsyncFragmentVue {
 				});
 			}
 		});
+		*/
 	}
 	
 	/**
@@ -148,7 +150,7 @@ public class SemaineVue extends AsyncFragmentVue {
 					} else {
 						if(!appeleParLaMere)
 							Log.i(tag(), "Avancement erreur : "+texte);
-						EdtControleur.setTelechargementEdtEnCours(false);
+//						EdtControleur.setTelechargementEdtEnCours(false);
 //						SemaineVue.this.tvTelechargement.setText(texte);
 //						SemaineVue.this.pbTelechargement.setVisibility(View.GONE);
 						SemaineVue.this.tvTelechargement2.setText(texte);

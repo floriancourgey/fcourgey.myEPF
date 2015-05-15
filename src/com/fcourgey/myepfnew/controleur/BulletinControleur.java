@@ -37,13 +37,13 @@ import com.fcourgey.myepfnew.entite.Url;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 
 @SuppressWarnings("deprecation")
-public class BulletinControlleur extends AsyncFragmentControleur {
+public class BulletinControleur extends AsyncFragmentControleur {
 	
 public static String CHEMIN_BULLETIN;
 	
 	private boolean ecritureOK = false;
 	
-	public BulletinControlleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
+	public BulletinControleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
 		super(f, inflater, container);
 
 		vue = new AsyncFragmentVue(this, inflater, container, R.layout.bulletin_fragment);

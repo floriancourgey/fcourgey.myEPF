@@ -1,52 +1,14 @@
 package com.fcourgey.myepfnew.controleur;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.cookie.SM;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.webkit.CookieManager;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
 import com.fcourgey.android.mylib.framework.Fragment;
-import com.fcourgey.android.mylib.framework.PreferencesModele;
-import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.activite.MainActivite;
-import com.fcourgey.myepfnew.entite.Cours;
-import com.fcourgey.myepfnew.entite.Url;
-import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
-import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
-import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
-import com.fcourgey.myepfnew.outils.JsonMyEPF;
-import com.fcourgey.myepfnew.outils.StringOutils;
-import com.fcourgey.myepfnew.vue.CoursVue;
 import com.fcourgey.myepfnew.vue.SemaineVue;
 
-@SuppressWarnings("deprecation")
 public class SemaineControleur extends AsyncFragmentControleur {
 	
 	// constantes
@@ -57,188 +19,44 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	public static final int NB_TOTAL_INTERVALLE = (HEURE_MAX-HEURE_MIN)*60/INTERVALLE;
 	public static double HAUTEUR_INTERVALLE;
 	public static double HAUTEUR_EDT;
-	public static final String KEY_INDEX = "key_index";
-
-	// index & décalages
-	private int indexFragment; 	// 0 ; SemainesPagerAdapter.NOMBRE_DE_SEMAINES_MAX
-	private int indexSemaine;	// 1 ; 52
-//	@SuppressWarnings("unused")
-//	private int décalage = 0;
-
-	// booléens
-	protected boolean vueCompleteChargee = false;
-	public static boolean premiereSemaineTelechargee = false;
-
-	// json reçu
-	private JSONObject json;
-
-	// liste des cours
-	private ArrayList<CoursVue> lCoursVues;
-
-	// Date du lundi de cette semaine
-	private Calendar lundiTéléchargé;
-	private Calendar lundiPrévu;
-	private static Calendar précédentLundiTéléchargé;
-	private SimpleDateFormat sdf;
-
-	// vue
-//	private SemaineVue vue;
+	public static final String KEY_INDEX_FRAGMENT = "KEY_INDEX_FRAGMENT";
+	
+	//
+	private int indexFragment;
+	private int indexSemaine;
 
 
 	public SemaineControleur(Fragment f, LayoutInflater inflater, ViewGroup container){
 		super(f, inflater, container);
 		
-		// init index fragment
-		indexFragment = getArguments().getInt(KEY_INDEX);
-		// init index semaine
-		Calendar now = Calendar.getInstance();
-		indexSemaine = now.get(Calendar.WEEK_OF_YEAR) + indexFragment;
-		Calendar ceSamedi = Calendar.getInstance();
-		ceSamedi.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-		ceSamedi.set(Calendar.HOUR_OF_DAY, 14);
-		if(now.after(ceSamedi)){
-			indexSemaine++;
-		}
-		// init lundi prévu
-		lundiPrévu = Calendar.getInstance();
-		lundiPrévu.add(Calendar.DATE, 7*indexFragment);
-		lundiPrévu.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-
-		sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-		Log.i(tag(), "onCreateView frag("+indexFragment+") semaine("+indexSemaine+") lundiPrévu("+sdf.format(lundiPrévu.getTime())+")");
-
+		indexFragment = getArguments().getInt(KEY_INDEX_FRAGMENT);
+		
 		// init design
 		vue = new SemaineVue(this, inflater, container);
-
-
-		// chargement du json si présent
-		chargerDepuisJsonSauvegarde();
-
-		if(indexFragment==0){
-			lancerTelechargement(true, false);
-		} else {
-			lancerTelechargement(false, false);
-		}
-	}
-
-	/**
-	 * cherche un json sauvegardé dans les prefs et le charge
-	 */
-	private void chargerDepuisJsonSauvegarde() {
-		MyEpfPreferencesModele pref = (MyEpfPreferencesModele)a.getPrefs();
-		String jsonSauvegarde = pref.getJsonSemaine(indexSemaine);
-		if(jsonSauvegarde == null || jsonSauvegarde.length() < 1){
-			return;
-		}
-		JSONObject json;
-		try {
-			json = new JSONObject(jsonSauvegarde);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-		onEdtDownloaded(json);
 	}
 
 	/**
 	 * appelé quand l'edt a été téléchargé
 	 */
+	/*
 	private void onEdtDownloaded(JSONObject json){
-		// pour afficher ou non la vue complète
-		if(indexFragment == 0){
-			premiereSemaineTelechargee = true;
-		}
-		// idem
-		PreferencesModele prefs = getActivite().getPrefs();
-		prefs.putBoolean(MyEpfPreferencesModele.KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS, true);
-
-		// arrêt du téléchargement
-		EdtControleur.setTelechargementEdtEnCours(false);
-		
-		// récupération date lundi téléchargé
-		String debutSemaineActive;
-		try{
-			debutSemaineActive = json.getString("debut_semaine_active");
-		} catch (JSONException e){
-			e.printStackTrace(); // TODO
-			return;
-		}
-		lundiTéléchargé = StringOutils.toCalendar(debutSemaineActive, false);
-		
-		// comparaison date lundi téléchargé & lundi prévu
-		String sLundiTéléchargé = sdf.format(lundiTéléchargé.getTime());
-		Log.i(tag(), "lundiTéléchargé("+sLundiTéléchargé+")");
-		String sLundiPrévu = sdf.format(lundiPrévu.getTime());
-		// si non égaux
-		if(!sLundiTéléchargé.equals(sLundiPrévu)){
-			/*
-			if(lundiPrévu.before(lundiTéléchargé)){
-				
-			}
-			*/
-			chargerVueErreur("lundiTéléchargé("+sLundiTéléchargé+") != lundiPrévu("+sLundiPrévu+")", "Incohérence dans l'edt téléchargé");
-			return;
-		}
-		
-		/*
-		// si semaine identique => Grandes vacances
-		if(précédentLundiTéléchargé != null){
-			String sPrécédentLundiTéléchargé = sdf.format(précédentLundiTéléchargé.getTime());
-			Log.e(tag(), "sPrécédentLundiTéléchargé("+sPrécédentLundiTéléchargé+") sLundiTéléchargé("+sLundiTéléchargé+")");
-			if(sPrécédentLundiTéléchargé.equals(sLundiTéléchargé)){
-				Log.e(tag(), "égaux => SUMMER");
-				chargerVueDefaut();
-				getActivite().runOnUiThread(new Runnable() {
-					public void run() {
-						((TextView)vue.getVue().findViewById(R.id.tvTitre)).setText("SUMMER");
-					}
-				});
-				// suppression JSON des pref
-				MyEpfPreferencesModele pref = (MyEpfPreferencesModele)a.getPrefs();
-				pref.supprimerJsonSemaine(indexSemaine);
-			}
-		} else {
-			Log.e(tag(), "sPrécédentLundiTéléchargé(null) sLundiTéléchargé("+sLundiTéléchargé+")");
-		}
-		*/
-
-		// si json téléchargé
-		if(this.json != null){
-			avancement("Edt téléchargé identique à sauvegarde", 100, false);
-			// je compare le json téléchargé et le sauvegardé
-			// si identique, pas besoin de se casser la tête : return
-			if(this.json.toString().equals(json.toString())){
-				Log.i(tag(), "Le JSON sauvegardé et le téléchargé sont identiques, skip");
-				return;
-			}
-		} 
-		// si json récupéré depuis sauvegarde
-		else {
-			avancement("Affichage de l'edt", 80, false);
-		}
-		this.json = json;
-		
-		
-		
-		
-
 		((SemaineVue)vue).chargerVueComplete();
 
 		a.runOnUiThread(new Runnable() {
 			public void run() {
-				((SemaineVue)vue).initHeader();
-				initEdt();
+//				((SemaineVue)vue).initHeader();
+//				initEdt();
 			}
 		});
-		précédentLundiTéléchargé = lundiTéléchargé;
 	}
-	
+	*/
 	/**
 	 * Affiche :
 	 * - les intervalles & les heures
 	 * - les cours
 	 * - la barre horizontale où on se trouve actuellement (barre now)
 	 */
+	/*
 	public void initEdt(){
         final String jours[] = new DateFormatSymbols(Locale.getDefault()).getWeekdays();
         final ArrayList<RelativeLayout> rls = new ArrayList<RelativeLayout>();
@@ -341,10 +159,12 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	        }	
 	    });
 	}
+	*/
 	
 	/**
 	 * init la liste des relative layout container de chaque jour 
 	 */
+	/*
 	private void initJoursContainer(ArrayList<RelativeLayout> rls, String[] jours) {
 		for (int iJour=Calendar.MONDAY; iJour < jours.length; iJour++){
 	    	String jour = jours[iJour];
@@ -359,16 +179,20 @@ public class SemaineControleur extends AsyncFragmentControleur {
             }
 		}
 	}
+	*/
 
+	/*
 	public void onCoursDisplayed(){
 		SemainesPagerAdapter.definirCm(null);
 		updateProchainSite();
 		avancement("Edt téléchargé", 100, false);
 	}
+*/
 
 	/**
 	 * Définit le prochain site où l'on a cours
 	 */
+	/*
 	public void updateProchainSite(){
 		// seulement sur le 1er frag
 		if(indexFragment != 0){
@@ -405,13 +229,14 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		}
 		((SemaineVue)vue).updateProchainSite(prochainCours);
 	}
-
+*/
 
 	/**
 	 * lance GetEdtSemaine @see GetEdtSemaine
 	 * @param firstTime
 	 * @param avancementUneSemaine
 	 */
+	/*
 	private void lancerTelechargement(boolean firstTime, boolean avancementUneSemaine){
 		new GetEdtSemaine().execute(firstTime, avancementUneSemaine);
 	}
@@ -482,6 +307,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 			return null;
 		}
 	}
+	*/
 
 	private String tag(){
 		return "frag n°"+indexFragment+" semaine n°"+indexSemaine;
@@ -495,18 +321,10 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		((SemaineVue)vue).avancement(texte, pourcentage, appeleParLaMere);
 	}
 
-	public ArrayList<CoursVue> getLCoursVues() {
-		return lCoursVues;
-	}
-
 	public int getIndexFragment() {
 		return indexFragment;
 	}
-
 	public int getIndexSemaine() {
 		return indexSemaine;
-	}
-	public Calendar getLundiTéléchargé(){
-		return lundiTéléchargé;
 	}
 }
