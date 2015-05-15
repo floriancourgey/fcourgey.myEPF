@@ -26,7 +26,7 @@ import com.fcourgey.android.mylib.framework.Activite;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.controleur.EdtControleur;
 import com.fcourgey.myepfnew.controleur.MainControleur;
-import com.fcourgey.myepfnew.entite.Url;
+import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.Securite;
 
@@ -103,7 +103,7 @@ public class MainActivite extends Activite {
 				      WebView.setWebContentsDebuggingEnabled(true);
 				}
 				MainActivite.wvCachee.setWebChromeClient(new WebChromeClient());
-				MainActivite.wvCachee.loadUrl(Url.LOGIN_REQUETE);
+				MainActivite.wvCachee.loadUrl(MyEpfUrl.LOGIN_REQUETE);
 				MainActivite.wvCachee.setWebViewClient(new WebViewClient(){
 					
 				    private boolean ignorerRequetesAccueil = false;
@@ -127,7 +127,7 @@ public class MainActivite extends Activite {
 				    @JavascriptInterface
 				    public void onPageFinished(WebView wvCachee, String url) {
 				    	// 1
-				    	if(url.contains(Url.LOGIN_RESULTAT)){
+				    	if(url.contains(MyEpfUrl.LOGIN_RESULTAT)){
 				    		String js = "javascript:";
 				    		js+="document.getElementById('user_name').value='Education\\\\"+identifiant+"';";
 				    		String mdpEchapé = mdp.replace("'", "\\'");
@@ -138,16 +138,16 @@ public class MainActivite extends Activite {
 				    	}
 				    	// 1 bis -> mauvais identifiants
 				    	// 2
-				    	else if(url.equals(Url.ACCUEIL_RESULTAT)){
+				    	else if(url.equals(MyEpfUrl.ACCUEIL_RESULTAT)){
 				    		// on est connectés, on lance l'edt
 				    		if(!ignorerRequetesAccueil){
 				    			ignorerRequetesAccueil = true;
-				    			wvCachee.loadUrl(Url.EDT_REQUETE);
+				    			wvCachee.loadUrl(MyEpfUrl.EDT_REQUETE);
 				    			avancement("Requête init edt 1", 50);
 				    		}
 				    	} 
 				    	// 3
-				    	else if(url.contains(Url.EDT_RESULTAT)){
+				    	else if(url.contains(MyEpfUrl.EDT_RESULTAT)){
 				    		if(premiereRequeteEdtResultat){
 				    			avancement("Requête init edt 2", 65);
 				    			premiereRequeteEdtResultat = false;

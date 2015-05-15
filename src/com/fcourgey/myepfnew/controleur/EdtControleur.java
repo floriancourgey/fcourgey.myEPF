@@ -31,7 +31,7 @@ import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
-import com.fcourgey.myepfnew.entite.Url;
+import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
@@ -169,9 +169,9 @@ public class EdtControleur extends AsyncFragmentControleur {
 
 			HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
 			HttpContext localContext = new BasicHttpContext();
-			String url = Url.EDT_JSON;
+			String url = MyEpfUrl.EDT_JSON;
 			HttpGet httpGet = new HttpGet(url);
-			String cookies = CookieManager.getInstance().getCookie(Url.MYDATA);
+			String cookies = CookieManager.getInstance().getCookie(MyEpfUrl.MYDATA);
 			httpGet.setHeader(SM.COOKIE, cookies);
 			avancement("Requête finale", 55);
 			Log.i(TAG, "load get de l'url "+url);
@@ -227,7 +227,7 @@ public class EdtControleur extends AsyncFragmentControleur {
 		Calendar now = Calendar.getInstance();
 		Calendar samediActuel = Calendar.getInstance();
 		samediActuel.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-		samediActuel.set(Calendar.HOUR_OF_DAY, 14);
+		samediActuel.set(Calendar.HOUR_OF_DAY, 14); // TODO dans les pref
 		if(now.after(samediActuel)){
 			positionViewPager++;
 		}

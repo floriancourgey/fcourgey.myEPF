@@ -5,11 +5,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
+import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.controleur.EdtControleur;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
+import com.fcourgey.myepfnew.vue.CoursVue;
 
 public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	
@@ -33,7 +37,6 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	 * @param true/false : affiche/cache + enregistre dans les pref
 	 */
 	public static void definirCm(Boolean actif){
-		/*
 		if(actif == null){
 			actif = mere.getPrefs().getCm();
 		} else {
@@ -42,7 +45,7 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 		for(int i=0 ; i<NOMBRE_DE_SEMAINES_MAX ; i++){
 			SemaineFragment frag = (SemaineFragment) lFrags.get(i);
 			SemaineControleur controleur = (SemaineControleur)frag.getControleur();
-			if(frag == null || controleur.getLCoursVues() == null){
+			if(frag == null || controleur==null || controleur.getLCoursVues() == null){
 				continue;
 			}
 			// set checked
@@ -56,9 +59,8 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 				}
 			}
 			// update prochain site
-//			controleur.updateProchainSite();
+			controleur.updateProchainSite();
 		}
-		*/
 	}
  
     @Override

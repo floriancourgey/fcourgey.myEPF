@@ -1,17 +1,18 @@
 package com.fcourgey.myepfnew.vue;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
 
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
@@ -19,6 +20,7 @@ import com.fcourgey.android.mylib.outils.Date;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
 import com.fcourgey.myepfnew.entite.Cours;
+import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
 
 public class SemaineVue extends AsyncFragmentVue {
 	
@@ -44,6 +46,7 @@ public class SemaineVue extends AsyncFragmentVue {
 	public void initHeader(){
 		controleur.getActivite().runOnUiThread(new Runnable() {
 			public void run() {
+				// texte de la date de la semaine
 				TextView tvSemaine2  =(TextView)vue.findViewById(R.id.tvSemaine2);
 				SemaineControleur sControleur = ((SemaineControleur)controleur);
 				Calendar lundiDeCetteSemaine = sControleur.getLundiDeCetteSemaine();
@@ -53,14 +56,22 @@ public class SemaineVue extends AsyncFragmentVue {
 				texte = texte.replace("{END}", Integer.toString(dimancheDeCetteSemaine.get(Calendar.DAY_OF_MONTH)));
 				texte = texte.replace("{MOIS}", Date.abreMois(dimancheDeCetteSemaine));
 				tvSemaine2.setText(texte);
-				/*
+				// activation switch CM
 				Switch sCm = (Switch)vue.findViewById(R.id.sCm);
 				sCm.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				        SemainesPagerAdapter.definirCm(isChecked);
 				    }
 				});
-				*/
+				// affichage "next"
+				SemaineControleur controleur = (SemaineControleur)SemaineVue.this.controleur;
+				Calendar now = Calendar.getInstance();
+				if(controleur.getIndexSemaine() != now.get(Calendar.WEEK_OF_YEAR)){
+					TextView tvLabelProchainSite  =(TextView)vue.findViewById(R.id.tvLabelProchainSite);
+					tvLabelProchainSite.setVisibility(View.GONE);
+					TextView tvProchainSite  =(TextView)vue.findViewById(R.id.tvProchainSite);
+					tvProchainSite.setVisibility(View.GONE);
+				}
 			}
 		});
 	}

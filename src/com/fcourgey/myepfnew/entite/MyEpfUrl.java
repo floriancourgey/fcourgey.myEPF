@@ -1,7 +1,7 @@
 package com.fcourgey.myepfnew.entite;
 
 
-public abstract class Url {
+public abstract class MyEpfUrl {
 	
 	// my.epf.fr
 	/// connexion

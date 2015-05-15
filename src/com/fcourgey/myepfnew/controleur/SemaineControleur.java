@@ -4,8 +4,8 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.ResourceBundle.Control;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,11 +16,13 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
 import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.entite.Cours;
+import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.JsonMyEPF;
 import com.fcourgey.myepfnew.vue.CoursVue;
@@ -81,6 +83,12 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		lJsonCours = prefs.getCoursSemaine(indexSemaine);
 		if(lJsonCours == null){
 			return;
+		} else {
+			a.runOnUiThread(new Runnable() {
+				public void run() {
+					initEdt();
+				}
+			});
 		}
 		
 	}
@@ -97,11 +105,6 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		// TODO comparaison avec l'ancien
 		// si == alors pas de chgt
 		chargerVueComplete();
-		a.runOnUiThread(new Runnable() {
-			public void run() {
-				initEdt();
-			}
-		});
 	}
 	/*
 	private void onEdtDownloaded(JSONObject json){
@@ -135,7 +138,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 					return;
 				}
 				if(lJsonCours == null){
-					return;
+					return; // TODO vacances ou erreur
 				}
 				vueCompleteChargee = true;
 				// chargement des cours
@@ -251,26 +254,17 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	
 	public void onCoursDisplayed(){
 		avancement("Edt affiché", 100, false);
-		/*
 		SemainesPagerAdapter.definirCm(null);
 		updateProchainSite();
-		*/
 	}
 
 
 	/**
 	 * Définit le prochain site où l'on a cours
 	 */
-	/*
 	public void updateProchainSite(){
 		// seulement sur le 1er frag
-		if(indexFragment != 0){
-			a.runOnUiThread(new Runnable() {
-				public void run() {
-					((TextView)vue.getVue().findViewById(R.id.tvLabelProchainSite)).setVisibility(View.GONE);
-					((TextView)vue.getVue().findViewById(R.id.tvProchainSite)).setVisibility(View.GONE);
-				}
-			});
+		if(indexFragment != 0 + EdtControleur.semainesAvant){
 			return;
 		}
 		Calendar now = Calendar.getInstance();
@@ -298,85 +292,8 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		}
 		((SemaineVue)vue).updateProchainSite(prochainCours);
 	}
-*/
 
-	/**
-	 * lance GetEdtSemaine @see GetEdtSemaine
-	 * @param firstTime
-	 * @param avancementUneSemaine
-	 */
-	/*
-	private void lancerTelechargement(boolean firstTime, boolean avancementUneSemaine){
-		new GetEdtSemaine().execute(firstTime, avancementUneSemaine);
-	}
-	private class GetEdtSemaine extends AsyncTask<Boolean, Void, Void>{
-		@Override
-		protected Void doInBackground(Boolean... params) {
-			avancement("Attente connexion à my.epf", 15, false);
-			while(!MainActivite.connecteAMyEpf || EdtControleur.telechargementEdtEnCours){
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-
-			avancement("Téléchargement de l'edt", 30, false);
-			EdtControleur.telechargementEdtEnCours=true;
-			boolean firstTime = params[0];
-			boolean avancementUneSemaine = params[1];
-
-			HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
-			HttpContext localContext = new BasicHttpContext();
-			String weekDirection = (firstTime)?Url.EDT_JSON_VALUE_NONE:Url.EDT_JSON_VALUE_NEXT;
-			String url = Url.EDT_JSON+"&"+Url.EDT_JSON_KEY_DIRECTION+"=";
-			url += weekDirection;
-			HttpGet httpGet = new HttpGet(url);
-			String cookies = CookieManager.getInstance().getCookie(Url.MYDATA);
-			httpGet.setHeader(SM.COOKIE, cookies);
-			avancement("Requête finale", 90, false);
-			Log.i(tag(), "load get de l'url "+url);
-			InputStream is;
-			try {
-				is = httpClient.execute((HttpUriRequest) httpGet, localContext).getEntity().getContent();
-			} catch (Exception e) {
-				e.printStackTrace();
-				avancement("Impossible de joindre le serveur EPF (étonnant à ce stade)", 0, false);
-				return null;
-			}
-			avancement("Parsing de l'edt", 50, false);
-			try {
-				StringBuilder sb = new StringBuilder();
-				String line;
-				BufferedReader br = new BufferedReader(new InputStreamReader(is));
-				while ((line = br.readLine()) != null) {
-					sb.append(line);
-				}
-				br.close();
-				if(avancementUneSemaine){
-					EdtControleur.setTelechargementEdtEnCours(false);
-					return null;
-				}
-				try {
-					MyEpfPreferencesModele pref = (MyEpfPreferencesModele)a.getPrefs();
-					pref.setJsonSemaine(indexSemaine, sb.toString());
-					JSONObject json = new JSONObject(sb.toString());
-					onEdtDownloaded(json);
-				} catch (JSONException e) {
-					//						e.printStackTrace();
-					avancement("Impossible de convertir en JSON", 0, false);
-					Log.e(tag(), sb.toString());
-					return null;
-				}
-			} catch(IOException e){
-				//					e.printStackTrace();
-				avancement("Impossible de lire la réponse finale", 0, false);
-				return null;
-			}
-			return null;
-		}
-	}
-	*/
+	
 
 	private String tag(){
 		return "frag n°"+indexFragment+" semaine n°"+indexSemaine;
@@ -403,5 +320,9 @@ public class SemaineControleur extends AsyncFragmentControleur {
 
 	public Calendar getDimancheDeCetteSemaine() {
 		return dimancheDeCetteSemaine;
+	}
+
+	public ArrayList<CoursVue> getLCoursVues() {
+		return lCoursVues;
 	}
 }
