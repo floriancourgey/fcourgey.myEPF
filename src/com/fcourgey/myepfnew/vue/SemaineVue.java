@@ -10,19 +10,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
+import com.fcourgey.android.mylib.outils.Date;
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.controleur.EdtControleur;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
 import com.fcourgey.myepfnew.entite.Cours;
-import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
 
 public class SemaineVue extends AsyncFragmentVue {
 	
@@ -38,36 +34,35 @@ public class SemaineVue extends AsyncFragmentVue {
 		pbTelechargement2 = (ProgressBar)vue.findViewById(R.id.pbTelechargement2);
 //		tvTelechargement = (TextView)vue.findViewById(R.id.tvTelechargement);
 		tvTelechargement2 = (TextView)vue.findViewById(R.id.tvTelechargement2);
+		
+		initHeader();
 	}
 	
 	/**
-	 * init le header une fois l'edt downloaded
+	 * init le header
 	 */
 	public void initHeader(){
-		/*
 		controleur.getActivite().runOnUiThread(new Runnable() {
 			public void run() {
 				TextView tvSemaine2  =(TextView)vue.findViewById(R.id.tvSemaine2);
-				Calendar dimancheActuel = (Calendar)((SemaineControleur)controleur).getLundiTéléchargé().clone();
-				dimancheActuel.add(Calendar.DATE, 6);
-				String mois = new SimpleDateFormat("MMMM", Locale.getDefault()).format(dimancheActuel.getTime());
-				try{
-					if(mois.length()>3 && mois.length()!=4){
-						mois = mois.substring(0, 3); // récupère les 3 premières lettres du mois, sauf si 4 lettres au total
-					}
-				} catch(Exception e){}
-				tvSemaine2.setText(	"du "+((SemaineControleur)controleur).getLundiTéléchargé().get(Calendar.DAY_OF_MONTH)+
-									" au "+dimancheActuel.get(Calendar.DAY_OF_MONTH)+
-									" "+mois);
+				SemaineControleur sControleur = ((SemaineControleur)controleur);
+				Calendar lundiDeCetteSemaine = sControleur.getLundiDeCetteSemaine();
+				Calendar dimancheDeCetteSemaine = sControleur.getDimancheDeCetteSemaine();
+				String texte = getResources().getString(R.string.edt_header_date);
+				texte = texte.replace("{START}", Integer.toString(lundiDeCetteSemaine.get(Calendar.DAY_OF_MONTH)));
+				texte = texte.replace("{END}", Integer.toString(dimancheDeCetteSemaine.get(Calendar.DAY_OF_MONTH)));
+				texte = texte.replace("{MOIS}", Date.abreMois(dimancheDeCetteSemaine));
+				tvSemaine2.setText(texte);
+				/*
 				Switch sCm = (Switch)vue.findViewById(R.id.sCm);
 				sCm.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				        SemainesPagerAdapter.definirCm(isChecked);
 				    }
 				});
+				*/
 			}
 		});
-		*/
 	}
 	
 	/**

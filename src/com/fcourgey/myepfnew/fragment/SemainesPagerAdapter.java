@@ -5,14 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
 
-import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
+import com.fcourgey.myepfnew.controleur.EdtControleur;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
-import com.fcourgey.myepfnew.vue.CoursVue;
 
 public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	
@@ -20,7 +17,7 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	
 	private static MainActivite mere;
 	
-	public static final int NOMBRE_DE_SEMAINES_MAX_DEFAUT = 5;
+	public static final int NOMBRE_DE_SEMAINES_MAX_DEFAUT = EdtControleur.semainesAvant + 1 + EdtControleur.semainesApres; // TODO
 	public static int NOMBRE_DE_SEMAINES_MAX;
 
     public SemainesPagerAdapter(FragmentManager fm, MainActivite mere) {
@@ -70,9 +67,9 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
     }
     
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        Fragment fragment = (Fragment) super.instantiateItem(container, position);
-        lFrags.put(position, fragment);
+    public Object instantiateItem(ViewGroup container, int indexFragment) {
+        Fragment fragment = (Fragment) super.instantiateItem(container, indexFragment);
+        lFrags.put(indexFragment, fragment);
         return fragment;
     }
 
@@ -95,12 +92,32 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
     	Log.i("SemainesPagerAdapter", "Avancement "+pourcentage+" : "+texte);
     	for(int i=0 ; i<NOMBRE_DE_SEMAINES_MAX ; i++){
 			SemaineFragment frag = (SemaineFragment) lFrags.get(i);
+			if(frag == null){
+				continue;
+			}
 			SemaineControleur controleur = (SemaineControleur)frag.getControleur();
-//			if(frag == null || controleur.getLCoursVues() == null){
-//				continue;
-//			}
 			controleur.avancement(texte, pourcentage, true);
     	}
+	}
+
+	public void onMyEPFConnected() {
+		for(int i=0 ; i<NOMBRE_DE_SEMAINES_MAX ; i++){
+			SemaineFragment frag = (SemaineFragment) lFrags.get(i);
+			if(frag == null){
+				continue;
+			}
+			((SemaineControleur)frag.getControleur()).onMyEPFConnected();
+		}
+	}
+	
+	public void onMapCoursMapped(){
+		for(int i=0 ; i<NOMBRE_DE_SEMAINES_MAX ; i++){
+			SemaineFragment frag = (SemaineFragment) lFrags.get(i);
+			if(frag == null){
+				continue;
+			}
+			((SemaineControleur)frag.getControleur()).onMapCoursMapped();
+		}
 	}
  
 }

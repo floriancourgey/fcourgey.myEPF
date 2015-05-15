@@ -10,6 +10,8 @@ import com.fcourgey.myepfnew.controleur.SemaineControleur;
 
 public class SemaineFragment extends Fragment {
 	
+	public static final String KEY_INDEX_FRAGMENT = "KEY_INDEX_FRAGMENT";
+	
 	/**
 	 * appelé avant de lancer un onCreate
 	 * +
@@ -19,7 +21,7 @@ public class SemaineFragment extends Fragment {
 		SemaineFragment f = new SemaineFragment();
 		Bundle args = new Bundle();
 
-		args.putInt(SemaineControleur.KEY_INDEX_FRAGMENT, indexFragment);
+		args.putInt(KEY_INDEX_FRAGMENT, indexFragment);
 
 		f.setArguments(args);
 		return f;
@@ -29,7 +31,9 @@ public class SemaineFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		
-		controleur = new SemaineControleur(this, inflater, container);
+		int indexFragment = getArguments().getInt(KEY_INDEX_FRAGMENT);
+		
+		controleur = new SemaineControleur(this, inflater, container, indexFragment);
 
 		return controleur.getVue().getVue();
 	}

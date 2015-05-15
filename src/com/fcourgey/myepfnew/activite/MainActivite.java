@@ -218,7 +218,7 @@ public class MainActivite extends Activite {
 	 * Est exécuté lorsque la connexion à myEPF a réussi
 	 */
 	private void onMyEPFConnected(){
-		avancement("my.epf connecté", 100);
+		avancement("onMyEPFConnected", 100);
 		enTrainDeSeConnecterAMyEPF = false;
 		connecteAMyEpf = true;
 		controleur.onMyEPFConnected();

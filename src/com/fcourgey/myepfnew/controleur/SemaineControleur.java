@@ -1,43 +1,108 @@
 package com.fcourgey.myepfnew.controleur;
 
+import java.text.DateFormatSymbols;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.widget.RelativeLayout;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
 import com.fcourgey.android.mylib.framework.Fragment;
+import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.entite.Cours;
+import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
+import com.fcourgey.myepfnew.outils.JsonMyEPF;
+import com.fcourgey.myepfnew.vue.CoursVue;
 import com.fcourgey.myepfnew.vue.SemaineVue;
 
 public class SemaineControleur extends AsyncFragmentControleur {
 	
 	// constantes
-	public static final int HEURE_MIN = 8;
-	public static final int HEURE_MAX = 18;
+	public static final int HEURE_MIN = 8;	// heures
+	public static final int HEURE_MAX = 18;	// heures
 	public static final int INTERVALLE = 15;// minutes
 	public static final int NB_INTERVALLE_PAR_HEURE = 60/INTERVALLE;
 	public static final int NB_TOTAL_INTERVALLE = (HEURE_MAX-HEURE_MIN)*60/INTERVALLE;
-	public static double HAUTEUR_INTERVALLE;
-	public static double HAUTEUR_EDT;
-	public static final String KEY_INDEX_FRAGMENT = "KEY_INDEX_FRAGMENT";
+	public static double HAUTEUR_INTERVALLE;	// px
+	public static double HAUTEUR_EDT;			// px
 	
-	//
+	// index
 	private int indexFragment;
 	private int indexSemaine;
+	
+	// Calendar
+	private Calendar lundiDeCetteSemaine;
+	private Calendar dimancheDeCetteSemaine;
+	
+	// cours
+	private ArrayList<CoursVue> lCoursVues; 
+	private ArrayList<JSONObject> lJsonCours;
 
+	// booléens
+	private boolean vueCompleteChargee = false;
 
-	public SemaineControleur(Fragment f, LayoutInflater inflater, ViewGroup container){
+	public SemaineControleur(Fragment f, LayoutInflater inflater, ViewGroup container, int indexFragment){
 		super(f, inflater, container);
+		// init index
+		this.indexFragment = indexFragment;
+		Calendar now = Calendar.getInstance();
+		this.indexSemaine = now.get(Calendar.WEEK_OF_YEAR) - EdtControleur.semainesAvant + indexFragment;
+		lundiDeCetteSemaine = Calendar.getInstance();
+		lundiDeCetteSemaine.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		lundiDeCetteSemaine.add(Calendar.DATE, (indexSemaine-EdtControleur.indexSemaineActuelle)*7);
+		dimancheDeCetteSemaine = Calendar.getInstance();
+		dimancheDeCetteSemaine.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		dimancheDeCetteSemaine.add(Calendar.DATE, (indexSemaine-EdtControleur.indexSemaineActuelle)*7);
 		
-		indexFragment = getArguments().getInt(KEY_INDEX_FRAGMENT);
+		System.out.println(tag());
 		
 		// init design
 		vue = new SemaineVue(this, inflater, container);
+		
+		chargerVueComplete();
+	}
+	
+	@Override
+	public void chargerVueComplete() {
+		super.chargerVueComplete();
+		// récupération des cours si existent
+		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele)getActivite().getPrefs();
+		lJsonCours = prefs.getCoursSemaine(indexSemaine);
+		if(lJsonCours == null){
+			return;
+		}
+		
 	}
 
 	/**
 	 * appelé quand l'edt a été téléchargé
 	 */
+	public void onMyEPFConnected() {
+		Log.d(tag(), "onMyEPFConnected");
+	}
+	
+	public void onMapCoursMapped() {
+		Log.d(tag(), "onMapCoursMapped");
+		// TODO comparaison avec l'ancien
+		// si == alors pas de chgt
+		chargerVueComplete();
+		a.runOnUiThread(new Runnable() {
+			public void run() {
+				initEdt();
+			}
+		});
+	}
 	/*
 	private void onEdtDownloaded(JSONObject json){
 		((SemaineVue)vue).chargerVueComplete();
@@ -56,7 +121,6 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	 * - les cours
 	 * - la barre horizontale où on se trouve actuellement (barre now)
 	 */
-	/*
 	public void initEdt(){
         final String jours[] = new DateFormatSymbols(Locale.getDefault()).getWeekdays();
         final ArrayList<RelativeLayout> rls = new ArrayList<RelativeLayout>();
@@ -70,13 +134,19 @@ public class SemaineControleur extends AsyncFragmentControleur {
 				if(vueCompleteChargee){
 					return;
 				}
+				if(lJsonCours == null){
+					return;
+				}
 				vueCompleteChargee = true;
 				// chargement des cours
 				lCoursVues = new ArrayList<CoursVue>();
-				ArrayList<Cours> lCours = null;
+				ArrayList<Cours> lCours = new ArrayList<Cours>();
 	            try {
-	            	JSONArray jsa = SemaineControleur.this.json.getJSONArray(JsonMyEPF.KEY_ARRAY_COURS);
-	            	lCours = JsonMyEPF.jsonToListeCours(jsa, a);
+//	            	JSONArray jsa = SemaineControleur.this.json.getJSONArray(JsonMyEPF.KEY_ARRAY_COURS);
+	            	for(JSONObject jsonCours : lJsonCours){
+	            		lCours.add(JsonMyEPF.jsoToListeCours(jsonCours, a));
+	            	}
+//	            	lCours = JsonMyEPF.jsaToListeCours(jsa, a);
 				} catch (JSONException e) {
 					e.printStackTrace(); // TODO
 					return;
@@ -84,7 +154,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	            // création boutons cours + intervalles
 				HAUTEUR_EDT = lundi_edt.getHeight();
 	            // pour chaque container
-	            Calendar jourCourant = (Calendar)lundiTéléchargé.clone();
+	            Calendar jourCourant = (Calendar)lundiDeCetteSemaine.clone();
 	            boolean isContainerHeures = true;
 	            int iJourCourant = Calendar.MONDAY;
 	            String sJourCourant;
@@ -159,12 +229,10 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	        }	
 	    });
 	}
-	*/
 	
 	/**
 	 * init la liste des relative layout container de chaque jour 
 	 */
-	/*
 	private void initJoursContainer(ArrayList<RelativeLayout> rls, String[] jours) {
 		for (int iJour=Calendar.MONDAY; iJour < jours.length; iJour++){
 	    	String jour = jours[iJour];
@@ -179,15 +247,16 @@ public class SemaineControleur extends AsyncFragmentControleur {
             }
 		}
 	}
-	*/
 
-	/*
+	
 	public void onCoursDisplayed(){
+		avancement("Edt affiché", 100, false);
+		/*
 		SemainesPagerAdapter.definirCm(null);
 		updateProchainSite();
-		avancement("Edt téléchargé", 100, false);
+		*/
 	}
-*/
+
 
 	/**
 	 * Définit le prochain site où l'on a cours
@@ -326,5 +395,13 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	}
 	public int getIndexSemaine() {
 		return indexSemaine;
+	}
+
+	public Calendar getLundiDeCetteSemaine() {
+		return lundiDeCetteSemaine;
+	}
+
+	public Calendar getDimancheDeCetteSemaine() {
+		return dimancheDeCetteSemaine;
 	}
 }

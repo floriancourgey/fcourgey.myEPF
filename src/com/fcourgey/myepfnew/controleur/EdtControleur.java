@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.apache.http.client.HttpClient;
@@ -17,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -28,8 +30,11 @@ import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
 import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.entite.Url;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
+import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
+import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.JsonMyEPF;
 import com.fcourgey.myepfnew.outils.StringOutils;
 
@@ -44,15 +49,19 @@ import com.fcourgey.myepfnew.outils.StringOutils;
 @SuppressWarnings("deprecation")
 public class EdtControleur extends AsyncFragmentControleur {
 	
-	public static final String TAG = "EdtFragment";
+	public static final String TAG = "EdtControleur";
 	
-	private JSONObject jsonMain;	// commence par {
-	private JSONArray jsonCours; 	// commence par [
-	private SparseArray<JSONObject> mapCours; // SparseArray meilleur que Hmap pour <Integer, whatever>
+	private JSONObject jsonMain;	// commence par {"cours":[{"id":1,
+	private JSONArray jsonCours; 	// commence par {"id":1,"start":"2015
+	private SparseArray<ArrayList<JSONObject>> mapCours; // SparseArray meilleur que Hmap pour <Integer, whatever>
 	
+	public static final int semainesAvant = 2;// TODO récup pref
+	public static final int semainesApres = 3;// TODO récup pref
 	private final int indexPremiereSemaine; // [1 ; 53]
 	private final int indexDerniereSemaine; // idem
-	private final int indexSemaineActuelle; // idem
+	public static int indexSemaineActuelle; // idem
+	
+	private SemainesPagerAdapter semainesPagerAdapter;
 
 	public EdtControleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
 		super(f, inflater, container);
@@ -60,13 +69,21 @@ public class EdtControleur extends AsyncFragmentControleur {
 		vue = new AsyncFragmentVue(this, inflater, container, R.layout.edt_fragment);
 		
 		// init index semaine
-		int semainesAvant = 0; // TODO récup pref
-		int semainesApres = 5; // TODO récup pref
 		Calendar now = Calendar.getInstance();
 		indexSemaineActuelle = now.get(Calendar.WEEK_OF_YEAR);
 		indexPremiereSemaine = now.get(Calendar.WEEK_OF_YEAR)-semainesAvant;
 		indexDerniereSemaine = now.get(Calendar.WEEK_OF_YEAR)+semainesApres;
-		Log.i(TAG, "semaines [ "+indexPremiereSemaine+" ; "+indexSemaineActuelle+" ; "+indexDerniereSemaine+" ]");
+		Log.i(TAG, "semaines ["+indexPremiereSemaine+" ; "+indexSemaineActuelle+" ; "+indexDerniereSemaine+"]");
+		
+		// si on a déjà du json dans les pref, on charge la vue complète
+		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele)getActivite().getPrefs();
+		if(prefs.getCoursSemaine(indexSemaineActuelle) != null){
+			chargerVueComplete();
+		}
+		// sinon vue défaut
+		else {
+			chargerVueDefaut("Connexion à my.epf");
+		}
 	}
 	
 	
@@ -89,10 +106,10 @@ public class EdtControleur extends AsyncFragmentControleur {
 			e.printStackTrace();
 			avancement("Impossible de récupérer le jsonCours", 0);
 		}
-		System.out.println(jsonCours);
+//		System.out.println(jsonCours);
 		avancement(jsonCours.length()+" cours", 55);
-		avancement("mapping OR", 55);
-		mapCours = new SparseArray<JSONObject>();
+		avancement("mapping json<->hmap de liste de json", 55);
+		mapCours = new SparseArray<ArrayList<JSONObject>>();
 		for(int i=0 ; i<jsonCours.length() ; i++){
 			try {
 				JSONObject cours = jsonCours.getJSONObject(i);
@@ -100,19 +117,43 @@ public class EdtControleur extends AsyncFragmentControleur {
 				Calendar date = StringOutils.toCalendar(sDate, false);
 				int iSemaine = date.get(Calendar.WEEK_OF_YEAR);
 				if(iSemaine >= indexPremiereSemaine && iSemaine <= indexDerniereSemaine){
-					mapCours.put(iSemaine, cours);
+					ArrayList<JSONObject> lCours = mapCours.get(iSemaine);
+					if(lCours == null){
+						lCours = new ArrayList<JSONObject>();
+					}
+					lCours.add(cours);
+					mapCours.put(iSemaine, lCours);
 				}
 			} catch (JSONException e) {
 				avancement("Impossible de mapper le cours "+i, 0);
 			}
 		}
-		avancement("mapping OK : "+mapCours.size()+" cours", 55);
 		int key;
+		int nbCours = 0;
 		for(int i = 0; i < mapCours.size(); i++) {
 			key = mapCours.keyAt(i);
-			JSONObject cours = mapCours.get(key);
-			System.out.println(cours.toString());
+			ArrayList<JSONObject> lCours = mapCours.get(key);
+			for(JSONObject cours : lCours){
+//				System.out.println(cours.toString());
+				nbCours++;
+			}
 		}
+		avancement("mapping OK : "+nbCours+" cours sur "+mapCours.size()+" semaines", 55);
+		avancement("enregistrement json pref", 55);
+		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele)getActivite().getPrefs();
+		for(int i = 0; i < mapCours.size(); i++) {
+			key = mapCours.keyAt(i);
+			ArrayList<JSONObject> lCours = mapCours.get(key);
+			prefs.setCoursSemaine(key, lCours);
+		}
+		onMapCoursMapped();
+	}
+	
+	/**
+	 * appelé quand le jsonCours
+	 */
+	private void onMapCoursMapped(){
+		semainesPagerAdapter.onMapCoursMapped();
 	}
 
 	/**
@@ -172,10 +213,27 @@ public class EdtControleur extends AsyncFragmentControleur {
 	
 	public void onMyEPFConnected() {
 		telecharcherMainJson();
-		chargerVueComplete();
+		semainesPagerAdapter.onMyEPFConnected();
 	}
 	
-	public void chargerVueDefaut(String texte) {
+	@Override
+	public void chargerVueComplete(){
+		super.chargerVueComplete();
+		ViewPager viewPager = (ViewPager) vue.getVue().findViewById(R.id.accueil_pager);
+		semainesPagerAdapter = new SemainesPagerAdapter(getFragment().getChildFragmentManager(), (MainActivite)a);
+		viewPager.setOffscreenPageLimit(SemainesPagerAdapter.NOMBRE_DE_SEMAINES_MAX+1);
+		viewPager.setAdapter(semainesPagerAdapter);
+		int positionViewPager = EdtControleur.semainesAvant;
+		Calendar now = Calendar.getInstance();
+		Calendar samediActuel = Calendar.getInstance();
+		samediActuel.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+		samediActuel.set(Calendar.HOUR_OF_DAY, 14);
+		if(now.after(samediActuel)){
+			positionViewPager++;
+		}
+		viewPager.setCurrentItem(positionViewPager);
+	}
+	private void chargerVueDefaut(String texte) {
 		super.chargerVueDefaut();
 		((TextView)vue.getVue().findViewById(R.id.tvTitre)).setText(texte);
 	}

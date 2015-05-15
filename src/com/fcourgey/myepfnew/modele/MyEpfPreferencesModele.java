@@ -1,5 +1,10 @@
 package com.fcourgey.myepfnew.modele;
 
+import java.util.ArrayList;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.fcourgey.android.mylib.framework.Activite;
 import com.fcourgey.android.mylib.framework.PreferencesModele;
 import com.fcourgey.myepfnew.R;
@@ -19,7 +24,9 @@ public class MyEpfPreferencesModele extends PreferencesModele {
 	public static String KEY_CM;
 	public static String KEY_HEURES;
 	public static String KEY_NB_SEMAINES_TO_DL;
-	public static String KEY_JSON_SEMAINE = "key_json_semaine";
+//	public static String KEY_JSON_SEMAINE = "key_json_semaine";
+	public static String KEY_JSON_SEMAINE_V2 = "key_json_semaine_v2_n°";
+	private static final String SEP_JSON_SEMAINE_V2 = "<SEP>";
 	public static String KEY_C_EXAM;
 	public static String KEY_C_TP;
 	public static String KEY_C_TD;
@@ -101,6 +108,43 @@ public class MyEpfPreferencesModele extends PreferencesModele {
 		pref.edit().putBoolean(KEY_CM, activer).apply();
 	}
 	// json semaine
+	public ArrayList<JSONObject> getCoursSemaine(int indexSemaine){
+		String s = pref.getString(getKeyJsonSemaine(indexSemaine), null);
+		if( s!= null){
+			String[] split = s.split(SEP_JSON_SEMAINE_V2);
+			ArrayList<JSONObject> lCours = new ArrayList<JSONObject>();
+			for(int i=0 ; i<split.length ; i++){
+				JSONObject jso;
+				try {
+					jso = new JSONObject(split[i]);
+					lCours.add(jso);
+				} catch (JSONException e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+			return lCours;
+		} else {
+			return null;
+		}
+	}
+	public void setCoursSemaine(int indexSemaine, ArrayList<JSONObject> lCours){
+		String s = "";
+		for(JSONObject jso : lCours){
+			String ajout = jso.toString();
+			// si on est pas à la fin, on ajoute le SEP
+			JSONObject dernierJso = lCours.get(lCours.size() - 1);
+			if(jso != dernierJso){
+				ajout += SEP_JSON_SEMAINE_V2;
+			}
+			s += ajout;
+		}
+		pref.edit().putString(getKeyJsonSemaine(indexSemaine), s).apply();
+	}
+	private String getKeyJsonSemaine(int indexSemaine){
+		return KEY_JSON_SEMAINE_V2+indexSemaine;
+	}
+	/*
 	public String getJsonSemaine(int indexSemaine){
 		return pref.getString(KEY_JSON_SEMAINE+indexSemaine, null);
 	}
@@ -110,10 +154,13 @@ public class MyEpfPreferencesModele extends PreferencesModele {
 	public void supprimerJsonSemaine(int indexSemaine){
 		pref.edit().remove(KEY_JSON_SEMAINE+indexSemaine).commit();
 	}
+	*/
 	public void supprimerTousLesJsonSemaine(){
+		/*
 		for(int i=0 ; i<60 ; i++){
 			supprimerJsonSemaine(i);
 		}
+		*/
 	}
 	
 	/**
@@ -134,6 +181,7 @@ public class MyEpfPreferencesModele extends PreferencesModele {
 	 * supprime tous les JSON Semaines existant 
 	 */
 	public static void viderJsonSemaine(){
+		/*
 		for(int i=NB_SEMAINES_MIN ; i<NB_SEMAINES_MAX ; i++){
 			String value = getPrefs().getString(MyEpfPreferencesModele.KEY_JSON_SEMAINE+i,null);
 			if (value == null) {
@@ -142,5 +190,6 @@ public class MyEpfPreferencesModele extends PreferencesModele {
 				getPrefs().edit().remove(MyEpfPreferencesModele.KEY_JSON_SEMAINE+i).commit();
 			}
 		}
+		*/
 	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fcourgey.android.mylib.framework.Activite;
@@ -23,37 +24,41 @@ public class JsonMyEPF {
 	public static final String KEY_COURS_FIN = "end";
 	public static final String KEY_COURS_COMMENTAIRE = "commentaire";	
 	
-	public static ArrayList<Cours> jsonToListeCours(JSONArray jsa, Activite a){
+	public static Cours jsoToListeCours(JSONObject jso, Activite a) throws JSONException{
+		String nom = jso.getString(KEY_COURS_TITRE);
+		nom = nom.replaceAll("\\(\\w+\\) ([\\w ]+)", "$1");
+	    String professeur = jso.getString(KEY_COURS_PROF);
+	    String salle = jso.getString(KEY_COURS_SALLE);
+	    Type type;
+	    try{
+	    	type = Type.valueOf(jso.getString(KEY_COURS_TYPE));
+	    } catch (Exception e){
+	    	type = Type.AUTRE;
+	    }
+	    String commentaire = jso.getString(KEY_COURS_COMMENTAIRE);
+	    Calendar horaireDebut = StringOutils.toCalendar(jso.getString(KEY_COURS_DEBUT), true);
+	    Calendar horaireFin = StringOutils.toCalendar(jso.getString(KEY_COURS_FIN), true);
+	    
+	    String dateId = jso.getString(KEY_COURS_DEBUT);
+	    
+	    // recherche des devoirs dans la db
+	    DbModele modele = new DbModele(a);
+	    String devoirs = null;
+		try {
+			devoirs = modele.getDevoir(dateId);
+		} catch (Exception e) {}
 		
+		Cours c = new Cours(dateId, nom, professeur, salle, horaireDebut, horaireFin, type, commentaire, devoirs);
+		return c;
+	}
+	
+	public static ArrayList<Cours> jsaToListeCours(JSONArray jsa, Activite a){
 		ArrayList<Cours> lCours = new ArrayList<Cours>();
 		
 		try{
 			for(int i=0; i<jsa.length() ; i++){
 	    		JSONObject jso = jsa.getJSONObject(i);
-	    		String nom = jso.getString(KEY_COURS_TITRE);
-	    		nom = nom.replaceAll("\\(\\w+\\) ([\\w ]+)", "$1");
-			    String professeur = jso.getString(KEY_COURS_PROF);
-			    String salle = jso.getString(KEY_COURS_SALLE);
-			    Type type;
-			    try{
-			    	type = Type.valueOf(jso.getString(KEY_COURS_TYPE));
-			    } catch (Exception e){
-			    	type = Type.AUTRE;
-			    }
-			    String commentaire = jso.getString(KEY_COURS_COMMENTAIRE);
-			    Calendar horaireDebut = StringOutils.toCalendar(jso.getString(KEY_COURS_DEBUT), true);
-			    Calendar horaireFin = StringOutils.toCalendar(jso.getString(KEY_COURS_FIN), true);
-			    
-			    String dateId = jso.getString(KEY_COURS_DEBUT);
-			    
-			    // recherche des devoirs dans la db
-			    DbModele modele = new DbModele(a);
-			    String devoirs = null;
-				try {
-					devoirs = modele.getDevoir(dateId);
-				} catch (Exception e) {}
-	    		
-	    		Cours c = new Cours(dateId, nom, professeur, salle, horaireDebut, horaireFin, type, commentaire, devoirs);
+	    		Cours c = jsoToListeCours(jso, a);
 	    		lCours.add(c);
 	    	}
 		} catch(Exception e){
