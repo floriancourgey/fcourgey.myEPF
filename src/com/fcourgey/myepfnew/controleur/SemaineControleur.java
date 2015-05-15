@@ -31,23 +31,23 @@ import android.webkit.CookieManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
+import com.fcourgey.android.mylib.framework.Fragment;
+import com.fcourgey.android.mylib.framework.PreferencesModele;
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.activite.EdtFragment;
 import com.fcourgey.myepfnew.activite.MainActivite;
-import com.fcourgey.myepfnew.activite.SemainesPagerAdapter;
 import com.fcourgey.myepfnew.entite.Cours;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
-import com.fcourgey.myepfnew.framework.Fragment;
-import com.fcourgey.myepfnew.framework.FragmentControleur;
-import com.fcourgey.myepfnew.modele.PreferencesModele;
+import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
+import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.JsonMyEPF;
 import com.fcourgey.myepfnew.outils.StringOutils;
 import com.fcourgey.myepfnew.vue.CoursVue;
 import com.fcourgey.myepfnew.vue.SemaineVue;
 
 @SuppressWarnings("deprecation")
-public class SemaineControleur extends FragmentControleur {
-
+public class SemaineControleur extends AsyncFragmentControleur {
+	
 	// constantes
 	public static final int HEURE_MIN = 8;
 	public static final int HEURE_MAX = 18;
@@ -68,7 +68,8 @@ public class SemaineControleur extends FragmentControleur {
 //	private int décalage = 0;
 
 	// booléens
-	private boolean vueCompleteChargee = false;
+	protected boolean vueCompleteChargee = false;
+	public static boolean premiereSemaineTelechargee = false;
 
 	// json reçu
 	private JSONObject json;
@@ -79,6 +80,7 @@ public class SemaineControleur extends FragmentControleur {
 	// Date du lundi de cette semaine
 	private Calendar lundiTéléchargé;
 	private Calendar lundiPrévu;
+	private static Calendar précédentLundiTéléchargé;
 	private SimpleDateFormat sdf;
 
 	// vue
@@ -86,8 +88,8 @@ public class SemaineControleur extends FragmentControleur {
 
 
 	public SemaineControleur(Fragment f, LayoutInflater inflater, ViewGroup container){
-		super(f);
-
+		super(f, inflater, container);
+		
 		// init index fragment
 		indexFragment = getArguments().getInt(KEY_INDEX);
 		// init index semaine
@@ -114,12 +116,6 @@ public class SemaineControleur extends FragmentControleur {
 		// chargement du json si présent
 		chargerDepuisJsonSauvegarde();
 
-		//			if(now.after(ceSamedi)){
-		//				// si on est plus tard que samedi 14h, on décale
-		//				lancerTelechargement(true, true);
-		//			}
-
-
 		if(indexFragment==0){
 			lancerTelechargement(true, false);
 		} else {
@@ -129,10 +125,10 @@ public class SemaineControleur extends FragmentControleur {
 
 	/**
 	 * cherche un json sauvegardé dans les prefs et le charge
-	 * @return success : false KO / true OK
 	 */
 	private void chargerDepuisJsonSauvegarde() {
-		String jsonSauvegarde = a.getPrefs().getJsonSemaine(indexSemaine);
+		MyEpfPreferencesModele pref = (MyEpfPreferencesModele)a.getPrefs();
+		String jsonSauvegarde = pref.getJsonSemaine(indexSemaine);
 		if(jsonSauvegarde == null || jsonSauvegarde.length() < 1){
 			return;
 		}
@@ -150,8 +146,63 @@ public class SemaineControleur extends FragmentControleur {
 	 * appelé quand l'edt a été téléchargé
 	 */
 	private void onEdtDownloaded(JSONObject json){
+		// pour afficher ou non la vue complète
+		if(indexFragment == 0){
+			premiereSemaineTelechargee = true;
+		}
+		// idem
+		PreferencesModele prefs = getActivite().getPrefs();
+		prefs.putBoolean(MyEpfPreferencesModele.KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS, true);
 
-		EdtFragment.setTelechargementEdtEnCours(false);
+		// arrêt du téléchargement
+		EdtControleur.setTelechargementEdtEnCours(false);
+		
+		// récupération date lundi téléchargé
+		String debutSemaineActive;
+		try{
+			debutSemaineActive = json.getString("debut_semaine_active");
+		} catch (JSONException e){
+			e.printStackTrace(); // TODO
+			return;
+		}
+		lundiTéléchargé = StringOutils.toCalendar(debutSemaineActive, false);
+		
+		// comparaison date lundi téléchargé & lundi prévu
+		String sLundiTéléchargé = sdf.format(lundiTéléchargé.getTime());
+		Log.i(tag(), "lundiTéléchargé("+sLundiTéléchargé+")");
+		String sLundiPrévu = sdf.format(lundiPrévu.getTime());
+		// si non égaux
+		if(!sLundiTéléchargé.equals(sLundiPrévu)){
+			/*
+			if(lundiPrévu.before(lundiTéléchargé)){
+				
+			}
+			*/
+			chargerVueErreur("lundiTéléchargé("+sLundiTéléchargé+") != lundiPrévu("+sLundiPrévu+")", "Incohérence dans l'edt téléchargé");
+			return;
+		}
+		
+		/*
+		// si semaine identique => Grandes vacances
+		if(précédentLundiTéléchargé != null){
+			String sPrécédentLundiTéléchargé = sdf.format(précédentLundiTéléchargé.getTime());
+			Log.e(tag(), "sPrécédentLundiTéléchargé("+sPrécédentLundiTéléchargé+") sLundiTéléchargé("+sLundiTéléchargé+")");
+			if(sPrécédentLundiTéléchargé.equals(sLundiTéléchargé)){
+				Log.e(tag(), "égaux => SUMMER");
+				chargerVueDefaut();
+				getActivite().runOnUiThread(new Runnable() {
+					public void run() {
+						((TextView)vue.getVue().findViewById(R.id.tvTitre)).setText("SUMMER");
+					}
+				});
+				// suppression JSON des pref
+				MyEpfPreferencesModele pref = (MyEpfPreferencesModele)a.getPrefs();
+				pref.supprimerJsonSemaine(indexSemaine);
+			}
+		} else {
+			Log.e(tag(), "sPrécédentLundiTéléchargé(null) sLundiTéléchargé("+sLundiTéléchargé+")");
+		}
+		*/
 
 		// si json téléchargé
 		if(this.json != null){
@@ -168,20 +219,11 @@ public class SemaineControleur extends FragmentControleur {
 			avancement("Affichage de l'edt", 80, false);
 		}
 		this.json = json;
-		try{
-			String debutSemaineActive = json.getString("debut_semaine_active");
-			lundiTéléchargé = StringOutils.toCalendar(debutSemaineActive, false);
-			Log.i(tag(), "lundiTéléchargé("+sdf.format(lundiTéléchargé.getTime())+")");
-			if(!debutSemaineActive.equals(sdf.format(lundiTéléchargé.getTime()))){
-				throw new Exception("stringToCalendar erreur, input("+debutSemaineActive+") et output("+lundiTéléchargé+") ne correspondent pas");
-			}
-		} catch (Exception e){
-			e.printStackTrace(); // TODO
-			return;
-		}
+		
+		
+		
+		
 
-
-		MainActivite.serverOk = true;
 		((SemaineVue)vue).chargerVueComplete();
 
 		a.runOnUiThread(new Runnable() {
@@ -190,6 +232,7 @@ public class SemaineControleur extends FragmentControleur {
 				initEdt();
 			}
 		});
+		précédentLundiTéléchargé = lundiTéléchargé;
 	}
 	
 	/**
@@ -211,6 +254,7 @@ public class SemaineControleur extends FragmentControleur {
 				if(vueCompleteChargee){
 					return;
 				}
+				vueCompleteChargee = true;
 				// chargement des cours
 				lCoursVues = new ArrayList<CoursVue>();
 				ArrayList<Cours> lCours = null;
@@ -222,7 +266,6 @@ public class SemaineControleur extends FragmentControleur {
 					return;
 				}
 	            // création boutons cours + intervalles
-				vueCompleteChargee = true;
 				HAUTEUR_EDT = lundi_edt.getHeight();
 	            // pour chaque container
 	            Calendar jourCourant = (Calendar)lundiTéléchargé.clone();
@@ -231,7 +274,7 @@ public class SemaineControleur extends FragmentControleur {
 	            String sJourCourant;
 	            for(RelativeLayout edt : rls){
 	            	// si les heures sont cachées dans les pref, je les cache
-	            	if(!a.getPrefs().getBoolean(PreferencesModele.KEY_HEURES, true) && isContainerHeures){
+	            	if(!a.getPrefs().getBoolean(MyEpfPreferencesModele.KEY_HEURES, true) && isContainerHeures){
 	            		((View)edt.getParent().getParent()).setVisibility(View.GONE);
 	            		isContainerHeures = false;
 	            		continue;
@@ -378,7 +421,7 @@ public class SemaineControleur extends FragmentControleur {
 		@Override
 		protected Void doInBackground(Boolean... params) {
 			avancement("Attente connexion à my.epf", 15, false);
-			while(!MainActivite.connecteAMyEpf || EdtFragment.telechargementEdtEnCours){
+			while(!MainActivite.connecteAMyEpf || EdtControleur.telechargementEdtEnCours){
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
@@ -387,7 +430,7 @@ public class SemaineControleur extends FragmentControleur {
 			}
 
 			avancement("Téléchargement de l'edt", 30, false);
-			EdtFragment.telechargementEdtEnCours=true;
+			EdtControleur.telechargementEdtEnCours=true;
 			boolean firstTime = params[0];
 			boolean avancementUneSemaine = params[1];
 
@@ -397,7 +440,7 @@ public class SemaineControleur extends FragmentControleur {
 			String url = URL_MAGIQUE;
 			url += weekDirection;
 			HttpGet httpGet = new HttpGet(url);
-			String cookies = CookieManager.getInstance().getCookie(EdtFragment.URL_MYDATA);
+			String cookies = CookieManager.getInstance().getCookie(EdtControleur.URL_MYDATA);
 			httpGet.setHeader(SM.COOKIE, cookies);
 			avancement("Requête finale", 90, false);
 			Log.i(tag(), "load get de l'url "+url);
@@ -419,11 +462,12 @@ public class SemaineControleur extends FragmentControleur {
 				}
 				br.close();
 				if(avancementUneSemaine){
-					EdtFragment.setTelechargementEdtEnCours(false);
+					EdtControleur.setTelechargementEdtEnCours(false);
 					return null;
 				}
 				try {
-					a.getPrefs().setJsonSemaine(indexSemaine, sb.toString());
+					MyEpfPreferencesModele pref = (MyEpfPreferencesModele)a.getPrefs();
+					pref.setJsonSemaine(indexSemaine, sb.toString());
 					JSONObject json = new JSONObject(sb.toString());
 					onEdtDownloaded(json);
 				} catch (JSONException e) {

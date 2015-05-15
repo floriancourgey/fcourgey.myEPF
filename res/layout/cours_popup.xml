@@ -8,33 +8,41 @@
         android:layout_width="match_parent"
     	android:layout_height="match_parent"
     	android:orientation="vertical"
-    	android:gravity="right"
+    	android:gravity="end"
+    	android:layout_marginEnd="5dp"
+    	android:layout_marginRight="5dp"
     	android:layout_weight="3">
     	<TextView 
             android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
-    		android:text="Nom :"/>
+    		android:textStyle="bold"
+    		android:text="Nom"/>
         <TextView 
             android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
-    		android:text="Horaire :"/>
+    		android:textStyle="bold"
+    		android:text="Horaire"/>
         <TextView 
             android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
-    		android:text="Prof :"/>
+    		android:textStyle="bold"
+    		android:text="Prof"/>
         <TextView 
             android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
-    		android:text="Lieu :"/>
+    		android:textStyle="bold"
+    		android:text="Lieu"/>
         <TextView 
             android:id="@+id/tvLabelExtra"
             android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
-    		android:text="Extra :"/>
+    		android:textStyle="bold"
+    		android:text="Extra"/>
         <TextView 
             android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
-    		android:text="Devoirs :"/>
+    		android:textStyle="bold"
+    		android:text="Devoirs"/>
     </LinearLayout>
     <LinearLayout 
         android:layout_width="match_parent"

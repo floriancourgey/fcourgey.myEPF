@@ -1,12 +1,12 @@
-package com.fcourgey.myepfnew.activite;
+package com.fcourgey.myepfnew.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
-import com.fcourgey.myepfnew.framework.Fragment;
 
 public class SemaineFragment extends Fragment {
 	

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -21,9 +22,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.fcourgey.android.mylib.framework.Activite;
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.controleur.DrawerControleur;
-import com.fcourgey.myepfnew.framework.Activite;
+import com.fcourgey.myepfnew.controleur.EdtControleur;
+import com.fcourgey.myepfnew.controleur.MainControleur;
+import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.Securite;
 
 @SuppressWarnings("deprecation")
@@ -31,9 +34,10 @@ public class MainActivite extends Activite {
 	
 	private static final String TAG = "MainActivite";
 	
-	private DrawerControleur drawer;
+	private MainControleur drawer;
 	
-	public static final String URL_MYDATA = EdtFragment.URL_MYDATA;
+	public static final int NB_SEC_REQ_TIMEOUT = 15;
+	public static final String URL_MYDATA = EdtControleur.URL_MYDATA;
 	public static final String URL_PROFIL = URL_MYDATA+"pegasus/index.php?com=tracking&job=tracking-etudiant";
 
 	public static boolean connecteAMyEpf = false;
@@ -44,22 +48,28 @@ public class MainActivite extends Activite {
 	
 	private static WebView wvCachee;
 	
-	public static boolean serverOk;
+	public static boolean edtDejaTelechargeUneFois = false;
 	
 	private ProgressBar pbConnexionMyEpf;
+	
+	private MyEpfPreferencesModele prefs;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		prefs = AccueilActivite.prefs;
+		
+		edtDejaTelechargeUneFois = prefs.getBoolean(MyEpfPreferencesModele.KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS, false);
 		
 		setContentView(R.layout.main_activite);
 		
 		pbConnexionMyEpf = (ProgressBar)findViewById(R.id.pbConnexionMyEpf);
 		pbConnexionMyEpf.getProgressDrawable().setColorFilter(Color.CYAN, Mode.SRC_IN);
 		
-		identifiant = getPrefs().getIdentifiant();
+		identifiant = prefs.getIdentifiant();
 		try {
-			mdp = Securite.decrypt(getPrefs().getMdp());
+			mdp = Securite.decrypt(prefs.getMdp());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -70,7 +80,7 @@ public class MainActivite extends Activite {
 			connexionMyEPF();
 		}
 		
-		drawer = new DrawerControleur(this,savedInstanceState);
+		drawer = new MainControleur(this, savedInstanceState);
 	}
 	
 	/**
@@ -78,12 +88,14 @@ public class MainActivite extends Activite {
 	 * +
 	 * Lance onMyEPFConnected
 	 */
+	@JavascriptInterface
 	public void connexionMyEPF() {
 		enTrainDeSeConnecterAMyEPF = true;
 		avancement("Requête login", 5);
 		wvCachee = (WebView)findViewById(R.id.wvCachee);
 		runOnUiThread(new Runnable() {
-			@SuppressLint("NewApi")
+			@JavascriptInterface
+			@SuppressLint({ "NewApi", "JavascriptInterface", "SetJavaScriptEnabled" })
 			public void run() {
 				initWebSettings();
 				initCookies();
@@ -92,8 +104,9 @@ public class MainActivite extends Activite {
 				      WebView.setWebContentsDebuggingEnabled(true);
 				}
 				MainActivite.wvCachee.setWebChromeClient(new WebChromeClient());
-				MainActivite.wvCachee.loadUrl(EdtFragment.URL_LOGIN_REQUETE);
+				MainActivite.wvCachee.loadUrl(EdtControleur.URL_LOGIN_REQUETE);
 				MainActivite.wvCachee.setWebViewClient(new WebViewClient(){
+					
 				    private boolean ignorerRequetesAccueil = false;
 				    
 				    private boolean premiereRequeteEdtResultat = true;
@@ -112,28 +125,30 @@ public class MainActivite extends Activite {
 				        return true;
 				    }
 
+				    @JavascriptInterface
 				    public void onPageFinished(WebView wvCachee, String url) {
 				    	// 1
-				    	if(url.contains(EdtFragment.URL_LOGIN_RESULTAT)){
+				    	if(url.contains(EdtControleur.URL_LOGIN_RESULTAT)){
 				    		String js = "javascript:";
 				    		js+="document.getElementById('user_name').value='Education\\\\"+identifiant+"';";
-				    		js+="document.getElementById('password').value='"+mdp+"';";
+				    		String mdpEchapé = mdp.replace("'", "\\'");
+				    		js+="document.getElementById('password').value='"+mdpEchapé+"';";
 				    		js+="document.getElementById('form1').submit();";
 				    		wvCachee.loadUrl(js);
 				    		avancement("Requête accueil", 35);
-				    	} 
+				    	}
 				    	// 1 bis -> mauvais identifiants
 				    	// 2
-				    	else if(url.equals(EdtFragment.URL_ACCUEIL_RESULTAT)){
+				    	else if(url.equals(EdtControleur.URL_ACCUEIL_RESULTAT)){
 				    		// on est connectés, on lance l'edt
 				    		if(!ignorerRequetesAccueil){
 				    			ignorerRequetesAccueil = true;
-				    			wvCachee.loadUrl(EdtFragment.URL_EDT_REQUETE);
+				    			wvCachee.loadUrl(EdtControleur.URL_EDT_REQUETE);
 				    			avancement("Requête init edt 1", 50);
 				    		}
 				    	} 
 				    	// 3
-				    	else if(url.contains(EdtFragment.URL_EDT_RESULTAT)){
+				    	else if(url.contains(EdtControleur.URL_EDT_RESULTAT)){
 				    		if(premiereRequeteEdtResultat){
 				    			avancement("Requête init edt 2", 65);
 				    			premiereRequeteEdtResultat = false;
@@ -151,20 +166,27 @@ public class MainActivite extends Activite {
 						CompteARebours(long duree, long intervalleActualisation) {
 							super(duree, intervalleActualisation);
 						}
-						public void onTick(long millisUntilFinished) {}
+						public void onTick(long millisUntilFinished) {
+//							System.out.println("tic tac "+millisUntilFinished/1000);
+						}
 						public void onFinish() {
-							if (!serverOk) {
-								enTrainDeSeConnecterAMyEPF = false;
-								avancement("Délai d'attente dépassé", 0);
+							if (!connecteAMyEpf) {
+								onDelaiDAttenteDepassé();
 							}
 						}
 					}
 					public void run() {
-						new CompteARebours(EdtFragment.NB_SEC_REQ_TIMEOUT*1000, 300).start();
+						new CompteARebours(NB_SEC_REQ_TIMEOUT*1000, 250).start();
 					}
 				});
 			}
 		});
+	}
+	
+	private void onDelaiDAttenteDepassé(){
+		enTrainDeSeConnecterAMyEPF = false;
+		avancement("Délai d'attente dépassé", 0);
+		drawer.onDelaiDAttenteDepassé();
 	}
 	
 	private void avancement(final String texte, final int pourcentage) {
@@ -182,7 +204,7 @@ public class MainActivite extends Activite {
 						
 					} else {
 						Log.i(TAG, "Avancement erreur : "+texte);
-						EdtFragment.setTelechargementEdtEnCours(false);
+						EdtControleur.setTelechargementEdtEnCours(false);
 						MainActivite.this.pbConnexionMyEpf.setVisibility(View.GONE);
 					}
 
@@ -201,9 +223,8 @@ public class MainActivite extends Activite {
 		avancement("my.epf connecté", 100);
 		enTrainDeSeConnecterAMyEPF = false;
 		connecteAMyEpf = true;
-		serverOk = true;
 		drawer.onMyEPFConnected();
-	}	
+	}
 	
 	/**
 	 * initialise les cookies
@@ -301,5 +322,10 @@ public class MainActivite extends Activite {
 	}
 	public String getIdentifiant() {
 		return identifiant;
+	}
+
+	@Override
+	public MyEpfPreferencesModele getPrefs() {
+		return prefs;
 	}
 }

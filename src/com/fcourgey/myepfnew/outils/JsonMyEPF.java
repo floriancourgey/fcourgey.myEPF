@@ -6,9 +6,9 @@ import java.util.Calendar;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.fcourgey.android.mylib.framework.Activite;
 import com.fcourgey.myepfnew.entite.Cours;
 import com.fcourgey.myepfnew.entite.Cours.Type;
-import com.fcourgey.myepfnew.framework.Activite;
 import com.fcourgey.myepfnew.modele.DbModele;
 
 public class JsonMyEPF {

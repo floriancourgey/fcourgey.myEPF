@@ -2,19 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    
-    <RelativeLayout 
+
+    <RelativeLayout
         android:id="@+id/vueDefaut"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:gravity="center"
-        >
-        <TextView 
+        android:layout_height="match_parent" >
+        <TextView
+            android:id="@+id/tvTitre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Attente connexion my.epf"
-            />
+            android:gravity="center" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -22,30 +20,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <Button
-            android:id="@+id/bTelechargerBulletin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="Télécharger le bulletin" />
+        <!-- semaines -->
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="" />
-
-        <WebView
-            android:id="@+id/wvDebug"
+        <android.support.v4.view.ViewPager
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/accueil_pager"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:visibility="gone" />
+            android:layout_height="match_parent" >
+        </android.support.v4.view.ViewPager>
     </RelativeLayout>
-
     <!-- erreur -->
 
     <LinearLayout

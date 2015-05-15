@@ -1,13 +1,11 @@
 package com.fcourgey.myepfnew.modele;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
+import com.fcourgey.android.mylib.framework.Activite;
+import com.fcourgey.android.mylib.framework.PreferencesModele;
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.activite.SemainesPagerAdapter;
-import com.fcourgey.myepfnew.framework.Activite;
+import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
 
-public class PreferencesModele {
+public class MyEpfPreferencesModele extends PreferencesModele {
 	
 	public final static int TAILLE_MIN_IDENTIFIANT = 3;
 	public final static int TAILLE_MIN_MDP = 3;
@@ -15,7 +13,6 @@ public class PreferencesModele {
 	public static final int NB_SEMAINES_MIN = 1;
 	public static final int NB_SEMAINES_MAX = 20;
 	
-	private static SharedPreferences pref;
 	
 	public static String KEY_IDENTIFIANT;
 	public static String KEY_MDP;
@@ -35,54 +32,38 @@ public class PreferencesModele {
 	public static String KEY_CACHE;
 	public static String KEY_DOIT_VIDER_CACHE_SUITE_AU_BUG_20 = "KEY_DOIT_VIDER_CACHE_SUITE_AU_BUG_20";
 	public static String KEY_NOM_PRENOM = "KEY_NOM_PRENOM";
-//	public static String KEY_NOM = "KEY_NOM";
-//	public static String KEY_PRENOM = "KEY_PRENOM";
-	
 	public static String V14_MDP_HASHE="V14_MDP_HASHE";
 	public static String V14A_MDP_HASHE="V14A_MDP_HASHE";
+	public static String KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS = "KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS";
 	
-	private static Activite mere;
+//	private static Activite mere;
 	
 	/**
 	 * doit être créé en premier pour tout initialiser
 	 */
-	public PreferencesModele(Activite pMere){
-		if(mere == null){
-			mere = pMere;
-			KEY_IDENTIFIANT = mere.getResources().getString(R.string.key_login);
-			KEY_MDP = mere.getResources().getString(R.string.key_mdp);
-			KEY_CM = mere.getResources().getString(R.string.key_cm);
-			KEY_HEURES = mere.getResources().getString(R.string.key_heures);
-			KEY_NB_SEMAINES_TO_DL = mere.getResources().getString(R.string.key_nb_semaines_to_dl);
-			KEY_C_EXAM = mere.getResources().getString(R.string.key_c_exam);
-			KEY_C_TP = mere.getResources().getString(R.string.key_c_tp);
-			KEY_C_TD = mere.getResources().getString(R.string.key_c_td);
-			KEY_C_CM = mere.getResources().getString(R.string.key_c_cm);
-			KEY_C_AUTRES = mere.getResources().getString(R.string.key_c_autre);
-			KEY_C_DEVOIRS = mere.getResources().getString(R.string.key_c_devoirs);
-			KEY_PHOTO_X = mere.getResources().getString(R.string.key_photo_x);
-			KEY_PHOTO_Y = mere.getResources().getString(R.string.key_photo_y);
-			KEY_CACHE = mere.getResources().getString(R.string.key_cache);
-		}
-		if(pref == null){
-			pref = PreferenceManager.getDefaultSharedPreferences(mere);
-		}
+	public MyEpfPreferencesModele(Activite mere){
+		super(mere);
+		KEY_IDENTIFIANT = mere.getResources().getString(R.string.key_login);
+		KEY_MDP = mere.getResources().getString(R.string.key_mdp);
+		KEY_CM = mere.getResources().getString(R.string.key_cm);
+		KEY_HEURES = mere.getResources().getString(R.string.key_heures);
+		KEY_NB_SEMAINES_TO_DL = mere.getResources().getString(R.string.key_nb_semaines_to_dl);
+		KEY_C_EXAM = mere.getResources().getString(R.string.key_c_exam);
+		KEY_C_TP = mere.getResources().getString(R.string.key_c_tp);
+		KEY_C_TD = mere.getResources().getString(R.string.key_c_td);
+		KEY_C_CM = mere.getResources().getString(R.string.key_c_cm);
+		KEY_C_AUTRES = mere.getResources().getString(R.string.key_c_autre);
+		KEY_C_DEVOIRS = mere.getResources().getString(R.string.key_c_devoirs);
+		KEY_PHOTO_X = mere.getResources().getString(R.string.key_photo_x);
+		KEY_PHOTO_Y = mere.getResources().getString(R.string.key_photo_y);
+		KEY_CACHE = mere.getResources().getString(R.string.key_cache);
 		if(getBoolean(KEY_DOIT_VIDER_CACHE_SUITE_AU_BUG_20, true)){
 			viderCache();
 			putBoolean(KEY_DOIT_VIDER_CACHE_SUITE_AU_BUG_20, false);
 		}
 	}
-	
-	/**
-	 * peut être appelé par n'importe qui, n'importe où
-	 * du moment que le premier constructeur a été appelé
-	 * 
-	 * @throws Exception si constructeur non appelé
-	 */
-	public PreferencesModele() throws Exception{
-		if(mere == null || pref == null){
-			throw new Exception();
-		}
+	public MyEpfPreferencesModele() throws Exception{
+		super();
 	}
 	
 	// identifiant
@@ -135,40 +116,6 @@ public class PreferencesModele {
 		}
 	}
 	
-	public String getString(String key){
-		return pref.getString(key, null);
-	}
-	public boolean getBoolean(String key, boolean defaut){
-		return pref.getBoolean(key, defaut);
-	}
-	public int getInt(String key, int defaut){
-		try{
-			return pref.getInt(key, defaut);
-		} catch(ClassCastException cce){
-			String s = pref.getString(key, null);
-			try{
-				return Integer.parseInt(s);
-			} catch(Exception e){
-				return defaut;
-			}
-		} catch(Exception e){
-			return defaut;
-		}
-		
-	}
-	
-	public void putBoolean(String key, boolean b){
-		pref.edit().putBoolean(key, b).apply();
-	}
-	public void putString(String key, String s){
-		pref.edit().putString(key, s).apply();
-	}
-	
-	// les pref
-	public static SharedPreferences getPrefs(){
-		return pref;
-	}
-	
 	/**
 	 * supprime :
 	 * - les json semaines
@@ -188,11 +135,11 @@ public class PreferencesModele {
 	 */
 	public static void viderJsonSemaine(){
 		for(int i=NB_SEMAINES_MIN ; i<NB_SEMAINES_MAX ; i++){
-			String value = getPrefs().getString(PreferencesModele.KEY_JSON_SEMAINE+i,null);
+			String value = getPrefs().getString(MyEpfPreferencesModele.KEY_JSON_SEMAINE+i,null);
 			if (value == null) {
 				continue;
 			} else {
-				getPrefs().edit().remove(PreferencesModele.KEY_JSON_SEMAINE+i).commit();
+				getPrefs().edit().remove(MyEpfPreferencesModele.KEY_JSON_SEMAINE+i).commit();
 			}
 		}
 	}

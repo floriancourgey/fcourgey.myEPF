@@ -1,10 +1,11 @@
-package com.fcourgey.myepfnew.activite;
+package com.fcourgey.myepfnew.controleur;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ReadOnlyBufferException;
 import java.util.Calendar;
 
 import org.apache.http.client.HttpClient;
@@ -17,10 +18,8 @@ import org.apache.http.protocol.HttpContext;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,76 +28,75 @@ import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.widget.TextView;
 
+import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
+import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
+import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 
 @SuppressWarnings("deprecation")
-public class BulletinFragment extends Fragment {
+public class BulletinControlleur extends AsyncFragmentControleur {
 	
-	private static MainActivite a;
-	
-	public static String CHEMIN_BULLETIN;
-	
-	private View vue;
+public static String CHEMIN_BULLETIN;
 	
 	private boolean ecritureOK = false;
 	
-	public static final String URL_MY_EPF = EdtFragment.URL_MY_EPF;
+	public static final String URL_MY_EPF = EdtControleur.URL_MY_EPF;
 	public static final String URL_BULLETIN2 = URL_MY_EPF+"/_layouts/sharepointproject2/redirectionversbulletin.aspx";
 	public static String URL_BULLETIN = "https://my.epf.fr/parcoursscolaire/_layouts/SharePointProject2/AffichageBulletin.aspx?ANNEE={ANNEE}&LOGIN_RESEAU={LOGIN}";
-	
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
-		
-		a = (MainActivite)getActivity();
-		
-		vue = inflater.inflate(R.layout.bulletin_fragment, container, false);
-		
+
+	public BulletinControlleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
+		super(f, inflater, container);
+
+		vue = new AsyncFragmentVue(this, inflater, container, R.layout.bulletin_fragment);
+
 		Calendar c = Calendar.getInstance();
-		String identifiant = a.getIdentifiant();
+		String identifiant = ((MainActivite)a).getIdentifiant();
 		int iAnnee = c.get(Calendar.YEAR);
 		// si on est apr septembre, on décale de -1
 		if(c.get(Calendar.MONTH)<=Calendar.SEPTEMBER){
 			iAnnee--;
 		}
 		URL_BULLETIN = URL_BULLETIN.replace("{ANNEE}", Integer.toString(iAnnee)).replace("{LOGIN}", identifiant);
-		
-//		CHEMIN_BULLETIN = getActivity().getFilesDir()+"/bulletin.pdf";
+
 		try{
 			String state = Environment.getExternalStorageState();
-		    if (Environment.MEDIA_MOUNTED.equals(state)) {
-		    	ecritureOK = true;
-		    	CHEMIN_BULLETIN = Environment.getExternalStorageDirectory()+"/bulletin.pdf";
-		    } else {
-		    	ecritureOK = false;
-		    	throw new Exception();
-		    }
-		}catch(Exception e){
-			// impossible d'écrire sur la sd
-			popupEcritureImpossible();
-			return null;
+			if (Environment.MEDIA_MOUNTED.equals(state)) {
+				ecritureOK = true;
+				CHEMIN_BULLETIN = Environment.getExternalStorageDirectory()+"/bulletin-myepf-"+identifiant+".pdf";
+			} else {
+				ecritureOK = false;
+				throw new ReadOnlyBufferException();
+			}
+		}catch(ReadOnlyBufferException e){
+			lectureSeule();
+			return;
 		}
-		
-		
-		((TextView)vue.findViewById(R.id.bTelechargerBulletin)).setOnClickListener(new OnClickListener() {
+
+
+		((TextView)vue.getVue().findViewById(R.id.bTelechargerBulletin)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if(ecritureOK)
 					onTelechargerBulletinClicked();
 				else 
-					popupEcritureImpossible();
+					lectureSeule();
 			}
 		});
-		
-		return vue;
+
+		// si on est pas encore connecté à my.epf
+		// vue défaut
+		if(MainActivite.connecteAMyEpf){
+			chargerVueComplete();
+		} else if(MainActivite.enTrainDeSeConnecterAMyEPF && !MainActivite.connecteAMyEpf){
+			chargerVueDefaut();
+		} else {
+			lectureSeule();
+		}
 	}
 	
-	private void popupEcritureImpossible(){
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder	
-		.setTitle(R.string.bulletin_nopdf_titre)
-		.setMessage("Impossible d'écrire sur la SD")
-		.setPositiveButton(R.string.ok, null);
-		builder.create().show();
+	private void lectureSeule(){
+		chargerVueErreur("SD en Lecture seule", "Il est impossible d'enregistrer le bulletin sur la SD");
 	}
 	
 	private void onTelechargerBulletinClicked() {
@@ -112,7 +110,7 @@ public class BulletinFragment extends Fragment {
 	private void telechargerEtAfficherBulletin() {
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
-		getActivity().runOnUiThread(new Runnable() {
+		getActivite().runOnUiThread(new Runnable() {
 			public void run() {
 				HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
 				HttpContext localContext = new BasicHttpContext();
@@ -175,7 +173,7 @@ public class BulletinFragment extends Fragment {
 		Log.i("bulletin.onTelechargerBulletin", "ouvertue du PDF "+CHEMIN_BULLETIN);
 		if(!file.exists() || file.isDirectory()) {
 			// impossible de trouver le bulletin
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivite());
 			builder	
 			.setTitle(R.string.bulletin_nopdf_titre)
 			.setMessage("Impossible de trouver le bulletin sur le téléphone")
@@ -185,16 +183,15 @@ public class BulletinFragment extends Fragment {
 		}
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		intent.setDataAndType(Uri.fromFile(file),"application/pdf");
-//		intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 		try {
-			startActivity(intent);
+			getActivite().startActivity(intent);
 		} catch (Exception e) {
-			String message = getActivity().getResources().getString(R.string.bulletin_nopdf_message);
+			String message = getActivite().getResources().getString(R.string.bulletin_nopdf_message);
 			message = message.replace("{CHEMIN_BULLETIN}", CHEMIN_BULLETIN);
 			// aucune appli pour ouvrir un PDF
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivite());
 			builder	
 			.setTitle(R.string.bulletin_nopdf_titre)
 			.setMessage(message)
@@ -203,4 +200,18 @@ public class BulletinFragment extends Fragment {
 			return;
 		}  
 	}
+
+	/**
+	 * cache les semaines
+	 * et
+	 * affiche le layout d'erreur
+	 */
+	public void onDelaiDAttenteDepassé() {
+		chargerVueErreur("délai d'attente dépassé", "Impossible de se connecter à my.epf.fr\nCheck tes identifiants dans les préférences\net redémarre l'appli");		
+	}
+
+	public void onMyEPFConnected() {
+		chargerVueComplete();
+	}
+
 }

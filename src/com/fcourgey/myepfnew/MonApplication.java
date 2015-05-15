@@ -1,11 +1,11 @@
 package com.fcourgey.myepfnew;
 
-import org.acra.*;
-import org.acra.annotation.*;
+import org.acra.ACRA;
+import org.acra.ReportField;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
 
 import android.app.Application;
-
-import com.fcourgey.myepfnew.R;
 
 @ReportsCrashes(
 		/*mailTo = "cocobananasplit@gmail.com",*/

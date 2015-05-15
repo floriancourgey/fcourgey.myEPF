@@ -19,7 +19,7 @@ import com.fcourgey.myepfnew.entite.Cours;
 import com.fcourgey.myepfnew.entite.Matiere;
 import com.fcourgey.myepfnew.modele.DbModele;
 import com.fcourgey.myepfnew.modele.DbModele.Colonne;
-import com.fcourgey.myepfnew.modele.PreferencesModele;
+import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 
 public class CoursVue extends Button {
 	
@@ -27,7 +27,8 @@ public class CoursVue extends Button {
 	
 	private Cours cours;
 
-	@SuppressLint("InflateParams") public CoursVue(final Context context, final Cours cours) {
+	@SuppressLint("InflateParams")
+	public CoursVue(final Context context, final Cours cours) {
 		super(context, null);
 		this.cours = cours;
 		
@@ -92,16 +93,16 @@ public class CoursVue extends Button {
 	
 	private void setTextForDevoirs(){
 		if(cours.getDevoirs() != null && cours.getDevoirs().length()>1){
-			setText(Matiere.abre(cours.getNomForCoursVue())+" - "+cours.getDevoirs());
+			setText(cours.getNomForCoursVue()+" - "+cours.getDevoirs());
 		} else {
-			setText(Matiere.abre(cours.getNomForCoursVue()));			
+			setText(cours.getNomForCoursVue());		
 		}
 	}
 	
 	private void initCouleur(Context context){
-		PreferencesModele modele = null;
+		MyEpfPreferencesModele modele = null;
 		try {
-			modele = new PreferencesModele();
+			modele = new MyEpfPreferencesModele();
 		} catch (Exception e) {
 			e.printStackTrace(); // TODO prendre les valeurs par défaut
 			return;
@@ -111,7 +112,7 @@ public class CoursVue extends Button {
 		boolean couleurDepuisPref = true;
 		switch(cours.getType()){
 		case CM :
-			couleurFond = modele.getInt(PreferencesModele.KEY_C_CM, 0);
+			couleurFond = modele.getInt(MyEpfPreferencesModele.KEY_C_CM, 0);
 			if(couleurFond == 0){
 				couleurDepuisPref = false;
 				couleurFond = R.color.fond_cm;
@@ -119,7 +120,7 @@ public class CoursVue extends Button {
 			couleurTexte = R.color.texte_cm;
 			break;
 		case TD :
-			couleurFond = modele.getInt(PreferencesModele.KEY_C_TD, 0);
+			couleurFond = modele.getInt(MyEpfPreferencesModele.KEY_C_TD, 0);
 			if(couleurFond == 0){
 				couleurDepuisPref = false;
 				couleurFond = R.color.fond_td;
@@ -127,7 +128,7 @@ public class CoursVue extends Button {
 			couleurTexte = R.color.texte_td;
 			break;
 		case TP :
-			couleurFond = modele.getInt(PreferencesModele.KEY_C_TP, 0);
+			couleurFond = modele.getInt(MyEpfPreferencesModele.KEY_C_TP, 0);
 			if(couleurFond == 0){
 				couleurDepuisPref = false;
 				couleurFond = R.color.fond_tp;
@@ -135,7 +136,7 @@ public class CoursVue extends Button {
 			couleurTexte = R.color.texte_tp;
 			break;
 		case EXAM :
-			couleurFond = modele.getInt(PreferencesModele.KEY_C_EXAM, 0);
+			couleurFond = modele.getInt(MyEpfPreferencesModele.KEY_C_EXAM, 0);
 			if(couleurFond == 0){
 				couleurDepuisPref = false;
 				couleurFond = R.color.fond_exam;
@@ -143,7 +144,7 @@ public class CoursVue extends Button {
 			couleurTexte = R.color.texte_exam;
 			break;
 		case AUTRE :
-			couleurFond = modele.getInt(PreferencesModele.KEY_C_AUTRES, 0);
+			couleurFond = modele.getInt(MyEpfPreferencesModele.KEY_C_AUTRES, 0);
 			if(couleurFond == 0){
 				couleurDepuisPref = false;
 				couleurFond = R.color.fond_autre;
@@ -152,7 +153,7 @@ public class CoursVue extends Button {
 			break;
 		}
 		if(cours.getDevoirs() != null && cours.getDevoirs().length()>1){
-			couleurFond = modele.getInt(PreferencesModele.KEY_C_DEVOIRS, 0);
+			couleurFond = modele.getInt(MyEpfPreferencesModele.KEY_C_DEVOIRS, 0);
 			if(couleurFond == 0){
 				couleurDepuisPref = false;
 				couleurFond = R.color.fond_devoirs;

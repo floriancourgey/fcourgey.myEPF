@@ -1,33 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
     <LinearLayout
         android:id="@+id/vueDefaut"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone" >
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/tvSemaine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Initialisation première fois, patiente 5 secondes :)" />
-
-        <ProgressBar
-            android:id="@+id/pbTelechargement"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp" />
-
-        <TextView
-            android:id="@+id/tvTelechargement"
+            android:id="@+id/tvTitre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="" />
@@ -38,25 +22,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
-        
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
+
             <TextView
                 android:id="@+id/tvTelechargement2"
                 android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:text="initialisation"
-	            android:layout_marginRight="5dp"
-                />
-	        <ProgressBar
-	            android:id="@+id/pbTelechargement2"
-	            style="?android:attr/progressBarStyleHorizontal"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_margin="0dp"
-	            android:padding="0dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="initialisation" />
+
+            <ProgressBar
+                android:id="@+id/pbTelechargement2"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:padding="0dp" />
         </LinearLayout>
 
         <!-- HEADER -->
@@ -69,43 +54,47 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal" >
 
-			<TextView
+            <TextView
                 android:id="@+id/tvSemaine2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
-                android:text="28-5 mar" 
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_weight="1"/>
+                android:text="28-5 mar" />
+
             <Switch
                 android:id="@+id/sCm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:switchMinWidth="25dp"
                 android:switchPadding="0dp"
                 android:text=""
                 android:textOff="CM"
-                android:textOn="CM"
-                android:gravity="center"
-                android:layout_weight="1"/>
-            <LinearLayout 
+                android:textOn="CM" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center">
-				<TextView
-	                android:id="@+id/tvLabelProchainSite"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:text="Next : "
-	                android:visibility="visible" />
-				<TextView
-	                android:id="@+id/tvProchainSite"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:text=""
-	                android:visibility="visible" />
+                android:gravity="center" >
+
+                <TextView
+                    android:id="@+id/tvLabelProchainSite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Next : "
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tvProchainSite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:visibility="visible" />
             </LinearLayout>
         </LinearLayout>
 
@@ -116,7 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:orientation="horizontal" >
 
             <!-- heures container -->
 
@@ -132,9 +121,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center" />
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" >
+
                     <RelativeLayout
                         android:id="@+id/heures_edt"
                         android:layout_width="match_parent"
@@ -306,4 +297,27 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+    
+    
+    <LinearLayout
+        android:id="@+id/vueErreur"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/tvErreurTitre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Erreur ({ERREUR_TITRE})" />
+
+        <TextView
+            android:id="@+id/tvErreurMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+    </LinearLayout>
+
+</RelativeLayout>

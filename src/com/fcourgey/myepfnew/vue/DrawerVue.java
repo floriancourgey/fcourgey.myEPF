@@ -1,6 +1,7 @@
 package com.fcourgey.myepfnew.vue;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Context;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -15,10 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.fcourgey.android.mylib.framework.Activite;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
-import com.fcourgey.myepfnew.controleur.DrawerControleur;
-import com.fcourgey.myepfnew.framework.Activite;
+import com.fcourgey.myepfnew.controleur.MainControleur;
 import com.joanzapata.android.iconify.Iconify;
 
 @SuppressWarnings("deprecation")
@@ -28,14 +29,14 @@ public class DrawerVue {
 	private static final String TAG = "DrawerVue"; 
 	
 	private MainActivite a;
-	private DrawerControleur controleur;
+	private MainControleur controleur;
 	
 	private DrawerLayout layoutGeneral; // contient la vue principale et la vue du drawer
 	private LinearLayout vue; //vue du drawer
 	private ActionBarDrawerToggle toggleBouton; // bouton toggle en haut à gauche dans l'action bar
 	private ListView lTitres; // listView des titres sur la gauche : Edt, bulletin, ...
 	
-	public DrawerVue(DrawerControleur controleur, String identifiant) {
+	public DrawerVue(MainControleur controleur, String identifiant) {
 		this.controleur = controleur;
 		this.a = controleur.getActivite();
 		initDrawer();
@@ -52,6 +53,12 @@ public class DrawerVue {
 	}
 	
 	private void initToggleButton(){
+		android.support.v7.app.ActionBar ab = a.getSupportActionBar();
+		
+		ab.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE 
+		        | ActionBar.DISPLAY_SHOW_HOME 
+		        | ActionBar.DISPLAY_HOME_AS_UP);
+		
 		toggleBouton = new ActionBarDrawerToggle(a, layoutGeneral, R.drawable.ic_drawer, 0, 0) {
             /** Called when a drawer has settled in a completely closed state. */
 			public void onDrawerClosed(View view) {
@@ -65,8 +72,8 @@ public class DrawerVue {
         // Set the drawer toggle as the DrawerListener
         layoutGeneral.setDrawerListener(toggleBouton);
 
-        a.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        a.getSupportActionBar().setHomeButtonEnabled(true);
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setHomeButtonEnabled(true);
 	}
 	
 	private void initContenu(String identifiant) {

@@ -1,593 +1,596 @@
 package com.fcourgey.myepfnew.entite;
 
+import java.util.Locale;
+
 
 public class Matiere {
-    public static String abre(String matiere) {
-        if (matiere.equalsIgnoreCase("Anglais")) {
+    public static String abre(String pMatiere) {
+    	String matiere = pMatiere.toLowerCase(Locale.getDefault());
+        if (matiere.contains("anglais".toLowerCase(Locale.getDefault()))) {
             return "LV1";
         }
-        if (matiere.equalsIgnoreCase("Espagnol")) {
+        if (matiere.contains("espagnol".toLowerCase(Locale.getDefault()))) {
             return "LV2";
         }
-        if (matiere.equalsIgnoreCase("Allemand")) {
+        if (matiere.contains("allemand".toLowerCase(Locale.getDefault()))) {
             return "LV2";
         }
-        if (matiere.contains("Algèbre")) {
+        if (matiere.contains("Algèbre".toLowerCase(Locale.getDefault()))) {
             return "Alg.";
         }
-        if (matiere.contains("Chimie")) {
+        if (matiere.contains("chimie".toLowerCase(Locale.getDefault()))) {
             return "Chimie";
         }
-        if (matiere.equalsIgnoreCase("Convertisseurs Electriques")) {
+        if (matiere.contains("Convertisseurs Electriques".toLowerCase(Locale.getDefault()))) {
             return "Conv Elec";
         }
-        if (matiere.equalsIgnoreCase("Commande des Systèmes")) {
+        if (matiere.contains("commande des systèmes".toLowerCase(Locale.getDefault()))) {
             return "CdS";
         }
-        if (matiere.equalsIgnoreCase("Transferts Thermiques")) {
+        if (matiere.contains("transferts thermiques".toLowerCase(Locale.getDefault()))) {
             return "Tr Therm";
         }
-        if (matiere.equalsIgnoreCase("CAO - CATIA V5")) {
+        if (matiere.contains("cao") || matiere.contains("catia".toLowerCase(Locale.getDefault()))) {
             return "CATIA";
         }
-        if (matiere.contains("Ingénierie Sy")) {
+        if (matiere.contains("ingénierie sy".toLowerCase(Locale.getDefault()))) {
             return "IIS";
         }
-        if (matiere.equalsIgnoreCase("Ingénierie Biomédicale")) {
+        if (matiere.contains("ingénierie bio".toLowerCase(Locale.getDefault()))) {
             return "Ingé Bio";
         }
-        if (matiere.equalsIgnoreCase("Thermodynamique Appliquée")) {
+        if (matiere.contains("thermo".toLowerCase(Locale.getDefault()))) {
             return "Thermo";
         }
-        if (matiere.equalsIgnoreCase("Propriété Intellectuelle")) {
+        if (matiere.contains("propriété intellectuelle".toLowerCase(Locale.getDefault()))) {
             return "PI";
         }
-        if (matiere.equalsIgnoreCase("Technologie des Systèmes Autom")) {
+        if (matiere.contains("technologie des systèmes".toLowerCase(Locale.getDefault()))) {
             return "TSA";
         }
-        if (matiere.equalsIgnoreCase("Systèmes d'Information")) {
+        if (matiere.contains("systèmes d'information".toLowerCase(Locale.getDefault()))) {
             return "SI";
         }
-        if (matiere.equalsIgnoreCase("Ingénierie Système / Managemen")) {
+        if (matiere.contains("ingénierie système / managemen".toLowerCase(Locale.getDefault()))) {
             return "ISM";
         }
-        if (matiere.equalsIgnoreCase("Systems Engineering and Projec")) {
+        if (matiere.contains("systems engineering and projec".toLowerCase(Locale.getDefault()))) {
             return "SEP";
         }
-        if (matiere.equalsIgnoreCase("Matériels Mobiles, Systèmes et")) {
+        if (matiere.contains("Matériels Mobiles, Systèmes et".toLowerCase(Locale.getDefault()))) {
             return "MMS";
         }
-        if (matiere.equalsIgnoreCase("Serious Games en Médecine (Tec")) {
+        if (matiere.contains("Serious Games en Médecine (Tec".toLowerCase(Locale.getDefault()))) {
             return "SGM";
         }
-        if (matiere.equalsIgnoreCase("Ingénierie du Traitement Stati")) {
+        if (matiere.contains("Ingénierie du Traitement Stati".toLowerCase(Locale.getDefault()))) {
             return "ITS";
         }
-        if (matiere.equalsIgnoreCase("L'informatique chez Airbus")) {
+        if (matiere.contains("L'informatique chez Airbus".toLowerCase(Locale.getDefault()))) {
             return "Airbus";
         }
-        if (matiere.equalsIgnoreCase("Geopolitics and Country Risks'")) {
+        if (matiere.contains("Geopolitics and Country Risks'".toLowerCase(Locale.getDefault()))) {
             return "GCR";
         }
-        if (matiere.equalsIgnoreCase("Gestion de Projet dans l'Unive")) {
+        if (matiere.contains("Gestion de Projet dans l'Unive".toLowerCase(Locale.getDefault()))) {
             return "GPU";
         }
-        if (matiere.equalsIgnoreCase("L'AMOA en Mode Projet")) {
+        if (matiere.contains("L'AMOA en Mode Projet".toLowerCase(Locale.getDefault()))) {
             return "AMOA";
         }
-        if (matiere.equalsIgnoreCase("Sécurité du S.I.")) {
+        if (matiere.contains("Sécurité du S.I.".toLowerCase(Locale.getDefault()))) {
             return "Sécu SI";
         }
-        if (matiere.equalsIgnoreCase("Analyse 2")) {
+        if (matiere.contains("Analyse 2".toLowerCase(Locale.getDefault()))) {
             return "Ana.";
         }
-        if (matiere.equalsIgnoreCase("Allemand 2")) {
+        if (matiere.contains("Allemand 2".toLowerCase(Locale.getDefault()))) {
             return "LV2";
         }
-        if (matiere.equalsIgnoreCase("Ana.")) {
+        if (matiere.contains("Ana.".toLowerCase(Locale.getDefault()))) {
             return "Analyse";
         }
-        if (matiere.equalsIgnoreCase("Commandes des Systèmes 2")) {
+        if (matiere.contains("Commandes des Systèmes 2".toLowerCase(Locale.getDefault()))) {
             return "CdS";
         }
-        if (matiere.equalsIgnoreCase("Techniques Calculatoires 2")) {
+        if (matiere.contains("Techniques Calculatoires 2".toLowerCase(Locale.getDefault()))) {
             return "TC";
         }
-        if (matiere.equalsIgnoreCase("Techniques Calculatoires 1")) {
+        if (matiere.contains("Techniques Calculatoires 1".toLowerCase(Locale.getDefault()))) {
             return "TC";
         }
-        if (matiere.equalsIgnoreCase("Projet Sciences de l'Ingénieur")) {
+        if (matiere.contains("Projet Sciences de l'Ingénieur".toLowerCase(Locale.getDefault()))) {
             return "PSI";
         }
-        if (matiere.equalsIgnoreCase("Advanced Excel / VBA")) {
+        if (matiere.contains("Advanced Excel / VBA".toLowerCase(Locale.getDefault()))) {
             return "VBA";
         }
-        if (matiere.equalsIgnoreCase("Cost Drivers")) {
+        if (matiere.contains("Cost Drivers".toLowerCase(Locale.getDefault()))) {
             return "CD";
         }
-        if (matiere.equalsIgnoreCase("Commandes des Systèmes 1")) {
+        if (matiere.contains("Commandes des Systèmes 1".toLowerCase(Locale.getDefault()))) {
             return "CdS";
         }
-        if (matiere.equalsIgnoreCase("Mécanique des Fluides")) {
+        if (matiere.contains("Mécanique des Fluides".toLowerCase(Locale.getDefault()))) {
             return "Méca Flu";
         }
-        if (matiere.equalsIgnoreCase("Examens 2ème Semestre")) {
+        if (matiere.contains("Examens 2ème Semestre".toLowerCase(Locale.getDefault()))) {
             return "Exam";
         }
-        if (matiere.equalsIgnoreCase("Examens 1er Semestre")) {
+        if (matiere.contains("Examens 1er Semestre".toLowerCase(Locale.getDefault()))) {
             return "Exam";
         }
-        if (matiere.equalsIgnoreCase("Electricité Générale 2")) {
+        if (matiere.contains("Electricité Générale 2".toLowerCase(Locale.getDefault()))) {
             return "Elec G";
         }
-        if (matiere.equalsIgnoreCase("Electricité Générale 1")) {
+        if (matiere.contains("Electricité Générale 1".toLowerCase(Locale.getDefault()))) {
             return "Elec G";
         }
-        if (matiere.equalsIgnoreCase("Thermodynamique")) {
+        if (matiere.contains("Thermodynamique".toLowerCase(Locale.getDefault()))) {
             return "Thermo";
         }
-        if (matiere.equalsIgnoreCase("Conception et Programmation Ob")) {
+        if (matiere.contains("Conception et Programmation Ob".toLowerCase(Locale.getDefault()))) {
             return "CPO";
         }
-        if (matiere.equalsIgnoreCase("Chimie Avancée")) {
+        if (matiere.contains("Chimie Avancée".toLowerCase(Locale.getDefault()))) {
             return "Chimie";
         }
-        if (matiere.equalsIgnoreCase("Droit des Sociétés")) {
+        if (matiere.contains("Droit des Sociétés".toLowerCase(Locale.getDefault()))) {
             return "Droit";
         }
-        if (matiere.equalsIgnoreCase("Projet Présentation Publique 2")) {
+        if (matiere.contains("Projet Présentation Publique 2".toLowerCase(Locale.getDefault()))) {
             return "PPP";
         }
-        if (matiere.equalsIgnoreCase("Travaux Pratiques Physique 2")) {
+        if (matiere.contains("Travaux Pratiques Physique 2".toLowerCase(Locale.getDefault()))) {
             return "TP";
         }
-        if (matiere.equalsIgnoreCase("TP Physique 2")) {
+        if (matiere.contains("TP Physique 2".toLowerCase(Locale.getDefault()))) {
             return "TP";
         }
-        if (matiere.equalsIgnoreCase("Systèmes de Transmission")) {
+        if (matiere.contains("Systèmes de Transmission".toLowerCase(Locale.getDefault()))) {
             return "SdT";
         }
-        if (matiere.equalsIgnoreCase("Chaîne de Mesure et TDS")) {
+        if (matiere.contains("Chaîne de Mesure et TDS".toLowerCase(Locale.getDefault()))) {
             return "CdM TDS";
         }
-        if (matiere.equalsIgnoreCase("Probabilitès et Applications")) {
+        if (matiere.contains("Probabilitès et Applications".toLowerCase(Locale.getDefault()))) {
             return "Proba";
         }
-        if (matiere.equalsIgnoreCase("Projet Personnel Associatif 2")) {
+        if (matiere.contains("Projet Personnel Associatif 2".toLowerCase(Locale.getDefault()))) {
             return "PPA";
         }
-        if (matiere.equalsIgnoreCase("Modélisation Pollution Acciden")) {
+        if (matiere.contains("Modélisation Pollution Acciden".toLowerCase(Locale.getDefault()))) {
             return "MPA";
         }
-        if (matiere.equalsIgnoreCase("Systèmes d'Informations Géogra")) {
+        if (matiere.contains("Systèmes d'Informations Géogra".toLowerCase(Locale.getDefault()))) {
             return "SIG";
         }
-        if (matiere.equalsIgnoreCase("Géologie, Hydrogéologie, Hydro")) {
+        if (matiere.contains("Géologie, Hydrogéologie, Hydro".toLowerCase(Locale.getDefault()))) {
             return "GHH";
         }
-        if (matiere.equalsIgnoreCase("Examens 2ème Semestre")) {
+        if (matiere.contains("Examens 2ème Semestre".toLowerCase(Locale.getDefault()))) {
             return "Exam";
         }
-        if (matiere.equalsIgnoreCase("Territoires et Stratégies")) {
+        if (matiere.contains("Territoires et Stratégies".toLowerCase(Locale.getDefault()))) {
             return "TeS";
         }
-        if (matiere.equalsIgnoreCase("Gestion Economique et Financiè")) {
+        if (matiere.contains("Gestion Economique et Financiè".toLowerCase(Locale.getDefault()))) {
             return "GEF";
         }
-        if (matiere.equalsIgnoreCase("Projet Personnel Encadrè 2")) {
+        if (matiere.contains("Projet Personnel Encadrè 2".toLowerCase(Locale.getDefault()))) {
             return "PPE";
         }
-        if (matiere.equalsIgnoreCase("Algèbre 2")) {
+        if (matiere.contains("Algèbre 2".toLowerCase(Locale.getDefault()))) {
             return "Algèbre";
         }
-        if (matiere.equalsIgnoreCase("Algorithmique 2")) {
+        if (matiere.contains("Algorithmique 2".toLowerCase(Locale.getDefault()))) {
             return "Algo";
         }
-        if (matiere.contains("Mathématiques")||matiere.contains("Abstraction")) {
+        if (matiere.contains("Mathématiques")||matiere.contains("Abstraction".toLowerCase(Locale.getDefault()))) {
             return "Maths";
         }
-        if (matiere.equalsIgnoreCase("Projet Présentation Publique 1")) {
+        if (matiere.contains("Projet Présentation Publique 1".toLowerCase(Locale.getDefault()))) {
             return "PPP";
         }
-        if (matiere.equalsIgnoreCase("Travaux Pratiques Physique 1")) {
+        if (matiere.contains("Travaux Pratiques Physique 1".toLowerCase(Locale.getDefault()))) {
             return "TP";
         }
-        if (matiere.equalsIgnoreCase("Projet Personnel Associatif 1")) {
+        if (matiere.contains("Projet Personnel Associatif 1".toLowerCase(Locale.getDefault()))) {
             return "PPA";
         }
-        if (matiere.equalsIgnoreCase("Projet Personnel Encadré 1")) {
+        if (matiere.contains("Projet Personnel Encadré 1".toLowerCase(Locale.getDefault()))) {
             return "PPE";
         }
-        if (matiere.equalsIgnoreCase("Algèbre 1")) {
+        if (matiere.contains("Algèbre 1".toLowerCase(Locale.getDefault()))) {
             return "Alg.";
         }
-        if (matiere.equalsIgnoreCase("Algorithmique 1")) {
+        if (matiere.contains("Algorithmique 1".toLowerCase(Locale.getDefault()))) {
             return "Algo";
         }
-        if (matiere.equalsIgnoreCase("Algorithmique")) {
+        if (matiere.contains("Algorithmique".toLowerCase(Locale.getDefault()))) {
             return "Algo";
         }
-        if (matiere.equalsIgnoreCase("Mécanique Générale")) {
+        if (matiere.contains("Mécanique Générale".toLowerCase(Locale.getDefault()))) {
             return "Méca";
         }
-        if (matiere.equalsIgnoreCase("Introduction au Droit")) {
+        if (matiere.contains("Introduction au Droit".toLowerCase(Locale.getDefault()))) {
             return "Droit";
         }
-        if (matiere.equalsIgnoreCase("Circuits Electriques 2")) {
+        if (matiere.contains("Circuits Electriques 2".toLowerCase(Locale.getDefault()))) {
             return "Elec";
         }
-        if (matiere.equalsIgnoreCase("Circuits Electriques 1")) {
+        if (matiere.contains("Circuits Electriques 1".toLowerCase(Locale.getDefault()))) {
             return "Elec";
         }
-        if (matiere.equalsIgnoreCase("Fonctions de l'Electronique 2")) {
+        if (matiere.contains("Fonctions de l'Electronique 2".toLowerCase(Locale.getDefault()))) {
             return "Fonc Elec";
         }
-        if (matiere.equalsIgnoreCase("Coaching Scolaire 2")) {
+        if (matiere.contains("Coaching Scolaire 2".toLowerCase(Locale.getDefault()))) {
             return "\"Coaching\"";
         }
-        if (matiere.equalsIgnoreCase("Fonctions de l'Electronique 1")) {
+        if (matiere.contains("Fonctions de l'Electronique 1".toLowerCase(Locale.getDefault()))) {
             return "Fonc Elec";
         }
-        if (matiere.equalsIgnoreCase("Coaching Scolaire 1")) {
+        if (matiere.contains("Coaching Scolaire 1".toLowerCase(Locale.getDefault()))) {
             return "\"Coaching\"";
         }
-        if (matiere.equalsIgnoreCase("Droit du Travail")) {
+        if (matiere.contains("Droit du Travail".toLowerCase(Locale.getDefault()))) {
             return "Droit";
         }
-        if (matiere.equalsIgnoreCase("Analyse Numérique pour l'Ingén")) {
+        if (matiere.contains("Analyse Numérique pour l'Ingén".toLowerCase(Locale.getDefault()))) {
             return "Anal";
         }
-        if (matiere.equalsIgnoreCase("Gestion des Risques")) {
+        if (matiere.contains("Gestion des Risques".toLowerCase(Locale.getDefault()))) {
             return "G.Risques";
         }
-        if (matiere.equalsIgnoreCase("Ingénierie Qualité")) {
+        if (matiere.contains("Ingénierie Qualité".toLowerCase(Locale.getDefault()))) {
             return "Ingé. Qualité";
         }
-        if (matiere.equalsIgnoreCase("Ingénierie du Traitement Stati")) {
+        if (matiere.contains("Ingénierie du Traitement Stati".toLowerCase(Locale.getDefault()))) {
             return "ITS";
         }
-        if (matiere.equalsIgnoreCase("Gestion de Projet")) {
+        if (matiere.contains("Gestion de Projet".toLowerCase(Locale.getDefault()))) {
             return "G.Projet";
         }
-        if (matiere.equalsIgnoreCase("Ingénierie des Systèmes d'Info")) {
+        if (matiere.contains("Ingénierie des Systèmes d'Info".toLowerCase(Locale.getDefault()))) {
             return "ISI";
         }
-        if (matiere.equalsIgnoreCase("Introduction aux Outils de  l'")) {
+        if (matiere.contains("Introduction aux Outils de  l'".toLowerCase(Locale.getDefault()))) {
             return "IOI";
         }
-        if (matiere.equalsIgnoreCase("Analyse Fonctionnelle des Syst")) {
+        if (matiere.contains("Analyse Fonctionnelle des Syst".toLowerCase(Locale.getDefault()))) {
             return "AFS";
         }
-        if (matiere.equalsIgnoreCase("Optique Géométrique")) {
+        if (matiere.contains("Optique Géométrique".toLowerCase(Locale.getDefault()))) {
             return "OG";
         }
-        if (matiere.equalsIgnoreCase("Signaux et Mesures Physiques")) {
+        if (matiere.contains("Signaux et Mesures Physiques".toLowerCase(Locale.getDefault()))) {
             return "SMP";
         }
-        if (matiere.equalsIgnoreCase("Introduction aux TIC")) {
+        if (matiere.contains("Introduction aux TIC".toLowerCase(Locale.getDefault()))) {
             return "TIC";
         }
-        if (matiere.equalsIgnoreCase("Projet WEB")) {
+        if (matiere.contains("Projet WEB".toLowerCase(Locale.getDefault()))) {
             return "P. WEB";
         }
-        if (matiere.equalsIgnoreCase("Intégration dans la Vie Profes")) {
+        if (matiere.contains("Intégration dans la Vie Profes".toLowerCase(Locale.getDefault()))) {
             return "IVP";
         }
-        if (matiere.equalsIgnoreCase("Ingénierie Système")) {
+        if (matiere.contains("Ingénierie Système".toLowerCase(Locale.getDefault()))) {
             return "Ingé. Sys.";
         }
-        if (matiere.equalsIgnoreCase("Ingénierie Système / Managemen")) {
+        if (matiere.contains("Ingénierie Système / Managemen".toLowerCase(Locale.getDefault()))) {
             return "Ingé/Mngt";
         }
-        if (matiere.equalsIgnoreCase("Evaluation Environnementale (A")) {
+        if (matiere.contains("Evaluation Environnementale (A".toLowerCase(Locale.getDefault()))) {
             return "Connard";
         }
-        if (matiere.equalsIgnoreCase("Ondes et Optique Ondulatoire")) {
+        if (matiere.contains("Ondes et Optique Ondulatoire".toLowerCase(Locale.getDefault()))) {
             return "Onde";
         }
-        if (matiere.equalsIgnoreCase("Conception et Manipulation de")) {
+        if (matiere.contains("Conception et Manipulation de".toLowerCase(Locale.getDefault()))) {
             return "BDD";
         }
-        if (matiere.equalsIgnoreCase("Langage Java")) {
+        if (matiere.contains("Langage Java".toLowerCase(Locale.getDefault()))) {
             return "Java";
         }
-        if (matiere.equalsIgnoreCase("Démarche d'Architecture des SI")) {
+        if (matiere.contains("Démarche d'Architecture des SI".toLowerCase(Locale.getDefault()))) {
             return "DASI";
         }
-        if (matiere.equalsIgnoreCase("Ingénierie du Besoin")) {
+        if (matiere.contains("Ingénierie du Besoin".toLowerCase(Locale.getDefault()))) {
             return "Ingé. Bes.";
         }
-        if (matiere.equalsIgnoreCase("Matériels Mobiles, Systèmes et")) {
+        if (matiere.contains("Matériels Mobiles, Systèmes et".toLowerCase(Locale.getDefault()))) {
             return "MMS";
         }
-        if (matiere.equalsIgnoreCase("Réseaux Informatiques")) {
+        if (matiere.contains("Réseaux Informatiques".toLowerCase(Locale.getDefault()))) {
             return "Réseaux";
         }
-        if (matiere.equalsIgnoreCase("Gouvernance de l'Information")) {
+        if (matiere.contains("Gouvernance de l'Information".toLowerCase(Locale.getDefault()))) {
             return "Gouv. Inf.";
         }
-        if (matiere.equalsIgnoreCase("SI et Fonctions de l'Entrepris")) {
+        if (matiere.contains("SI et Fonctions de l'Entrepris".toLowerCase(Locale.getDefault()))) {
             return "SIFE";
         }
-        if (matiere.equalsIgnoreCase("Protection de l'Information")) {
+        if (matiere.contains("Protection de l'Information".toLowerCase(Locale.getDefault()))) {
             return "Protec. Inf.";
         }
-        if (matiere.equalsIgnoreCase("Le journal de bord électroniqu")) {
+        if (matiere.contains("Le journal de bord électroniqu".toLowerCase(Locale.getDefault()))) {
             return "JBE";
         }
-        if (matiere.equalsIgnoreCase("Modernisation du système de Pa")) {
+        if (matiere.contains("Modernisation du système de Pa".toLowerCase(Locale.getDefault()))) {
             return "MSP";
         }
-        if (matiere.equalsIgnoreCase("Dimensionnement d'Eléments de")) {
+        if (matiere.contains("Dimensionnement d'Eléments de".toLowerCase(Locale.getDefault()))) {
             return "Dimension";
         }
-        if (matiere.equalsIgnoreCase("Modélisation 3D")) {
+        if (matiere.contains("Modélisation 3D".toLowerCase(Locale.getDefault()))) {
             return "3D";
         }
-        if (matiere.equalsIgnoreCase("Quality Engineering")) {
+        if (matiere.contains("Quality Engineering".toLowerCase(Locale.getDefault()))) {
             return "Quality Eng.";
         }
-        if (matiere.equalsIgnoreCase("Risk Management")) {
+        if (matiere.contains("Risk Management".toLowerCase(Locale.getDefault()))) {
             return "Risk Man.";
         }
-        if (matiere.equalsIgnoreCase("Project Management")) {
+        if (matiere.contains("Project Management".toLowerCase(Locale.getDefault()))) {
             return "Project Man.";
         }
-        if (matiere.equalsIgnoreCase("Systems Engineering")) {
+        if (matiere.contains("Systems Engineering".toLowerCase(Locale.getDefault()))) {
             return "Systems Eng.";
         }
-        if (matiere.equalsIgnoreCase("ERP (Architecture, Security an")) {
+        if (matiere.contains("ERP (Architecture, Security an".toLowerCase(Locale.getDefault()))) {
             return "ERP";
         }
-        if (matiere.equalsIgnoreCase("Mise en Forme des Matériaux")) {
+        if (matiere.contains("Mise en Forme des Matériaux".toLowerCase(Locale.getDefault()))) {
             return "MFM";
         }
-        if (matiere.equalsIgnoreCase("Caractérisation des Matériaux")) {
+        if (matiere.contains("Caractérisation des Matériaux".toLowerCase(Locale.getDefault()))) {
             return "Matériaux";
         }
-        if (matiere.equalsIgnoreCase("Modélisation des Structures en")) {
+        if (matiere.contains("Modélisation des Structures en".toLowerCase(Locale.getDefault()))) {
             return "MSEF";
         }
-        if (matiere.equalsIgnoreCase("Modélisation d'un Système Comp")) {
+        if (matiere.contains("Modélisation d'un Système Comp".toLowerCase(Locale.getDefault()))) {
             return "MCM";
         }
-        if (matiere.equalsIgnoreCase("Initiation \u2021 la Méthode des El")) {
+        if (matiere.contains("Initiation \u2021 la Méthode des El".toLowerCase(Locale.getDefault()))) {
             return "EI";
         }
-        if (matiere.equalsIgnoreCase("Plasticité Matériaux")) {
+        if (matiere.contains("Plasticité Matériaux".toLowerCase(Locale.getDefault()))) {
             return "Plasticité";
         }
-        if (matiere.equalsIgnoreCase("Modélisation des Ecoulements")) {
+        if (matiere.contains("Modélisation des Ecoulements".toLowerCase(Locale.getDefault()))) {
             return "Ecoulement";
         }
-        if (matiere.equalsIgnoreCase("Statistical Data Processing")) {
+        if (matiere.contains("Statistical Data Processing".toLowerCase(Locale.getDefault()))) {
             return "SDP";
         }
-        if (matiere.equalsIgnoreCase("Contract and Labor Law")) {
+        if (matiere.contains("Contract and Labor Law".toLowerCase(Locale.getDefault()))) {
             return "CLL";
         }
-        if (matiere.equalsIgnoreCase("Professional Integration")) {
+        if (matiere.contains("Professional Integration".toLowerCase(Locale.getDefault()))) {
             return "PI";
         }
-        if (matiere.equalsIgnoreCase("Information Systems Engineerin")) {
+        if (matiere.contains("Information Systems Engineerin".toLowerCase(Locale.getDefault()))) {
             return "ISE";
         }
-        if (matiere.equalsIgnoreCase("Recruiting Processes")) {
+        if (matiere.contains("Recruiting Processes".toLowerCase(Locale.getDefault()))) {
             return "RP";
         }
-        if (matiere.equalsIgnoreCase("Geopolitics and Country Risks'")) {
+        if (matiere.contains("Geopolitics and Country Risks'".toLowerCase(Locale.getDefault()))) {
             return "GCR";
         }
-        if (matiere.equalsIgnoreCase("Corporate Finance and Financia")) {
+        if (matiere.contains("Corporate Finance and Financia".toLowerCase(Locale.getDefault()))) {
             return "CFF";
         }
-        if (matiere.equalsIgnoreCase("Management of Innovative Techn")) {
+        if (matiere.contains("Management of Innovative Techn".toLowerCase(Locale.getDefault()))) {
             return "MIT";
         }
-        if (matiere.equalsIgnoreCase("Industrial Marketing")) {
+        if (matiere.contains("Industrial Marketing".toLowerCase(Locale.getDefault()))) {
             return "Indus. M";
         }
-        if (matiere.equalsIgnoreCase("Operational Research")) {
+        if (matiere.contains("Operational Research".toLowerCase(Locale.getDefault()))) {
             return "OR";
         }
-        if (matiere.equalsIgnoreCase("Growth Strategy & Business Mod")) {
+        if (matiere.contains("Growth Strategy & Business Mod".toLowerCase(Locale.getDefault()))) {
             return "GSBM";
         }
-        if (matiere.equalsIgnoreCase("Informatique Industrielle")) {
+        if (matiere.contains("Informatique Industrielle".toLowerCase(Locale.getDefault()))) {
             return "Info. Indu.";
         }
-        if (matiere.equalsIgnoreCase("Organisation du Travail")) {
+        if (matiere.contains("Organisation du Travail".toLowerCase(Locale.getDefault()))) {
             return "OdT";
         }
-        if (matiere.equalsIgnoreCase("Propriété des Matériaux")) {
+        if (matiere.contains("Propriété des Matériaux".toLowerCase(Locale.getDefault()))) {
             return "Prop. Matériaux";
         }
-        if (matiere.equalsIgnoreCase("Mathématiques 2")) {
+        if (matiere.contains("Mathématiques 2".toLowerCase(Locale.getDefault()))) {
             return "Math";
         }
-        if (matiere.equalsIgnoreCase("Sciences Humaines Champ")) {
+        if (matiere.contains("Sciences Humaines Champ".toLowerCase(Locale.getDefault()))) {
             return "SHC";
         }
-        if (matiere.equalsIgnoreCase("Electromagnétisme")) {
+        if (matiere.contains("Electromagnétisme".toLowerCase(Locale.getDefault()))) {
             return "Magn.";
         }
-        if (matiere.equalsIgnoreCase("Technologie Mécanique (BE) 2")) {
+        if (matiere.contains("Technologie Mécanique (BE) 2".toLowerCase(Locale.getDefault()))) {
             return "TM";
         }
-        if (matiere.equalsIgnoreCase("Construction Mécanique 2")) {
+        if (matiere.contains("Construction Mécanique 2".toLowerCase(Locale.getDefault()))) {
             return "Cons. Méca.";
         }
-        if (matiere.equalsIgnoreCase("Mécanique 2")) {
+        if (matiere.contains("Mécanique 2".toLowerCase(Locale.getDefault()))) {
             return "Méca";
         }
-        if (matiere.equalsIgnoreCase("Physique 2")) {
+        if (matiere.contains("Physique 2".toLowerCase(Locale.getDefault()))) {
             return "Physique";
         }
-        if (matiere.equalsIgnoreCase("Mathématiques 1")) {
+        if (matiere.contains("Mathématiques 1".toLowerCase(Locale.getDefault()))) {
             return "Maths";
         }
-        if (matiere.equalsIgnoreCase("Construction Mécanique 1")) {
+        if (matiere.contains("Construction Mécanique 1".toLowerCase(Locale.getDefault()))) {
             return "Cons. Méca.";
         }
-        if (matiere.equalsIgnoreCase("Mécanique 1")) {
+        if (matiere.contains("Mécanique 1".toLowerCase(Locale.getDefault()))) {
             return "Méca";
         }
-        if (matiere.equalsIgnoreCase("Physique 1")) {
+        if (matiere.contains("Physique 1".toLowerCase(Locale.getDefault()))) {
             return "Physique";
         }
-        if (matiere.equalsIgnoreCase("Logiciel Libre")) {
+        if (matiere.contains("Logiciel Libre".toLowerCase(Locale.getDefault()))) {
             return "Freeware";
         }
-        if (matiere.equalsIgnoreCase("Relation MOE/MOA")) {
+        if (matiere.contains("Relation MOE/MOA".toLowerCase(Locale.getDefault()))) {
             return "MOE/MOA";
         }
-        if (matiere.equalsIgnoreCase("Relation MOE/MOA")) {
+        if (matiere.contains("Relation MOE/MOA".toLowerCase(Locale.getDefault()))) {
             return "MOE/MOA";
         }
-        if (matiere.equalsIgnoreCase("Gouvernance des SI")) {
+        if (matiere.contains("Gouvernance des SI".toLowerCase(Locale.getDefault()))) {
             return "G.SI";
         }
-        if (matiere.equalsIgnoreCase("Démarche d'Architecture des Sy")) {
+        if (matiere.contains("Démarche d'Architecture des Sy".toLowerCase(Locale.getDefault()))) {
             return "DAS";
         }
-        if (matiere.equalsIgnoreCase("Webmarketing")) {
+        if (matiere.contains("Webmarketing".toLowerCase(Locale.getDefault()))) {
             return "WebMkg";
         }
-        if (matiere.equalsIgnoreCase("Process Modeling")) {
+        if (matiere.contains("Process Modeling".toLowerCase(Locale.getDefault()))) {
             return "Modeling";
         }
-        if (matiere.equalsIgnoreCase("Lean Management, Lean Manufact")) {
+        if (matiere.contains("Lean Management, Lean Manufact".toLowerCase(Locale.getDefault()))) {
             return "LM&M";
         }
-        if (matiere.equalsIgnoreCase("Projet ABAQUS")) {
+        if (matiere.contains("Projet ABAQUS".toLowerCase(Locale.getDefault()))) {
             return "ABAQUS";
         }
-        if (matiere.equalsIgnoreCase("Tolérancement")) {
+        if (matiere.contains("Tolérancement".toLowerCase(Locale.getDefault()))) {
             return "Tolé.";
         }
-        if (matiere.equalsIgnoreCase("Climatologie")) {
+        if (matiere.contains("Climatologie".toLowerCase(Locale.getDefault()))) {
             return "Clim.";
         }
-        if (matiere.equalsIgnoreCase("Géologie, Hydrogéologie, Hydro")) {
+        if (matiere.contains("Géologie, Hydrogéologie, Hydro".toLowerCase(Locale.getDefault()))) {
             return "GHH";
         }
-        if (matiere.equalsIgnoreCase("Modélisation Pollution Acciden")) {
+        if (matiere.contains("Modélisation Pollution Acciden".toLowerCase(Locale.getDefault()))) {
             return "MPA";
         }
-        if (matiere.equalsIgnoreCase("Systèmes d'Informations Géogra")) {
+        if (matiere.contains("Systèmes d'Informations Géogra".toLowerCase(Locale.getDefault()))) {
             return "SIG";
         }
-        if (matiere.equalsIgnoreCase("Droit de l'environnement")) {
+        if (matiere.contains("Droit de l'environnement".toLowerCase(Locale.getDefault()))) {
             return "Droit Env.";
         }
-        if (matiere.equalsIgnoreCase("Analyse Environnementale")) {
+        if (matiere.contains("Analyse Environnementale".toLowerCase(Locale.getDefault()))) {
             return "Analyse E.";
         }
-        if (matiere.equalsIgnoreCase("Modélisation  ACV")) {
+        if (matiere.contains("Modélisation  ACV".toLowerCase(Locale.getDefault()))) {
             return "ACV";
         }
-        if (matiere.equalsIgnoreCase("Management of Innovation")) {
+        if (matiere.contains("Management of Innovation".toLowerCase(Locale.getDefault()))) {
             return "MoI";
         }
-        if (matiere.equalsIgnoreCase("Connaissance de l'Entreprise")) {
+        if (matiere.contains("Connaissance de l'Entreprise".toLowerCase(Locale.getDefault()))) {
             return "CE";
         }
-        if (matiere.equalsIgnoreCase("Culture du Canada 2")) {
+        if (matiere.contains("Culture du Canada 2".toLowerCase(Locale.getDefault()))) {
             return "Canada";
         }
-        if (matiere.equalsIgnoreCase("Culture du Canada 1")) {
+        if (matiere.contains("Culture du Canada 1".toLowerCase(Locale.getDefault()))) {
             return "Canada";
         }
-        if (matiere.equalsIgnoreCase("Techniques de Fabrication")) {
+        if (matiere.contains("Techniques de Fabrication".toLowerCase(Locale.getDefault()))) {
             return "Tech. Fabrication";
         }
-        if (matiere.equalsIgnoreCase("Portugais")) {
+        if (matiere.contains("Portugais".toLowerCase(Locale.getDefault()))) {
             return "LV2";
         }
-        if (matiere.equalsIgnoreCase("Chinois")) {
+        if (matiere.contains("Chinois".toLowerCase(Locale.getDefault()))) {
             return "LV2";
         }
-        if (matiere.equalsIgnoreCase("Italien")) {
+        if (matiere.contains("Italien".toLowerCase(Locale.getDefault()))) {
             return "LV2";
         }
-        if (matiere.equalsIgnoreCase("Russe")) {
+        if (matiere.contains("Russe".toLowerCase(Locale.getDefault()))) {
             return "LV2";
         }
-        if (matiere.equalsIgnoreCase("Japonais")) {
+        if (matiere.contains("Japonais".toLowerCase(Locale.getDefault()))) {
             return "LV2";
         }
-        if (matiere.equalsIgnoreCase("Anglais 1")) {
+        if (matiere.contains("Anglais 1".toLowerCase(Locale.getDefault()))) {
             return "LV1";
         }
-        if (matiere.equalsIgnoreCase("Anglais 2")) {
+        if (matiere.contains("Anglais 2".toLowerCase(Locale.getDefault()))) {
             return "LV1";
         }
-        if (matiere.equalsIgnoreCase("Espagnol 1")) {
+        if (matiere.contains("Espagnol 1".toLowerCase(Locale.getDefault()))) {
             return "LV2";
         }
-        if (matiere.equalsIgnoreCase("Technologie Mécanique (BE) 1")) {
+        if (matiere.contains("Technologie Mécanique (BE) 1".toLowerCase(Locale.getDefault()))) {
             return "TM";
         }
-        if (matiere.equalsIgnoreCase("Technologie Mécanique (BE)")) {
+        if (matiere.contains("Technologie Mécanique (BE)".toLowerCase(Locale.getDefault()))) {
             return "TM";
         }
-        if (matiere.equalsIgnoreCase("Ingéniérie Biomédicale")) {
+        if (matiere.contains("Ingéniérie Biomédicale".toLowerCase(Locale.getDefault()))) {
             return "Ingé Bio";
         }
-        if (matiere.equalsIgnoreCase("Mathématiques avancés 2")) {
+        if (matiere.contains("Mathématiques avancés 2".toLowerCase(Locale.getDefault()))) {
             return "Math STI";
         }
-        if (matiere.equalsIgnoreCase("Outils Mathématiques pour l'In")) {
+        if (matiere.contains("Outils Mathématiques pour l'In".toLowerCase(Locale.getDefault()))) {
             return "OMI";
         }
-        if (matiere.equalsIgnoreCase("Soutien Admis sur titres 2")) {
+        if (matiere.contains("Soutien Admis sur titres 2".toLowerCase(Locale.getDefault()))) {
             return "SAT";
         }
-        if (matiere.equalsIgnoreCase("Soutien Admis sur titres 1")) {
+        if (matiere.contains("Soutien Admis sur titres 1".toLowerCase(Locale.getDefault()))) {
             return "SAT";
         }
-        if (matiere.equalsIgnoreCase("Formation Généraliste 3ème Ann")) {
+        if (matiere.contains("Formation Généraliste 3ème Ann".toLowerCase(Locale.getDefault()))) {
             return "Fg";
         }
-        if (matiere.equalsIgnoreCase("Formation Généraliste 2ème Ann")) {
+        if (matiere.contains("Formation Généraliste 2ème Ann".toLowerCase(Locale.getDefault()))) {
             return "Fg";
         }
-        if (matiere.equalsIgnoreCase("Formation Généraliste 1ère Ann")) {
+        if (matiere.contains("Formation Généraliste 1ère Ann".toLowerCase(Locale.getDefault()))) {
             return "Fg";
         }
-        if (matiere.equalsIgnoreCase("Système Ecolonomique de Récupé")) {
+        if (matiere.contains("Système Ecolonomique de Récupé".toLowerCase(Locale.getDefault()))) {
             return "SER";
         }
-        if (matiere.equalsIgnoreCase("Electronique")) {
+        if (matiere.contains("Electronique".toLowerCase(Locale.getDefault()))) {
             return "Elec";
         }
-        if (matiere.equalsIgnoreCase("Marketing Industriel")) {
+        if (matiere.contains("Marketing Industriel".toLowerCase(Locale.getDefault()))) {
             return "MI";
         }
-        if (matiere.equalsIgnoreCase("Bâtiment de Logistique en Acie")) {
+        if (matiere.contains("Bâtiment de Logistique en Acie".toLowerCase(Locale.getDefault()))) {
             return "BLA";
         }
-        if (matiere.equalsIgnoreCase("Bilan Thermique d'un Habitat")) {
+        if (matiere.contains("Bilan Thermique d'un Habitat".toLowerCase(Locale.getDefault()))) {
             return "BTH";
         }
-        if (matiere.equalsIgnoreCase("Projet Architecture Avion")) {
+        if (matiere.contains("Projet Architecture Avion".toLowerCase(Locale.getDefault()))) {
             return "PAA";
         }
-        if (matiere.equalsIgnoreCase("Création d'Entreprise")) {
+        if (matiere.contains("Création d'Entreprise".toLowerCase(Locale.getDefault()))) {
             return "CE";
         }
-        if (matiere.equalsIgnoreCase("Rénovation d'un Radar de Traje")) {
+        if (matiere.contains("Rénovation d'un Radar de Traje".toLowerCase(Locale.getDefault()))) {
             return "RRT";
         }
-        if (matiere.equalsIgnoreCase("Evolution d'un Système d'Infor")) {
+        if (matiere.contains("Evolution d'un Système d'Infor".toLowerCase(Locale.getDefault()))) {
             return "ESI";
         }
-        if (matiere.equalsIgnoreCase("Etude d'un Système Automatisé")) {
+        if (matiere.contains("Etude d'un Système Automatisé".toLowerCase(Locale.getDefault()))) {
             return "EDA";
         }
-        if (matiere.equalsIgnoreCase("Base Tournante pour Siège de V")) {
+        if (matiere.contains("Base Tournante pour Siège de V".toLowerCase(Locale.getDefault()))) {
             return "BTSV";
         }
-        return matiere;
+        return pMatiere;
     }
 }

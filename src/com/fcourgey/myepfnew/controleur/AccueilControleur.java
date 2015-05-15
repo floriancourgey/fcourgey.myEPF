@@ -7,7 +7,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 
 import com.fcourgey.myepfnew.activite.AccueilActivite;
-import com.fcourgey.myepfnew.modele.PreferencesModele;
+import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.vue.IdentifiantsVue;
 
 public class AccueilControleur {
@@ -33,11 +33,11 @@ public class AccueilControleur {
 		try {
 			PackageInfo pinfo = activite.getPackageManager().getPackageInfo(activite.getPackageName(), 0);
 			int versionCode = pinfo.versionCode;
-			if(versionCode == 14002 && activite.getPrefs().getBoolean(PreferencesModele.V14A_MDP_HASHE, false)==false){
+			if(versionCode == 14002 && activite.getPrefs().getBoolean(MyEpfPreferencesModele.V14A_MDP_HASHE, false)==false){
 				activite.getPrefs().setLogin("");
 				activite.getPrefs().setMdp("");
 				if(activite.getPrefs().getMdp().equals("")){
-					activite.getPrefs().putBoolean(PreferencesModele.V14A_MDP_HASHE, true);
+					activite.getPrefs().putBoolean(MyEpfPreferencesModele.V14A_MDP_HASHE, true);
 				}
 			}
 		} catch (NameNotFoundException e) {
@@ -50,7 +50,7 @@ public class AccueilControleur {
 		// et le mdp
 		String mdp = activite.getPrefs().getMdp();
 		// si pas de login, on demande avec une popup
-		if(login == null || login.length() < PreferencesModele.TAILLE_MIN_IDENTIFIANT || mdp == null || mdp.length()<PreferencesModele.TAILLE_MIN_MDP){
+		if(login == null || login.length() < MyEpfPreferencesModele.TAILLE_MIN_IDENTIFIANT || mdp == null || mdp.length()<MyEpfPreferencesModele.TAILLE_MIN_MDP){
 			IdentifiantsVue.show(activite);
 		} 
 		// sinon lancer appli

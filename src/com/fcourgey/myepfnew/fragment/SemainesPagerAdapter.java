@@ -1,4 +1,4 @@
-package com.fcourgey.myepfnew.activite;
+package com.fcourgey.myepfnew.fragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,20 +10,20 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
-import com.fcourgey.myepfnew.framework.Activite;
 import com.fcourgey.myepfnew.vue.CoursVue;
 
 public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	
 	private static SparseArray<Fragment> lFrags = new SparseArray<Fragment>();
 	
-	private static Activite mere;
+	private static MainActivite mere;
 	
 	public static final int NOMBRE_DE_SEMAINES_MAX_DEFAUT = 5;
 	public static int NOMBRE_DE_SEMAINES_MAX;
 
-    public SemainesPagerAdapter(FragmentManager fm, Activite mere) {
+    public SemainesPagerAdapter(FragmentManager fm, MainActivite mere) {
         super(fm);
         SemainesPagerAdapter.mere = mere;
     	NOMBRE_DE_SEMAINES_MAX = mere.getPrefs().getNbSemainesToDl();
@@ -62,8 +62,6 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 		}
 	}
  
-//	public 
-	
     @Override
     public Fragment getItem(int index) {
     	return SemaineFragment.newInstance(index);

@@ -3,10 +3,13 @@ package com.fcourgey.myepfnew.activite;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.fcourgey.android.mylib.framework.Activite;
 import com.fcourgey.myepfnew.controleur.AccueilControleur;
-import com.fcourgey.myepfnew.framework.Activite;
+import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 
 public class AccueilActivite extends Activite {
+	
+	public static MyEpfPreferencesModele prefs;
 	
 	/**
 	 * Point de départ de l'appli
@@ -14,6 +17,10 @@ public class AccueilActivite extends Activite {
 	@Override
 	public void onCreate(Bundle b) {
     	super.onCreate(b);
+    	
+    	if(prefs == null){
+			prefs = new MyEpfPreferencesModele(this);
+		}
     	
     	new AccueilControleur(this);
 	}
@@ -27,5 +34,9 @@ public class AccueilActivite extends Activite {
 		Intent intent = new Intent(this, MainActivite.class);
 		startActivity(intent);
 		finish();
+	}
+	
+	public MyEpfPreferencesModele getPrefs() {
+		return prefs;
 	}
 }

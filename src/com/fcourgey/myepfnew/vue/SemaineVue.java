@@ -17,26 +17,26 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.activite.EdtFragment;
-import com.fcourgey.myepfnew.activite.SemainesPagerAdapter;
+import com.fcourgey.myepfnew.controleur.EdtControleur;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
 import com.fcourgey.myepfnew.entite.Cours;
-import com.fcourgey.myepfnew.framework.FragmentVue;
+import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
 
-public class SemaineVue extends FragmentVue {
+public class SemaineVue extends AsyncFragmentVue {
 	
 	// design
-	private ProgressBar pbTelechargement;
+//	private ProgressBar pbTelechargement;
 	private ProgressBar pbTelechargement2;
-	private TextView tvTelechargement;
+//	private TextView tvTelechargement;
 	private TextView tvTelechargement2;
 	
 	public SemaineVue(SemaineControleur controleur, LayoutInflater inflater, ViewGroup container){
 		super(controleur, inflater, container, R.layout.semaine_fragment);
-		pbTelechargement = (ProgressBar)vue.findViewById(R.id.pbTelechargement);
+//		pbTelechargement = (ProgressBar)vue.findViewById(R.id.pbTelechargement);
 		pbTelechargement2 = (ProgressBar)vue.findViewById(R.id.pbTelechargement2);
-		tvTelechargement = (TextView)vue.findViewById(R.id.tvTelechargement);
+//		tvTelechargement = (TextView)vue.findViewById(R.id.tvTelechargement);
 		tvTelechargement2 = (TextView)vue.findViewById(R.id.tvTelechargement2);
 	}
 	
@@ -82,11 +82,18 @@ public class SemaineVue extends FragmentVue {
 		});
 	}
 	
+	/**
+	 * crée les intervalles
+	 * +
+	 * les heures
+	 * 
+	 * pour 1 jour
+	 */
 	public void creerIntervalles(boolean isContainerHeures, RelativeLayout intervalles_container){
 		for(int j=0 ; j<SemaineControleur.HAUTEUR_EDT/SemaineControleur.HAUTEUR_INTERVALLE ; j++){
         	View v;
         	RelativeLayout.LayoutParams paramsSeparateur;
-        	// heure
+        	// heures
         	if(isContainerHeures && j%SemaineControleur.NB_INTERVALLE_PAR_HEURE==0 && j!=0){
         		TextView tv =new TextView(getActivite());
         		tv.setTextColor(getActivite().getResources().getColor(R.color.heures));
@@ -120,20 +127,20 @@ public class SemaineVue extends FragmentVue {
 					if(pourcentage >= 100){
 						if(!appeleParLaMere)
 							Log.i(tag(), "Avancement terminé : "+texte);
-						SemaineVue.this.tvTelechargement.setText(texte);
-						SemaineVue.this.tvTelechargement.setVisibility(View.GONE);
+//						SemaineVue.this.tvTelechargement.setText(texte);
+//						SemaineVue.this.tvTelechargement.setVisibility(View.GONE);
 						SemaineVue.this.tvTelechargement2.setText(texte);
 						SemaineVue.this.tvTelechargement2.setVisibility(View.GONE);
-						SemaineVue.this.pbTelechargement.setVisibility(View.GONE);
+//						SemaineVue.this.pbTelechargement.setVisibility(View.GONE);
 						SemaineVue.this.pbTelechargement2.setVisibility(View.GONE);
 						
 					} else if(pourcentage > 0){
 						if(!appeleParLaMere)
 							Log.i(tag(), "Avancement "+pourcentage+" : "+texte);
-						SemaineVue.this.tvTelechargement.setText(texte);
+//						SemaineVue.this.tvTelechargement.setText(texte);
 						SemaineVue.this.tvTelechargement2.setVisibility(View.VISIBLE);
-						SemaineVue.this.pbTelechargement.setProgress(pourcentage);
-						SemaineVue.this.pbTelechargement.setVisibility(View.VISIBLE);
+//						SemaineVue.this.pbTelechargement.setProgress(pourcentage);
+//						SemaineVue.this.pbTelechargement.setVisibility(View.VISIBLE);
 						SemaineVue.this.tvTelechargement2.setText(texte);
 						SemaineVue.this.pbTelechargement2.setProgress(pourcentage);
 						SemaineVue.this.pbTelechargement2.setVisibility(View.VISIBLE);
@@ -141,9 +148,9 @@ public class SemaineVue extends FragmentVue {
 					} else {
 						if(!appeleParLaMere)
 							Log.i(tag(), "Avancement erreur : "+texte);
-						EdtFragment.setTelechargementEdtEnCours(false);
-						SemaineVue.this.tvTelechargement.setText(texte);
-						SemaineVue.this.pbTelechargement.setVisibility(View.GONE);
+						EdtControleur.setTelechargementEdtEnCours(false);
+//						SemaineVue.this.tvTelechargement.setText(texte);
+//						SemaineVue.this.pbTelechargement.setVisibility(View.GONE);
 						SemaineVue.this.tvTelechargement2.setText(texte);
 						SemaineVue.this.pbTelechargement2.setVisibility(View.GONE);
 					}

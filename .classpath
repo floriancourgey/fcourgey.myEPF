@@ -12,5 +12,6 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="C:/Users/flo/cloud/Mes documents/Programmation/Projets Android/lib/AppCompat/android-support-v4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/android-support-v7-appcompat"/>
+	<classpathentry kind="src" path="/android.mylib"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

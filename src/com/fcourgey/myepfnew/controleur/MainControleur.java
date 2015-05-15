@@ -19,7 +19,6 @@ import org.apache.http.protocol.HttpContext;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,24 +34,27 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.activite.BulletinFragment;
-import com.fcourgey.myepfnew.activite.EdtFragment;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.activite.PreferencesActivite;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
-import com.fcourgey.myepfnew.modele.PreferencesModele;
+import com.fcourgey.myepfnew.fragment.AProposFragment;
+import com.fcourgey.myepfnew.fragment.BulletinFragment;
+import com.fcourgey.myepfnew.fragment.EdtFragment;
+import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.Android;
 import com.fcourgey.myepfnew.vue.DrawerVue;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 @SuppressWarnings("deprecation")
-public class DrawerControleur {
+public class MainControleur {
 	
-	private static final String TAG = "DrawerControleur";
+	private static final String TAG = "MainControleur";
 	
 	private MainActivite a;
 	
 	private DrawerVue vue;
+	
+	private Fragment fragmentActuel;
 	
 	public static String CHEMIN_PHOTO_PROFIL;
 	
@@ -61,9 +63,9 @@ public class DrawerControleur {
 	private static final String REGEX_NOM = "<div class=\"user-name font2\">[\\w]* (.*) \\(.*\\) </div> -->";
 	private static final String STOP_NOM = "font2";
 	
-	public DrawerControleur(MainActivite a, Bundle savedInstanceState) {
+	public MainControleur(MainActivite a, Bundle savedInstanceState) {
 		this.a = a;
-		CHEMIN_PHOTO_PROFIL = a.getFilesDir()+"/photoprofil.jpg";
+		CHEMIN_PHOTO_PROFIL = a.getFilesDir()+"/photo-profil-"+a.getIdentifiant()+".jpg";
 		vue = new DrawerVue(this, a.getIdentifiant());
 		// affiche photo de profil si existe
 		// sinon, le DL sera appelé par onMyEPFConnected
@@ -85,6 +87,7 @@ public class DrawerControleur {
 	 */
 	public void onEdtClicked(){
 		Fragment newFragment = new EdtFragment();
+		fragmentActuel = newFragment;
         FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, newFragment);
         transaction.addToBackStack(null);
@@ -92,10 +95,25 @@ public class DrawerControleur {
 	}
 	
 	/**
+	 * quand le délai d'attente est dépassé
+	 * et qu'on est pas connecté à my.epf
+	 */
+	public void onDelaiDAttenteDepassé() {
+		if(fragmentActuel instanceof EdtFragment){
+			EdtFragment f = (EdtFragment)fragmentActuel;
+			f.onDelaiDAttenteDepassé();
+		} else if(fragmentActuel instanceof BulletinFragment) {
+			BulletinFragment f = (BulletinFragment)fragmentActuel;
+			f.onDelaiDAttenteDepassé();
+		}
+	}
+	
+	/**
 	 * au clic sur le bulletin
 	 */
 	public void onBulletinClicked(){
 		Fragment newFragment = new BulletinFragment();
+		fragmentActuel = newFragment;
         FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, newFragment);
         transaction.addToBackStack(null);
@@ -111,33 +129,25 @@ public class DrawerControleur {
     	builder.setMessage("Les préférences seront prises en compte au prochain redémarrage de l'appli.")
     	       .setTitle("Hey")
     	       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                   public void onClick(DialogInterface dialog, int id) {
-                	   // lancement activity
+    	    	   public void onClick(DialogInterface dialog, int id) {
+    	    		   // lancement activity
                    		Intent intent = new Intent(a, PreferencesActivite.class);
                    		a.startActivity(intent);
-                   }
-               });
-        // lancement popup
+    	    	   }
+    	       });
+    	// lancement popup
         builder.create().show();
 	}
 	/**
 	 * au clic sur A propos
 	 */
 	public void onAProposClicked(){
-		// init popup
-		AlertDialog.Builder builder = new AlertDialog.Builder(a);
-    	builder = new AlertDialog.Builder(a);
-		String versionName;
-		try {
-			versionName = "version "+a.getPackageManager().getPackageInfo(a.getPackageName(), 0).versionName+" ";
-		} catch (NameNotFoundException e) {
-			versionName = "";
-		}
-    	builder.setMessage("myEPF "+versionName+"développé par Florian Courgey pour l'EPF École d'ingénieur-e-s.")
-    	       .setTitle("A propos")
-    	       .setPositiveButton("OK", null);
-        // lancement popup
-        builder.create().show();
+		Fragment newFragment = new AProposFragment();
+		fragmentActuel = newFragment;
+        FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 	}
 	/**
 	 * au clic sur Quitter
@@ -162,8 +172,7 @@ public class DrawerControleur {
 	 * faux sinon
 	 */
 	private boolean isNomPrenomDownloaded(){
-//		if(a.getPrefs().getString(PreferencesModele.KEY_NOM) ==null || a.getPrefs().getString(PreferencesModele.KEY_PRENOM) ==null){
-		if(a.getPrefs().getString(PreferencesModele.KEY_NOM_PRENOM)==null){
+		if(a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+a.getIdentifiant())==null){
 			return false;
 		} else {
 			return true;
@@ -173,6 +182,13 @@ public class DrawerControleur {
 	public void onMyEPFConnected(){
 		initPhotoProfil();
 		initNomPrenom();
+		if(fragmentActuel instanceof EdtFragment){
+			EdtFragment f = (EdtFragment)fragmentActuel;
+			((EdtControleur)f.getControleur()).onMyEPFConnected();
+		} else if(fragmentActuel instanceof BulletinFragment) {
+			BulletinFragment f = (BulletinFragment)fragmentActuel;
+			((BulletinControlleur)f.getControleur()).onMyEPFConnected();
+		}
 	}
 	
 	/**
@@ -184,10 +200,10 @@ public class DrawerControleur {
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 		Bitmap bmp = BitmapFactory.decodeFile(CHEMIN_PHOTO_PROFIL, options);
 		// crop du bmp
-		int decalage_x = a.getPrefs().getInt(PreferencesModele.KEY_PHOTO_X, 0);
+		int decalage_x = a.getPrefs().getInt(MyEpfPreferencesModele.KEY_PHOTO_X, 0);
 		if(decalage_x < 0)
 			decalage_x = Math.abs(decalage_x);
-		int decalage_y = a.getPrefs().getInt(PreferencesModele.KEY_PHOTO_Y, 0);
+		int decalage_y = a.getPrefs().getInt(MyEpfPreferencesModele.KEY_PHOTO_Y, 0);
 		if(decalage_y < 0)
 			decalage_y = Math.abs(decalage_y);
 		if(bmp.getWidth() < bmp.getHeight())
@@ -348,7 +364,7 @@ public class DrawerControleur {
 						if(matcher.find()){
 							String nomPrenom = matcher.group(1);
 							// sauvegarde dans les pref
-							a.getPrefs().putString(PreferencesModele.KEY_NOM_PRENOM, nomPrenom);
+							a.getPrefs().putString(MyEpfPreferencesModele.KEY_NOM_PRENOM+a.getIdentifiant(), nomPrenom);
 							// affichage
 							afficherNomPrenom();
 						}
@@ -365,7 +381,7 @@ public class DrawerControleur {
 	 * 
 	 */
 	public void afficherNomPrenom(){
-		String nomPrenom = a.getPrefs().getString(PreferencesModele.KEY_NOM_PRENOM);
+		String nomPrenom = a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+a.getIdentifiant());
 		TextView tvNomPrenom = (TextView)a.findViewById(R.id.tvNomPrenom);
 		if(nomPrenom == null){
 			tvNomPrenom.setVisibility(View.GONE);
@@ -412,7 +428,6 @@ public class DrawerControleur {
 	/**
 	 * ?
 	 */
-	@SuppressWarnings("deprecation")
 	public void onPostCreate(Bundle savedInstanceState) {
 		// Sync the toggle state after onRestoreInstanceState has occurred.
 		vue.getToggleBouton().syncState();
@@ -421,7 +436,6 @@ public class DrawerControleur {
 	/**
 	 * ? 
 	 */
-	@SuppressWarnings("deprecation")
 	public void onConfigurationChanged(Configuration newConfig) {
 		vue.getToggleBouton().onConfigurationChanged(newConfig);
 	}

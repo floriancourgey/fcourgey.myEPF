@@ -86,15 +86,26 @@ public class Cours {
         return nom;
     }
     /**
-     * Nom spécial si pas de prof (Exam, présentation, ...)
+     * Retourne un nom raccrouci :
+     * si normal : Chimie Organique => Chimie
+     * si exam : Partiel de Chimie Organique => Partiel Chimie
+     * si pas de prof : le commentaire
      * @return
      */
     public String getNomForCoursVue(){
-    	// si c'est un exam, j'affiche le commentaire custom
-    	if(type == Type.EXAM){ 
-    		return commentaire.replace(" de", "");
+    	// si c'est un exam, j'affiche un spécial
+    	if(type == Type.EXAM){
+    		// le champ extra est de type : "Partiel de Chimie Organique"
+    		// on le transforme en "Partiel Chimie", avec Chimie l'abréviation de matière
+    		String[] split = commentaire.split(" de ");
+    		if(split.length == 1){
+    			split = commentaire.split(" d'");
+    		}
+    		String Exam = split[0];
+    		String matiere = Matiere.abre(split[1]);
+    		return Exam+" "+matiere;
     	} else if(professeur != null && professeur.length() > 1){
-    		return nom;
+    		return Matiere.abre(nom);
     	} else {
     		return commentaire;
     	}

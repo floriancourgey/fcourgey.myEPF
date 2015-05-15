@@ -1,5 +1,6 @@
 package com.mikhaellopez.circularimageview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 
 import com.fcourgey.myepfnew.R;
 
+@SuppressLint({ "Recycle", "DrawAllocation" })
 public class CircularImageView extends ImageView {
 	private int borderWidth;
 	private int canvasSize;
@@ -30,6 +32,7 @@ public class CircularImageView extends ImageView {
 		this(context, attrs, R.attr.circularImageViewStyle);
 	}
 
+	
 	public CircularImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 

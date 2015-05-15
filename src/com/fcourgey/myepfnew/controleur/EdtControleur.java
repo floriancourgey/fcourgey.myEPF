@@ -1,21 +1,22 @@
-package com.fcourgey.myepfnew.activite;
+package com.fcourgey.myepfnew.controleur;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
 
+import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
+import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
+import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.activite.MainActivite;
+import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
 
-public class EdtFragment extends Fragment {
-	
-	private static MainActivite a;
+public class EdtControleur extends AsyncFragmentControleur {
 	
 	public static final String TAG = "EdtFragment";
 
@@ -29,34 +30,32 @@ public class EdtFragment extends Fragment {
 	public static final String URL_EDT_RESULTAT = URL_MYDATA;
 	
 	
-	public static final int NB_SEC_REQ_TIMEOUT = 20;
-	
 	public static boolean telechargementEdtEnCours = false;
 	
 	@SuppressWarnings("unused")
 	private static WebView wvCachee;
 	
-	private static View vue;
-	
 	private SemainesPagerAdapter semainesPagerAdapter;
-	
-	
-	/**
-	 * onCreate
-	 */
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		a = (MainActivite)getActivity();
+
+	public EdtControleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
+		super(f, inflater, container);
 		
-		vue=inflater.inflate(R.layout.semaines_activite, container, false);
+		vue = new AsyncFragmentVue(this, inflater, container, R.layout.edt_fragment);
 		
-		ViewPager viewPager = (ViewPager) vue.findViewById(R.id.accueil_pager);
-		semainesPagerAdapter = new SemainesPagerAdapter(getChildFragmentManager(), a);
+		ViewPager viewPager = (ViewPager) vue.getVue().findViewById(R.id.accueil_pager);
+		semainesPagerAdapter = new SemainesPagerAdapter(getFragment().getChildFragmentManager(), (MainActivite)a);
         viewPager.setOffscreenPageLimit(SemainesPagerAdapter.NOMBRE_DE_SEMAINES_MAX+1);
         viewPager.setAdapter(semainesPagerAdapter);
         
-		return vue;
+        if(vueErreurChargee){
+        	chargerVueErreur(derniereErreurTitre, derniereErreurMessage);
+		}else if(MainActivite.edtDejaTelechargeUneFois || SemaineControleur.premiereSemaineTelechargee){
+        	chargerVueComplete();
+        } else {
+        	chargerVueDefaut("Connexion à my.epf.fr en cours");
+        }
 	}
+	
 	
 	/**
 	 * Affiche l'avancement sur la progressBar et son textview correspondant
@@ -96,8 +95,31 @@ public class EdtFragment extends Fragment {
 		return telechargementEdtEnCours;
 	}
 
-	public static void setTelechargementEdtEnCours(boolean telechargementEdtEnCours) {
-		EdtFragment.telechargementEdtEnCours = telechargementEdtEnCours;
+	public static void setTelechargementEdtEnCours(boolean pTelechargementEdtEnCours) {
+		telechargementEdtEnCours = pTelechargementEdtEnCours;
 	}
 
+	/**
+	 * cache les semaines
+	 * et
+	 * affiche le layout d'erreur
+	 * 
+	 * sauf si l'edt a déjà été téléchargé
+	 */
+	public void onDelaiDAttenteDepassé() {
+		if(MainActivite.edtDejaTelechargeUneFois){
+			return;
+		}
+		chargerVueErreur("délai d'attente dépassé", "Impossible de se connecter à my.epf.fr\nCheck tes identifiants dans les préférences\net redémarre l'appli");
+	}
+
+
+	public void onMyEPFConnected() {
+		chargerVueComplete();
+	}
+	
+	public void chargerVueDefaut(String texte) {
+		super.chargerVueDefaut();
+		((TextView)vue.getVue().findViewById(R.id.tvTitre)).setText(texte);
+	}
 }
