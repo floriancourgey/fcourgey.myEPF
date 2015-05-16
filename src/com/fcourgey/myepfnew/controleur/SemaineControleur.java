@@ -99,6 +99,10 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	 * Définit le prochain site où l'on a cours
 	 */
 	public void updateProchainSite(){
+		// si la liste des cours n'est pas initialisée, on quitte
+		if(((SemaineVue)vue).getLCoursVue() == null){
+			return;
+		}
 		// seulement sur le 1er frag
 		if(indexFragment != 0 + EdtControleur.semainesAvant){
 			return;
