@@ -56,7 +56,7 @@ public class EdtControleur extends AsyncFragmentControleur {
 	private SparseArray<ArrayList<JSONObject>> mapCours; // SparseArray meilleur que Hmap pour <Integer, whatever>
 	
 	public static final int semainesAvant = 2;// TODO récup pref
-	public static final int semainesApres = 3;// TODO récup pref
+	public static final int semainesApres = 5;// TODO récup pref
 	private final int indexPremiereSemaine; // [1 ; 53]
 	private final int indexDerniereSemaine; // idem
 	public static int indexSemaineActuelle; // idem
@@ -67,6 +67,8 @@ public class EdtControleur extends AsyncFragmentControleur {
 		super(f, inflater, container);
 		
 		vue = new AsyncFragmentVue(this, inflater, container, R.layout.edt_fragment);
+		
+		semainesPagerAdapter = new SemainesPagerAdapter(getFragment().getChildFragmentManager(), (MainActivite)a);
 		
 		// init index semaine
 		Calendar now = Calendar.getInstance();
@@ -141,19 +143,31 @@ public class EdtControleur extends AsyncFragmentControleur {
 		avancement("mapping OK : "+nbCours+" cours sur "+mapCours.size()+" semaines", 55);
 		avancement("enregistrement json pref", 55);
 		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele)getActivite().getPrefs();
+		/*
 		for(int i = 0; i < mapCours.size(); i++) {
 			key = mapCours.keyAt(i);
 			ArrayList<JSONObject> lCours = mapCours.get(key);
 			prefs.setCoursSemaine(key, lCours);
 		}
+		*/
+		for(int i=indexPremiereSemaine ; i<=indexDerniereSemaine ; i++){
+			System.out.println("mapCours.get("+i+")");
+			ArrayList<JSONObject> lCours = mapCours.get(i);
+			if(lCours != null){
+				prefs.setCoursSemaine(i, lCours);
+			} else {
+				prefs.setCoursSemaine(i, null);
+			}
+		}
 		onMapCoursMapped();
 	}
 	
 	/**
-	 * appelé quand le jsonCours
+	 * appelé quand le jsonCours est traduit en objets java
 	 */
 	private void onMapCoursMapped(){
 		semainesPagerAdapter.onMapCoursMapped();
+		chargerVueComplete();
 	}
 
 	/**
@@ -220,7 +234,6 @@ public class EdtControleur extends AsyncFragmentControleur {
 	public void chargerVueComplete(){
 		super.chargerVueComplete();
 		ViewPager viewPager = (ViewPager) vue.getVue().findViewById(R.id.accueil_pager);
-		semainesPagerAdapter = new SemainesPagerAdapter(getFragment().getChildFragmentManager(), (MainActivite)a);
 		viewPager.setOffscreenPageLimit(SemainesPagerAdapter.NOMBRE_DE_SEMAINES_MAX+1);
 		viewPager.setAdapter(semainesPagerAdapter);
 		int positionViewPager = EdtControleur.semainesAvant;

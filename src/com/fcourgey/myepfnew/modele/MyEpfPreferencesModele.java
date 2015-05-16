@@ -129,17 +129,21 @@ public class MyEpfPreferencesModele extends PreferencesModele {
 		}
 	}
 	public void setCoursSemaine(int indexSemaine, ArrayList<JSONObject> lCours){
-		String s = "";
-		for(JSONObject jso : lCours){
-			String ajout = jso.toString();
-			// si on est pas à la fin, on ajoute le SEP
-			JSONObject dernierJso = lCours.get(lCours.size() - 1);
-			if(jso != dernierJso){
-				ajout += SEP_JSON_SEMAINE_V2;
+		if(lCours != null){
+			String s = "";
+			for(JSONObject jso : lCours){
+				String ajout = jso.toString();
+				// si on est pas à la fin, on ajoute le SEP
+				JSONObject dernierJso = lCours.get(lCours.size() - 1);
+				if(jso != dernierJso){
+					ajout += SEP_JSON_SEMAINE_V2;
+				}
+				s += ajout;
 			}
-			s += ajout;
+			pref.edit().putString(getKeyJsonSemaine(indexSemaine), s).apply();
+		} else {
+			pref.edit().putString(getKeyJsonSemaine(indexSemaine), null).apply();
 		}
-		pref.edit().putString(getKeyJsonSemaine(indexSemaine), s).apply();
 	}
 	private String getKeyJsonSemaine(int indexSemaine){
 		return KEY_JSON_SEMAINE_V2+indexSemaine;

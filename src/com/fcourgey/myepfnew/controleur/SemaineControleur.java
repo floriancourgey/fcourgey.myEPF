@@ -86,7 +86,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		Log.d(tag(), "onMapCoursMapped");
 		// TODO comparaison avec l'ancien
 		// si == alors pas de chgt
-		((SemaineVue)vue).initCours();
+		((SemaineVue)vue).initCours(true);
 	}
 	
 	

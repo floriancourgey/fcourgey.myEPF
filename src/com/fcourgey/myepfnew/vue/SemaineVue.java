@@ -15,6 +15,7 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -40,7 +41,7 @@ public class SemaineVue extends AsyncFragmentVue {
 //	private TextView tvTelechargement;
 	private TextView tvTelechargement2;
 	private RelativeLayout heuresContainer;
-	private ArrayList<RelativeLayout> lJoursContainer;
+	private ArrayList<RelativeLayout> lJours_edt;
 	
 	// String des jours de la semaine
 	private String[] jours;
@@ -87,52 +88,71 @@ public class SemaineVue extends AsyncFragmentVue {
 				
 				vueInitialisée = true;
 				
-				initCours();
+				initCours(false);
 			}
 		});
 	}
 	
-	public void initCours(){
+	private void chargerVueVacances(){
+		Log.d(tag(), "semaineVue de vacances");
+		chargerVueDefaut();
+		((LinearLayout)getVue().findViewById(R.id.vueDefaut)).setVisibility(View.GONE);
+		// header date
+		LinearLayout vueVacances = (LinearLayout)getVue().findViewById(R.id.vueVacances);
+		vueVacances.setVisibility(View.VISIBLE);
+		TextView tvDateVacances = (TextView)getVue().findViewById(R.id.tvDateVacances);
+		tvDateVacances.setText(((TextView)getVue().findViewById(R.id.tvSemaine2)).getText());
+		tvDateVacances.setGravity(Gravity.CENTER);
+	}
+	
+	public void initCours(final boolean initCoursSuiteAuTelechargement){
 		Log.d(tag(), "affichage des cours");
 		
-		SemaineControleur controleur = (SemaineControleur)this.controleur;
-		
-		ArrayList<JSONObject> lJsonCours = controleur.getLJsonCours();
-		if(lJsonCours == null){
-			return; // TODO vacances ou erreur
-		}
-		
-		final ArrayList<CoursVue> lCoursVues = new ArrayList<CoursVue>();
-		ArrayList<Cours> lCours = new ArrayList<Cours>();
-		
-		try {
-			for(JSONObject jsonCours : lJsonCours){
-				lCours.add(JsonMyEPF.jsoToListeCours(jsonCours, getActivite()));
-			}
-		} catch (JSONException e) {
-			e.printStackTrace(); // TODO
-			return;
-		}
-		// création boutons cours
-		// pour chaque container
-		Calendar jourCourant = (Calendar)controleur.getLundiDeCetteSemaine().clone();
-		int iJourCourant = Calendar.MONDAY;
-		String sJourCourant;
-		for(@SuppressWarnings("unused") RelativeLayout jour_container : lJoursContainer){
-			sJourCourant = jours[iJourCourant];
-			// boutons cours
-			/// on fait défiler tous les cours de ce jour ci
-			for(final Cours c : lCours){
-				// si on est dans le même jour
-				if(c.getCalendar().get(Calendar.DAY_OF_MONTH) == jourCourant.get(Calendar.DAY_OF_MONTH)){
-					int resID = getActivite().getResources().getIdentifier(sJourCourant+"_edt", "id", getActivite().getPackageName());
-					if(resID == 0){
-						Log.e(tag(), sJourCourant+"_edt Ressource introuvable, cours non ajouté : "+c);
-						break;
+		// tout se fait dans un thread
+		getActivite().runOnUiThread(new Runnable() {
+			public void run() {
+				SemaineControleur controleur = (SemaineControleur)SemaineVue.this.controleur;
+				
+				ArrayList<JSONObject> lJsonCours = controleur.getLJsonCours();
+				if(lJsonCours == null){
+					chargerVueVacances();
+					return;
+				}
+				
+				final ArrayList<CoursVue> lCoursVues = new ArrayList<CoursVue>();
+				ArrayList<Cours> lCours = new ArrayList<Cours>();
+				
+				// si c'est suite au téléchargement, on réinit la liste de cours
+				if(initCoursSuiteAuTelechargement){
+					lCours = new ArrayList<Cours>();
+				}
+				
+				try {
+					for(JSONObject jsonCours : lJsonCours){
+						lCours.add(JsonMyEPF.jsoToListeCours(jsonCours, getActivite()));
 					}
-					final RelativeLayout jour_edt = (RelativeLayout)getVue().findViewById(resID);
-					getActivite().runOnUiThread(new Runnable() {
-						public void run() {
+				} catch (JSONException e) {
+					e.printStackTrace(); // TODO
+					return;
+				}
+
+
+				// si c'est suite au téléchargement, il faut supprimer tous les cours
+				if(initCoursSuiteAuTelechargement){
+					for(final RelativeLayout jour_edt : lJours_edt){
+						jour_edt.removeAllViews();
+					}
+				}
+				
+				// création boutons cours
+				// pour chaque container
+				Calendar jourCourant = (Calendar)controleur.getLundiDeCetteSemaine().clone();
+				for(final RelativeLayout jour_edt : lJours_edt){
+					// boutons cours
+					/// on fait défiler tous les cours de ce jour ci
+					for(final Cours c : lCours){
+						// si on est dans le même jour
+						if(c.getCalendar().get(Calendar.DAY_OF_MONTH) == jourCourant.get(Calendar.DAY_OF_MONTH)){
 							jour_edt.removeAllViews();
 							double nbIntervallesHauteurBouton = (double)(c.getHeureFin()-c.getHeureDebut())*60/15  + (double)(c.getMinutesFinInt()-c.getMinutesDebutInt())/15;
 							int hauteurBouton = (int)(nbIntervallesHauteurBouton*HAUTEUR_INTERVALLE);
@@ -140,18 +160,17 @@ public class SemaineVue extends AsyncFragmentVue {
 							params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
 							double nbIntervallesMargeBouton = (double)(c.getHeureDebut()-SemaineControleur.HEURE_MIN)*60/15 + c.getMinutesDebutInt()/15;
 							int marge = (int)(nbIntervallesMargeBouton*HAUTEUR_INTERVALLE);
-		
 							params.topMargin = marge;
 							final CoursVue b = new CoursVue(getActivite(), c);
 							lCoursVues.add(b);
 							jour_edt.addView(b, params);
 						}
-					});
+					}
+					jourCourant.add(Calendar.DATE, 1);
 				}
+
 			}
-			jourCourant.add(Calendar.DATE, 1);
-			iJourCourant++;
-		}
+		});
 	}
 
 	/**
@@ -160,7 +179,7 @@ public class SemaineVue extends AsyncFragmentVue {
 	private void initBarreNow(){
         Calendar now = Calendar.getInstance();
         Calendar jourCourant = (Calendar)((SemaineControleur)controleur).getLundiDeCetteSemaine().clone();
-        for(RelativeLayout edt : lJoursContainer){
+        for(RelativeLayout edt : lJours_edt){
         	// intervalles
         	RelativeLayout parent = (RelativeLayout)edt.getParent();
         	RelativeLayout.LayoutParams paramsParent = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT); 
@@ -232,7 +251,7 @@ public class SemaineVue extends AsyncFragmentVue {
     		((View)heuresContainer.getParent().getParent()).setVisibility(View.GONE);
     	}
 		// jours container
-		lJoursContainer = new ArrayList<RelativeLayout>();
+		lJours_edt = new ArrayList<RelativeLayout>();
 		for (int iJour=Calendar.MONDAY; iJour < jours.length; iJour++){
 	    	String jour = jours[iJour];
 			// liste des jour_container
@@ -242,7 +261,7 @@ public class SemaineVue extends AsyncFragmentVue {
             	Log.i(tag(), nomContainer+" Ressource introuvable (getLayoutJours)");
             	continue;
             } else {
-            	lJoursContainer.add((RelativeLayout)getVue().findViewById(resID));
+            	lJours_edt.add((RelativeLayout)getVue().findViewById(resID));
             }
 		}
 	}
@@ -256,7 +275,7 @@ public class SemaineVue extends AsyncFragmentVue {
 	 */
 	private void initIntervalles(){
 		initIntervalles(heuresContainer, true);
-		for(RelativeLayout edt : lJoursContainer){
+		for(RelativeLayout edt : lJours_edt){
 			initIntervalles(edt, false);
 		}
 	}
