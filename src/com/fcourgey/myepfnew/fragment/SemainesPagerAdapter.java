@@ -17,11 +17,15 @@ import com.fcourgey.myepfnew.vue.CoursVue;
 
 public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	
+	private static final String TAG = "SemainesPagerAdapter";
+	
 	private static SparseArray<Fragment> lFrags = new SparseArray<Fragment>();
 	
 	private static MainActivite mere;
 	
 	public static final int NOMBRE_DE_SEMAINES_MAX_DEFAUT = EdtControleur.semainesAvant + 1 + EdtControleur.semainesApres; // TODO
+
+	
 	public static int NOMBRE_DE_SEMAINES_MAX;
 
     public SemainesPagerAdapter(FragmentManager fm, MainActivite mere) {
@@ -44,14 +48,21 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 		}
 		for(int i=0 ; i<NOMBRE_DE_SEMAINES_MAX ; i++){
 			SemaineFragment frag = (SemaineFragment) lFrags.get(i);
-			SemaineControleur controleur = (SemaineControleur)frag.getControleur();
-			if(frag == null || controleur==null || controleur.getLCoursVues() == null){
+			if(frag == null){
 				continue;
 			}
 			// set checked
-			if(frag.getView() != null)
+			if(frag.getView() != null){
 				((Switch)frag.getView().findViewById(R.id.sCm)).setChecked(actif);
-			// afficher/cacher cours (si CM && si pas de devoirs
+			} else {
+				Log.e(TAG, "definirCm("+actif+") sur frag n°"+i+" impossible car view null");
+			}
+
+			// afficher/cacher cours (si CM && si pas de devoirs)
+			SemaineControleur controleur = (SemaineControleur)frag.getControleur();
+			if(controleur==null || controleur.getLCoursVues() == null){
+				continue;
+			}
 			for(CoursVue cv : controleur.getLCoursVues()){
 				if(cv.getCours().isCm() && cv.getCours().getDevoirs()==null){
 					int visibility = (actif)?View.VISIBLE:View.GONE;
@@ -92,8 +103,9 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
      */
     public void avancement(String texte, int pourcentage) {
     	Log.i("SemainesPagerAdapter", "Avancement "+pourcentage+" : "+texte);
-    	for(int i=0 ; i<NOMBRE_DE_SEMAINES_MAX ; i++){
-			SemaineFragment frag = (SemaineFragment) lFrags.get(i);
+    	for(int i=EdtControleur.semainesAvant ; i<NOMBRE_DE_SEMAINES_MAX+EdtControleur.semainesAvant ; i++){
+			int index = i%(NOMBRE_DE_SEMAINES_MAX);
+			SemaineFragment frag = (SemaineFragment) lFrags.get(index);
 			if(frag == null){
 				continue;
 			}
@@ -103,8 +115,9 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	}
 
 	public void onMyEPFConnected() {
-		for(int i=0 ; i<NOMBRE_DE_SEMAINES_MAX ; i++){
-			SemaineFragment frag = (SemaineFragment) lFrags.get(i);
+		for(int i=EdtControleur.semainesAvant ; i<NOMBRE_DE_SEMAINES_MAX+EdtControleur.semainesAvant ; i++){
+			int index = i%(NOMBRE_DE_SEMAINES_MAX);
+			SemaineFragment frag = (SemaineFragment) lFrags.get(index);
 			if(frag == null){
 				continue;
 			}

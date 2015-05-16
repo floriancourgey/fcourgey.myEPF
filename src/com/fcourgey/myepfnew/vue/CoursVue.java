@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.entite.Cours;
-import com.fcourgey.myepfnew.entite.Matiere;
 import com.fcourgey.myepfnew.modele.DbModele;
 import com.fcourgey.myepfnew.modele.DbModele.Colonne;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;

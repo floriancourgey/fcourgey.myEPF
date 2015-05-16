@@ -24,7 +24,6 @@ import android.widget.ProgressBar;
 
 import com.fcourgey.android.mylib.framework.Activite;
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.controleur.EdtControleur;
 import com.fcourgey.myepfnew.controleur.MainControleur;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
