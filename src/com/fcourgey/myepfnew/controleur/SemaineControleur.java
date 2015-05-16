@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
 import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.entite.Cours;
-import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.vue.CoursVue;
 import com.fcourgey.myepfnew.vue.SemaineVue;
@@ -38,7 +37,6 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	private Calendar dimancheDeCetteSemaine;
 	
 	// cours
-	private ArrayList<CoursVue> lCoursVues; 
 	private ArrayList<JSONObject> lJsonCours;
 	
 	// String des jours de la semaine
@@ -92,7 +90,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	
 	public void onCoursDisplayed(){
 		avancement("Edt affiché", 100, false);
-		SemainesPagerAdapter.definirCm(null);
+		EdtPagesControleur.definirCm(null);
 		updateProchainSite();
 	}
 
@@ -107,7 +105,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		}
 		Calendar now = Calendar.getInstance();
 		Cours prochainCours = null;
-		for(CoursVue cv : lCoursVues){
+		for(CoursVue cv : ((SemaineVue)vue).getLCoursVue()){
 			if(cv.getVisibility() == View.GONE){
 				continue;
 			}
@@ -161,7 +159,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	}
 
 	public ArrayList<CoursVue> getLCoursVues() {
-		return lCoursVues;
+		return ((SemaineVue)vue).getLCoursVue();
 	}
 
 	public boolean isHeuresActives() {

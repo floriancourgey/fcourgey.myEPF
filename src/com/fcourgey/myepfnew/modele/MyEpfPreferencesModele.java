@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import com.fcourgey.android.mylib.framework.Activite;
 import com.fcourgey.android.mylib.framework.PreferencesModele;
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
+import com.fcourgey.myepfnew.controleur.EdtPagesControleur;
 
 public class MyEpfPreferencesModele extends PreferencesModele {
 	
@@ -89,7 +89,7 @@ public class MyEpfPreferencesModele extends PreferencesModele {
 	}
 	// Nombre de semaines à DL
 	public int getNbSemainesToDl(){
-		int iDefaut = SemainesPagerAdapter.NOMBRE_DE_SEMAINES_MAX_DEFAUT;
+		int iDefaut = EdtPagesControleur.NOMBRE_DE_SEMAINES_MAX_DEFAUT;
 		String sDefaut = Integer.toString(iDefaut);
 		try{
 			return Integer.parseInt(pref.getString(KEY_NB_SEMAINES_TO_DL, sDefaut));

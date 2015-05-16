@@ -33,10 +33,11 @@ import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
-import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.JsonMyEPF;
 import com.fcourgey.myepfnew.outils.StringOutils;
+import com.viewpagerindicator.TitlePageIndicator;
+import com.viewpagerindicator.UnderlinePageIndicator;
 
 /**
  * Est lancé onMyEpfConnected
@@ -61,17 +62,34 @@ public class EdtControleur extends AsyncFragmentControleur {
 	private final int indexDerniereSemaine; // idem
 	public static int indexSemaineActuelle; // idem
 	
-	private SemainesPagerAdapter semainesPagerAdapter;
+	private EdtPagesControleur semainesPagerAdapter;
 
 	public EdtControleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
 		super(f, inflater, container);
 		
 		vue = new AsyncFragmentVue(this, inflater, container, R.layout.edt_fragment);
 		
-		semainesPagerAdapter = new SemainesPagerAdapter(getFragment().getChildFragmentManager(), (MainActivite)a);
-		
-		// init index semaine
+		// pages
+		/// init
+		semainesPagerAdapter = new EdtPagesControleur(getFragment().getChildFragmentManager(), (MainActivite)a);
+		ViewPager viewPager = (ViewPager) vue.getVue().findViewById(R.id.accueil_pager);
+		viewPager.setOffscreenPageLimit(semainesAvant+1+semainesApres);
+		viewPager.setAdapter(semainesPagerAdapter);
+		/// positionnement de l'index actuel
+		int positionViewPager = EdtControleur.semainesAvant;
 		Calendar now = Calendar.getInstance();
+		Calendar samediActuel = Calendar.getInstance();
+		samediActuel.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+		samediActuel.set(Calendar.HOUR_OF_DAY, 14); // TODO dans les pref
+		if(now.after(samediActuel)){
+			positionViewPager++;
+		}
+		viewPager.setCurrentItem(positionViewPager);
+		/// ajout indicateur de pst
+		UnderlinePageIndicator titleIndicator = (UnderlinePageIndicator)vue.getVue().findViewById(R.id.titles);
+		titleIndicator.setViewPager(viewPager);
+
+		// init index semaine
 		indexSemaineActuelle = now.get(Calendar.WEEK_OF_YEAR);
 		indexPremiereSemaine = now.get(Calendar.WEEK_OF_YEAR)-semainesAvant;
 		indexDerniereSemaine = now.get(Calendar.WEEK_OF_YEAR)+semainesApres;
@@ -230,22 +248,6 @@ public class EdtControleur extends AsyncFragmentControleur {
 		semainesPagerAdapter.onMyEPFConnected();
 	}
 	
-	@Override
-	public void chargerVueComplete(){
-		super.chargerVueComplete();
-		ViewPager viewPager = (ViewPager) vue.getVue().findViewById(R.id.accueil_pager);
-		viewPager.setOffscreenPageLimit(SemainesPagerAdapter.NOMBRE_DE_SEMAINES_MAX+1);
-		viewPager.setAdapter(semainesPagerAdapter);
-		int positionViewPager = EdtControleur.semainesAvant;
-		Calendar now = Calendar.getInstance();
-		Calendar samediActuel = Calendar.getInstance();
-		samediActuel.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-		samediActuel.set(Calendar.HOUR_OF_DAY, 14); // TODO dans les pref
-		if(now.after(samediActuel)){
-			positionViewPager++;
-		}
-		viewPager.setCurrentItem(positionViewPager);
-	}
 	private void chargerVueDefaut(String texte) {
 		super.chargerVueDefaut();
 		((TextView)vue.getVue().findViewById(R.id.tvTitre)).setText(texte);

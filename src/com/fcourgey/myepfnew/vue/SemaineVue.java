@@ -24,9 +24,11 @@ import android.widget.TextView;
 import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.android.mylib.outils.Date;
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
+import com.fcourgey.myepfnew.controleur.EdtPagesControleur;
 import com.fcourgey.myepfnew.entite.Cours;
-import com.fcourgey.myepfnew.fragment.SemainesPagerAdapter;
+import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.JsonMyEPF;
 
 public class SemaineVue extends AsyncFragmentVue {
@@ -48,6 +50,8 @@ public class SemaineVue extends AsyncFragmentVue {
 	
 	// layout heures actif ?
 	private boolean heuresActives;
+	
+	private ArrayList<CoursVue> lCoursVues;
 	
 	// flag
 	private boolean vueInitialisée = false;
@@ -106,7 +110,7 @@ public class SemaineVue extends AsyncFragmentVue {
 	}
 	
 	public void initCours(final boolean initCoursSuiteAuTelechargement){
-		Log.d(tag(), "affichage des cours");
+		Log.d(tag(), "init cours");
 		
 		// tout se fait dans un thread
 		getActivite().runOnUiThread(new Runnable() {
@@ -119,13 +123,8 @@ public class SemaineVue extends AsyncFragmentVue {
 					return;
 				}
 				
-				final ArrayList<CoursVue> lCoursVues = new ArrayList<CoursVue>();
+				lCoursVues = new ArrayList<CoursVue>();
 				ArrayList<Cours> lCours = new ArrayList<Cours>();
-				
-				// si c'est suite au téléchargement, on réinit la liste de cours
-				if(initCoursSuiteAuTelechargement){
-					lCours = new ArrayList<Cours>();
-				}
 				
 				try {
 					for(JSONObject jsonCours : lJsonCours){
@@ -153,7 +152,6 @@ public class SemaineVue extends AsyncFragmentVue {
 					for(final Cours c : lCours){
 						// si on est dans le même jour
 						if(c.getCalendar().get(Calendar.DAY_OF_MONTH) == jourCourant.get(Calendar.DAY_OF_MONTH)){
-							jour_edt.removeAllViews();
 							double nbIntervallesHauteurBouton = (double)(c.getHeureFin()-c.getHeureDebut())*60/15  + (double)(c.getMinutesFinInt()-c.getMinutesDebutInt())/15;
 							int hauteurBouton = (int)(nbIntervallesHauteurBouton*HAUTEUR_INTERVALLE);
 							final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, hauteurBouton);
@@ -168,7 +166,8 @@ public class SemaineVue extends AsyncFragmentVue {
 					}
 					jourCourant.add(Calendar.DATE, 1);
 				}
-
+				definirCm(null);
+				Log.d(tag(), "cours àCharger("+lCours.size()+") chargés("+lCoursVues.size()+")");
 			}
 		});
 	}
@@ -224,9 +223,10 @@ public class SemaineVue extends AsyncFragmentVue {
 				Switch sCm = (Switch)vue.findViewById(R.id.sCm);
 				sCm.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				        SemainesPagerAdapter.definirCm(isChecked);
+				        EdtPagesControleur.definirCm(isChecked);
 				    }
 				});
+				definirCm(null); // ici, ajuste le switch mais ne cache pas les cours, car cours non chargés
 				// affichage "next"
 				SemaineControleur controleur = (SemaineControleur)SemaineVue.this.controleur;
 				Calendar now = Calendar.getInstance();
@@ -238,6 +238,29 @@ public class SemaineVue extends AsyncFragmentVue {
 				}
 			}
 		});
+	}
+	
+	/**
+	 * affiche/cache les CM de la semaine
+	 * @param actif
+	 */
+	public void definirCm(Boolean actif){
+		if(lCoursVues == null){
+			return;
+		}
+		if(actif == null){
+			actif = ((MyEpfPreferencesModele)getActivite().getPrefs()).getCm();
+		}
+		// set checked
+		((Switch)getVue().findViewById(R.id.sCm)).setChecked(actif);
+
+		// afficher/cacher cours (si CM && si pas de devoirs)
+		for(CoursVue cv : lCoursVues){
+			if(cv.getCours().isCm() && cv.getCours().getDevoirs()==null){
+				int visibility = (actif)?View.VISIBLE:View.GONE;
+				cv.setVisibility(visibility);
+			}
+		}
 	}
 	
 	/**
@@ -400,5 +423,10 @@ public class SemaineVue extends AsyncFragmentVue {
             	((TextView)vue.findViewById(resID)).setText(jourRaccourci);
             }
 	    }
+	}
+
+	public ArrayList<CoursVue> getLCoursVue() {
+		// TODO Auto-generated method stub
+		return lCoursVues;
 	}
 }

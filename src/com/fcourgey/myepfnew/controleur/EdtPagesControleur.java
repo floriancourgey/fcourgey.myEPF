@@ -1,4 +1,4 @@
-package com.fcourgey.myepfnew.fragment;
+package com.fcourgey.myepfnew.controleur;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,11 +11,11 @@ import android.widget.Switch;
 
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
-import com.fcourgey.myepfnew.controleur.EdtControleur;
-import com.fcourgey.myepfnew.controleur.SemaineControleur;
+import com.fcourgey.myepfnew.fragment.SemaineFragment;
 import com.fcourgey.myepfnew.vue.CoursVue;
+import com.fcourgey.myepfnew.vue.SemaineVue;
 
-public class SemainesPagerAdapter extends FragmentPagerAdapter {
+public class EdtPagesControleur extends FragmentPagerAdapter {
 	
 	private static final String TAG = "SemainesPagerAdapter";
 	
@@ -28,9 +28,9 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 	
 	public static int NOMBRE_DE_SEMAINES_MAX;
 
-    public SemainesPagerAdapter(FragmentManager fm, MainActivite mere) {
+    public EdtPagesControleur(FragmentManager fm, MainActivite mere) {
         super(fm);
-        SemainesPagerAdapter.mere = mere;
+        EdtPagesControleur.mere = mere;
     	NOMBRE_DE_SEMAINES_MAX = mere.getPrefs().getNbSemainesToDl();
     }
     
@@ -51,29 +51,16 @@ public class SemainesPagerAdapter extends FragmentPagerAdapter {
 			if(frag == null){
 				continue;
 			}
-			// set checked
-			if(frag.getView() != null){
-				((Switch)frag.getView().findViewById(R.id.sCm)).setChecked(actif);
-			} else {
-				Log.e(TAG, "definirCm("+actif+") sur frag n°"+i+" impossible car view null");
-			}
-
-			// afficher/cacher cours (si CM && si pas de devoirs)
+			// envoi à la vue
 			SemaineControleur controleur = (SemaineControleur)frag.getControleur();
-			if(controleur==null || controleur.getLCoursVues() == null){
-				continue;
-			}
-			for(CoursVue cv : controleur.getLCoursVues()){
-				if(cv.getCours().isCm() && cv.getCours().getDevoirs()==null){
-					int visibility = (actif)?View.VISIBLE:View.GONE;
-					cv.setVisibility(visibility);
-				}
-			}
+			SemaineVue vue = (SemaineVue)controleur.getVue();
+			vue.definirCm(actif);
+			
 			// update prochain site
 			controleur.updateProchainSite();
 		}
 	}
- 
+	
     @Override
     public Fragment getItem(int index) {
     	return SemaineFragment.newInstance(index);
