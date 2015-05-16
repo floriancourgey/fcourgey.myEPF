@@ -172,4 +172,8 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	public ArrayList<JSONObject> getLJsonCours() {
 		return lJsonCours;
 	}
+
+	public void onInitCours() {
+		updateProchainSite();
+	}
 }

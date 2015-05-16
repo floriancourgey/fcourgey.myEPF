@@ -168,6 +168,7 @@ public class SemaineVue extends AsyncFragmentVue {
 				}
 				definirCm(null);
 				Log.d(tag(), "cours àCharger("+lCours.size()+") chargés("+lCoursVues.size()+")");
+				((SemaineControleur)controleur).onInitCours();
 			}
 		});
 	}
