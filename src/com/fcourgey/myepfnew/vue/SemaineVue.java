@@ -109,9 +109,14 @@ public class SemaineVue extends AsyncFragmentVue {
 		tvDateVacances.setGravity(Gravity.CENTER);
 	}
 	
+	@Override
+	public void chargerVueDefaut() {
+		super.chargerVueDefaut();
+		LinearLayout vueVacances = (LinearLayout)getVue().findViewById(R.id.vueVacances);
+		vueVacances.setVisibility(View.GONE);
+	}
+	
 	public void initCours(final boolean initCoursSuiteAuTelechargement){
-		Log.d(tag(), "init cours");
-		
 		// tout se fait dans un thread
 		getActivite().runOnUiThread(new Runnable() {
 			public void run() {
@@ -121,6 +126,8 @@ public class SemaineVue extends AsyncFragmentVue {
 				if(lJsonCours == null){
 					chargerVueVacances();
 					return;
+				} else {
+					chargerVueComplete();
 				}
 				
 				lCoursVues = new ArrayList<CoursVue>();
@@ -166,11 +173,15 @@ public class SemaineVue extends AsyncFragmentVue {
 					}
 					jourCourant.add(Calendar.DATE, 1);
 				}
-				definirCm(null);
 				Log.d(tag(), "cours àCharger("+lCours.size()+") chargés("+lCoursVues.size()+")");
-				((SemaineControleur)controleur).onInitCours();
+				onInitCours();
 			}
 		});
+	}
+	
+	private void onInitCours(){
+		definirCm(null);
+		((SemaineControleur)controleur).onInitCours();
 	}
 
 	/**
@@ -427,7 +438,6 @@ public class SemaineVue extends AsyncFragmentVue {
 	}
 
 	public ArrayList<CoursVue> getLCoursVue() {
-		// TODO Auto-generated method stub
 		return lCoursVues;
 	}
 }

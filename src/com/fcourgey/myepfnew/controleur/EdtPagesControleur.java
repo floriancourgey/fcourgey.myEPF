@@ -97,7 +97,7 @@ public class EdtPagesControleur extends FragmentPagerAdapter {
 				continue;
 			}
 			SemaineControleur controleur = (SemaineControleur)frag.getControleur();
-			controleur.avancement(texte, pourcentage, true);
+			controleur.avancement(texte, pourcentage);
     	}
 	}
 

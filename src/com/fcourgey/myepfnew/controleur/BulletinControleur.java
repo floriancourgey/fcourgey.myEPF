@@ -39,7 +39,7 @@ import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 @SuppressWarnings("deprecation")
 public class BulletinControleur extends AsyncFragmentControleur {
 	
-public static String CHEMIN_BULLETIN;
+public static String CHEMIN_BULLETIN = "{SD}/{PACKAGE}/bulletin-{identifiant}.pdf";
 	
 	private boolean ecritureOK = false;
 	
@@ -61,7 +61,9 @@ public static String CHEMIN_BULLETIN;
 			String state = Environment.getExternalStorageState();
 			if (Environment.MEDIA_MOUNTED.equals(state)) {
 				ecritureOK = true;
-				CHEMIN_BULLETIN = Environment.getExternalStorageDirectory()+"/bulletin-myepf-"+identifiant+".pdf";
+				CHEMIN_BULLETIN = CHEMIN_BULLETIN.replace("{SD}", Environment.getExternalStorageDirectory().toString());
+				CHEMIN_BULLETIN = CHEMIN_BULLETIN.replace("{PACKAGE}", getActivite().getPackageName());
+				CHEMIN_BULLETIN = CHEMIN_BULLETIN.replace("{IDENTIFIANT}", identifiant);
 			} else {
 				ecritureOK = false;
 				throw new ReadOnlyBufferException();

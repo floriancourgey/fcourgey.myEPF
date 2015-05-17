@@ -57,7 +57,7 @@ public class MainControleur {
 	
 	private Fragment fragmentActuel;
 	
-	public static String CHEMIN_PHOTO_PROFIL;
+	public static String CHEMIN_PHOTO_PROFIL = "{FILES_DIR}/photo-profil-{IDENTIFIANT}.jpg";
 	
 	private static final String REGEX_PHOTO = "id=\"photo\" src=\"([/\\w-]*.jpg)\"";
 	private static final String STOP_PHOTO = "id=\"photo\"";
@@ -66,7 +66,8 @@ public class MainControleur {
 	
 	public MainControleur(MainActivite a, Bundle savedInstanceState) {
 		this.a = a;
-		CHEMIN_PHOTO_PROFIL = a.getFilesDir()+"/photo-profil-"+a.getIdentifiant()+".jpg";
+		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{FILES_DIR}", a.getFilesDir().toString());
+		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{IDENTIFIANT}",a.getIdentifiant());
 		vue = new DrawerVue(this, a.getIdentifiant());
 		// affiche photo de profil si existe
 		// sinon, le DL sera appelé par onMyEPFConnected

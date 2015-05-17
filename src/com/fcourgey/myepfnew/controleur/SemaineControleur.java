@@ -48,6 +48,8 @@ public class SemaineControleur extends AsyncFragmentControleur {
 
 	public SemaineControleur(Fragment f, LayoutInflater inflater, ViewGroup container, int indexFragment){
 		super(f, inflater, container);
+		avancement("init controleur", 55);
+		
 		// init index
 		this.indexFragment = indexFragment;
 		Calendar now = Calendar.getInstance();
@@ -62,6 +64,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		Log.i(tag(), "onCreate");
 		
 		// init json des pref
+		avancement("init json", 55);
 		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele)getActivite().getPrefs();
 		lJsonCours = prefs.getCoursSemaine(indexSemaine);
 		
@@ -69,6 +72,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		heuresActives = getPrefs().getBoolean(MyEpfPreferencesModele.KEY_HEURES, true);
 		
 		// init design
+		avancement("init vue", 55);
 		jours = new DateFormatSymbols(Locale.getDefault()).getWeekdays();
 		vue = new SemaineVue(this, inflater, container);
 	}
@@ -86,14 +90,6 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		// si == alors pas de chgt
 		((SemaineVue)vue).initCours(true);
 	}
-	
-	
-	public void onCoursDisplayed(){
-		avancement("Edt affiché", 100, false);
-		EdtPagesControleur.definirCm(null);
-		updateProchainSite();
-	}
-
 
 	/**
 	 * Définit le prochain site où l'on a cours
@@ -143,8 +139,12 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	 * Affiche l'avancement sur la progressBar et son textview correspondant
 	 * Fait un print log également
 	 */
-	public void avancement(final String texte, final int pourcentage, final boolean appeleParLaMere){
-		((SemaineVue)vue).avancement(texte, pourcentage, appeleParLaMere);
+	public void avancement(final String texte, final int pourcentage){
+		if(vue == null){
+			Log.i(tag(), "Avancement "+pourcentage+" : "+texte);
+			return;
+		}
+		((SemaineVue)vue).avancement(texte, pourcentage, true);
 	}
 
 	public int getIndexFragment() {

@@ -24,8 +24,7 @@ public class MyEpfPreferencesModele extends PreferencesModele {
 	public static String KEY_CM;
 	public static String KEY_HEURES;
 	public static String KEY_NB_SEMAINES_TO_DL;
-//	public static String KEY_JSON_SEMAINE = "key_json_semaine";
-	public static String KEY_JSON_SEMAINE_V2 = "key_json_semaine_v2_n°";
+	public static String KEY_JSON_SEMAINE_V2 = "key_json_semaine_v2_n°{INDEX_SEMAINE}";
 	private static final String SEP_JSON_SEMAINE_V2 = "<SEP>";
 	public static String KEY_C_EXAM;
 	public static String KEY_C_TP;
@@ -146,19 +145,8 @@ public class MyEpfPreferencesModele extends PreferencesModele {
 		}
 	}
 	private String getKeyJsonSemaine(int indexSemaine){
-		return KEY_JSON_SEMAINE_V2+indexSemaine;
+		return KEY_JSON_SEMAINE_V2.replace("{INDEX_SEMAINE}", Integer.toString(indexSemaine));
 	}
-	/*
-	public String getJsonSemaine(int indexSemaine){
-		return pref.getString(KEY_JSON_SEMAINE+indexSemaine, null);
-	}
-	public void setJsonSemaine(int indexSemaine, String s){
-		pref.edit().putString(KEY_JSON_SEMAINE+indexSemaine, s).apply();
-	}
-	public void supprimerJsonSemaine(int indexSemaine){
-		pref.edit().remove(KEY_JSON_SEMAINE+indexSemaine).commit();
-	}
-	*/
 	public void supprimerTousLesJsonSemaine(){
 		/*
 		for(int i=0 ; i<60 ; i++){
