@@ -72,13 +72,13 @@ public class MainActivite extends Activite {
 			e.printStackTrace();
 		}
 		
+		controleur = new MainControleur(this, savedInstanceState);
+		
 		// connexion à myEPF si pas fait et pas en cours
 		if(!connecteAMyEpf && !enTrainDeSeConnecterAMyEPF){
 			Log.i(TAG, "Connexion à myEPF");
 			connexionMyEPF();
 		}
-		
-		controleur = new MainControleur(this, savedInstanceState);
 	}
 	
 	/**

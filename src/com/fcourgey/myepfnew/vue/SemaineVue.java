@@ -188,10 +188,15 @@ public class SemaineVue extends AsyncFragmentVue {
 	 * ajout de la barre now
 	 */
 	private void initBarreNow(){
+		// on zappe si on est pas sur la semaine d'ajourd'hui
+		Calendar lundiDeCetteSemaine = ((SemaineControleur)controleur).getLundiDeCetteSemaine();
         Calendar now = Calendar.getInstance();
-        Calendar jourCourant = (Calendar)((SemaineControleur)controleur).getLundiDeCetteSemaine().clone();
+        if(now.get(Calendar.WEEK_OF_YEAR) != lundiDeCetteSemaine.get(Calendar.WEEK_OF_YEAR)){
+        	return;
+        }
+        //  barre now
+        Calendar jourCourant = (Calendar)lundiDeCetteSemaine.clone();
         for(RelativeLayout edt : lJours_edt){
-        	// intervalles
         	RelativeLayout parent = (RelativeLayout)edt.getParent();
         	RelativeLayout.LayoutParams paramsParent = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT); 
 	        /// si on est sur le jour d'ajourd'hui
@@ -209,7 +214,7 @@ public class SemaineVue extends AsyncFragmentVue {
 	        	paramsBarreNow.topMargin = (int)((heure*SemaineControleur.NB_INTERVALLE_PAR_HEURE+minutes/SemaineControleur.INTERVALLE)*HAUTEUR_INTERVALLE);
 	        	paramsBarreNow.height = 5;
 	        	rlBarreNow.addView(barreNow, paramsBarreNow);
-	        	return;
+	        	break;
 	        }
 	        jourCourant.add(Calendar.DATE, 1);
         }

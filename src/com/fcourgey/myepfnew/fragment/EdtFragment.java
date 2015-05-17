@@ -1,6 +1,7 @@
 package com.fcourgey.myepfnew.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ public class EdtFragment extends AsyncFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		
+		Log.e("EdtFragment", "savedInstanceState "+savedInstanceState);
 		controleur = new EdtControleur(this, inflater, container);
 		
 		return controleur.getVue().getVue();
