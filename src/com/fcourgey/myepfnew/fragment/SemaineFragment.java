@@ -37,6 +37,6 @@ public class SemaineFragment extends Fragment {
 		
 		controleur = new SemaineControleur(this, inflater, container, indexFragment);
 
-		return controleur.getVue().getVue();
+		return controleur.getVue();
 	}
 }

@@ -20,7 +20,7 @@
         android:name="MonApplication"
         >
         <activity
-            android:name="com.fcourgey.myepfnew.activite.AccueilActivite"
+            android:name=".activite.AccueilActivite"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.fcourgey.myepfnew.activite.MainActivite" />
-        <activity android:name="com.fcourgey.myepfnew.activite.PreferencesActivite" />
+        <activity android:name=".activite.MainActivite" />
+        <activity android:name=".activite.PreferencesActivite" />
     </application>
 
 </manifest>

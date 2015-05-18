@@ -15,38 +15,48 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 import com.fcourgey.android.mylib.framework.Activite;
+import com.fcourgey.android.mylib.framework.ActiviteVue;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.controleur.MainControleur;
 import com.joanzapata.android.iconify.Iconify;
 
 @SuppressWarnings("deprecation")
-public class DrawerVue {
+public class DrawerVue extends ActiviteVue{
 	
 	@SuppressWarnings("unused")
 	private static final String TAG = "DrawerVue"; 
 	
 	private MainActivite a;
 	private MainControleur controleur;
+	private String identifiant;
 	
-	private DrawerLayout layoutGeneral; // contient la vue principale et la vue du drawer
-	private LinearLayout vue; //vue du drawer
-	private ActionBarDrawerToggle toggleBouton; // bouton toggle en haut à gauche dans l'action bar
-	private ListView lTitres; // listView des titres sur la gauche : Edt, bulletin, ...
+//	@InjectView(R.id.layoutGeneral)
+	protected DrawerLayout layoutGeneral; // contient la vue principale et la vue du drawer
+//	@InjectView(R.id.drawer)
+	protected LinearLayout drawer; //vue du drawer
+	protected ActionBarDrawerToggle toggleBouton; // bouton toggle en haut à gauche dans l'action bar
+	@InjectView(R.id.lTitres)
+	protected ListView lTitres; // listView des titres sur la gauche : Edt, bulletin, ...
 	
-	public DrawerVue(MainControleur controleur, String identifiant) {
+	public DrawerVue(MainControleur controleur) {
+		super(controleur);
 		this.controleur = controleur;
-		this.a = controleur.getActivite();
+		this.a = (MainActivite) controleur.getActivite();
+		this.identifiant = controleur.getIdentifiant();
+		
 		initDrawer();
+		ButterKnife.inject(this, layoutGeneral);
 		initToggleButton();
 		initContenu(identifiant);
 	}
-	
 	private void initDrawer(){
-		layoutGeneral = (DrawerLayout) a.findViewById(R.id.drawer_layout);
-		vue = (LinearLayout) a.findViewById(R.id.drawer);
+		layoutGeneral = (DrawerLayout) a.findViewById(R.id.layoutGeneral);
+		drawer = (LinearLayout) a.findViewById(R.id.drawer);
 		
 		// Set a custom shadow that overlays the main content when the drawer opens
 		layoutGeneral.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -99,7 +109,7 @@ public class DrawerVue {
 	}
 
 	public LinearLayout getVue() {
-		return vue;
+		return drawer;
 	}
 
 	public ActionBarDrawerToggle getToggleBouton() {

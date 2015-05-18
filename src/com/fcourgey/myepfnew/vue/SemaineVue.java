@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -24,9 +23,8 @@ import android.widget.TextView;
 import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.android.mylib.outils.Date;
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.activite.MainActivite;
-import com.fcourgey.myepfnew.controleur.SemaineControleur;
 import com.fcourgey.myepfnew.controleur.EdtPagesControleur;
+import com.fcourgey.myepfnew.controleur.SemaineControleur;
 import com.fcourgey.myepfnew.entite.Cours;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.JsonMyEPF;
@@ -56,16 +54,16 @@ public class SemaineVue extends AsyncFragmentVue {
 	// flag
 	private boolean vueInitialisée = false;
 	
-	public SemaineVue(SemaineControleur controleur, LayoutInflater inflater, ViewGroup container){
-		super(controleur, inflater, container, R.layout.semaine_fragment);
+	public SemaineVue(SemaineControleur controleur){
+		super(controleur);
 		
 		jours = SemaineControleur.getJours();
 		heuresActives = controleur.isHeuresActives();
 		
 //		pbTelechargement = (ProgressBar)vue.findViewById(R.id.pbTelechargement);
-		pbTelechargement2 = (ProgressBar)vue.findViewById(R.id.pbTelechargement2);
+		pbTelechargement2 = (ProgressBar)findViewById(R.id.pbTelechargement2);
 //		tvTelechargement = (TextView)vue.findViewById(R.id.tvTelechargement);
-		tvTelechargement2 = (TextView)vue.findViewById(R.id.tvTelechargement2);
+		tvTelechargement2 = (TextView)findViewById(R.id.tvTelechargement2);
 		
 		initHeader();
 		
@@ -73,7 +71,7 @@ public class SemaineVue extends AsyncFragmentVue {
 		
 		// lignes moches mais
 		// nécessaires pour le getHeight
-		final RelativeLayout lundi_edt = (RelativeLayout)getVue().findViewById(R.id.lundi_edt);
+		final RelativeLayout lundi_edt = (RelativeLayout)findViewById(R.id.lundi_edt);
 		ViewTreeObserver vto = lundi_edt.getViewTreeObserver();													
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {							
 			public void onGlobalLayout() {
@@ -100,19 +98,19 @@ public class SemaineVue extends AsyncFragmentVue {
 	private void chargerVueVacances(){
 		Log.d(tag(), "semaineVue de vacances");
 		chargerVueDefaut();
-		((LinearLayout)getVue().findViewById(R.id.vueDefaut)).setVisibility(View.GONE);
+		((LinearLayout)findViewById(R.id.vueDefaut)).setVisibility(View.GONE);
 		// header date
-		LinearLayout vueVacances = (LinearLayout)getVue().findViewById(R.id.vueVacances);
+		LinearLayout vueVacances = (LinearLayout)findViewById(R.id.vueVacances);
 		vueVacances.setVisibility(View.VISIBLE);
-		TextView tvDateVacances = (TextView)getVue().findViewById(R.id.tvDateVacances);
-		tvDateVacances.setText(((TextView)getVue().findViewById(R.id.tvSemaine2)).getText());
+		TextView tvDateVacances = (TextView)findViewById(R.id.tvDateVacances);
+		tvDateVacances.setText(((TextView)findViewById(R.id.tvSemaine2)).getText());
 		tvDateVacances.setGravity(Gravity.CENTER);
 	}
 	
 	@Override
 	public void chargerVueDefaut() {
 		super.chargerVueDefaut();
-		LinearLayout vueVacances = (LinearLayout)getVue().findViewById(R.id.vueVacances);
+		LinearLayout vueVacances = (LinearLayout)findViewById(R.id.vueVacances);
 		vueVacances.setVisibility(View.GONE);
 	}
 	
@@ -227,7 +225,7 @@ public class SemaineVue extends AsyncFragmentVue {
 		controleur.getActivite().runOnUiThread(new Runnable() {
 			public void run() {
 				// texte de la date de la semaine
-				TextView tvSemaine2  =(TextView)vue.findViewById(R.id.tvSemaine2);
+				TextView tvSemaine2  =(TextView)findViewById(R.id.tvSemaine2);
 				SemaineControleur sControleur = ((SemaineControleur)controleur);
 				Calendar lundiDeCetteSemaine = sControleur.getLundiDeCetteSemaine();
 				Calendar dimancheDeCetteSemaine = sControleur.getDimancheDeCetteSemaine();
@@ -237,7 +235,7 @@ public class SemaineVue extends AsyncFragmentVue {
 				texte = texte.replace("{MOIS}", Date.abreMois(dimancheDeCetteSemaine));
 				tvSemaine2.setText(texte);
 				// activation switch CM
-				Switch sCm = (Switch)vue.findViewById(R.id.sCm);
+				Switch sCm = (Switch)findViewById(R.id.sCm);
 				sCm.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				        EdtPagesControleur.definirCm(isChecked);
@@ -248,9 +246,9 @@ public class SemaineVue extends AsyncFragmentVue {
 				SemaineControleur controleur = (SemaineControleur)SemaineVue.this.controleur;
 				Calendar now = Calendar.getInstance();
 				if(controleur.getIndexSemaine() != now.get(Calendar.WEEK_OF_YEAR)){
-					TextView tvLabelProchainSite  =(TextView)vue.findViewById(R.id.tvLabelProchainSite);
+					TextView tvLabelProchainSite  =(TextView)findViewById(R.id.tvLabelProchainSite);
 					tvLabelProchainSite.setVisibility(View.GONE);
-					TextView tvProchainSite  =(TextView)vue.findViewById(R.id.tvProchainSite);
+					TextView tvProchainSite  =(TextView)findViewById(R.id.tvProchainSite);
 					tvProchainSite.setVisibility(View.GONE);
 				}
 			}
@@ -269,7 +267,7 @@ public class SemaineVue extends AsyncFragmentVue {
 			actif = ((MyEpfPreferencesModele)getActivite().getPrefs()).getCm();
 		}
 		// set checked
-		((Switch)getVue().findViewById(R.id.sCm)).setChecked(actif);
+		((Switch)findViewById(R.id.sCm)).setChecked(actif);
 
 		// afficher/cacher cours (si CM && si pas de devoirs)
 		for(CoursVue cv : lCoursVues){
@@ -285,7 +283,7 @@ public class SemaineVue extends AsyncFragmentVue {
 	 */
 	private void initContainers() {
 		// heures container
-		heuresContainer = ((RelativeLayout)vue.findViewById(R.id.heures_edt));
+		heuresContainer = ((RelativeLayout)findViewById(R.id.heures_edt));
 		// si les heures sont cachées dans les pref, je les cache
     	if(!heuresActives){
     		((View)heuresContainer.getParent().getParent()).setVisibility(View.GONE);
@@ -301,7 +299,7 @@ public class SemaineVue extends AsyncFragmentVue {
             	Log.i(tag(), nomContainer+" Ressource introuvable (getLayoutJours)");
             	continue;
             } else {
-            	lJours_edt.add((RelativeLayout)getVue().findViewById(resID));
+            	lJours_edt.add((RelativeLayout)findViewById(resID));
             }
 		}
 	}
@@ -416,9 +414,9 @@ public class SemaineVue extends AsyncFragmentVue {
 		controleur.getActivite().runOnUiThread(new Runnable() {
 			public void run() {
 				if(c == null){
-					((TextView)vue.findViewById(R.id.tvProchainSite)).setText("weekend !");
+					((TextView)findViewById(R.id.tvProchainSite)).setText("weekend !");
 				} else {
-					((TextView)vue.findViewById(R.id.tvProchainSite)).setText(c.getSite()+" ("+c.getSalle()+")");
+					((TextView)findViewById(R.id.tvProchainSite)).setText(c.getSite()+" ("+c.getSalle()+")");
 				}
 			}
 		});
@@ -437,7 +435,7 @@ public class SemaineVue extends AsyncFragmentVue {
             	Log.i(tag(), nomHeader+" Ressource introuvable (getLayoutJours)");
             	continue;
             } else {
-            	((TextView)vue.findViewById(resID)).setText(jourRaccourci);
+            	((TextView)findViewById(resID)).setText(jourRaccourci);
             }
 	    }
 	}

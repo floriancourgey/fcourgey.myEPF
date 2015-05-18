@@ -15,6 +15,6 @@ public class AProposFragment extends Fragment {
 		
 		controleur = new AProposControleur(this, inflater, container);
 		
-		return controleur.getVue().getVue();
+		return controleur.getVue();
 	}
 }

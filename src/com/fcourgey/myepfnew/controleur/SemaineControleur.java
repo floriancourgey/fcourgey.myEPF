@@ -74,7 +74,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		// init design
 		avancement("init vue", 55);
 		jours = new DateFormatSymbols(Locale.getDefault()).getWeekdays();
-		vue = new SemaineVue(this, inflater, container);
+		vue = new SemaineVue(this);
 	}
 
 	/**

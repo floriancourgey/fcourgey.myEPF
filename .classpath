@@ -14,5 +14,10 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/android-support-v7-appcompat"/>
 	<classpathentry exported="true" kind="src" path="/android.mylib"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ViewPagerIndicator"/>
+	<classpathentry kind="src" path=".apt_generated">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

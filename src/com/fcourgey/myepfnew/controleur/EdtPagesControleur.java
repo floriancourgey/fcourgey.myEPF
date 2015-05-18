@@ -5,14 +5,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
 
-import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.fragment.SemaineFragment;
-import com.fcourgey.myepfnew.vue.CoursVue;
 import com.fcourgey.myepfnew.vue.SemaineVue;
 
 public class EdtPagesControleur extends FragmentPagerAdapter {

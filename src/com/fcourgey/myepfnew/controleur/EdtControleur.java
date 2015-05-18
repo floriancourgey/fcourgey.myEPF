@@ -25,6 +25,8 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
 import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
@@ -36,7 +38,6 @@ import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.JsonMyEPF;
 import com.fcourgey.myepfnew.outils.StringOutils;
-import com.viewpagerindicator.TitlePageIndicator;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
 /**
@@ -63,18 +64,23 @@ public class EdtControleur extends AsyncFragmentControleur {
 	public static int indexSemaineActuelle; // idem
 	
 	private EdtPagesControleur semainesPagerAdapter;
+	
+	@InjectView(R.id.accueil_pager)
+	protected ViewPager accueil_pager;
 
 	public EdtControleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
 		super(f, inflater, container);
 		
-		vue = new AsyncFragmentVue(this, inflater, container, R.layout.edt_fragment);
+		vue = new AsyncFragmentVue(this);
+		
+		ButterKnife.inject(this, vue);
 		
 		// pages
 		/// init
 		semainesPagerAdapter = new EdtPagesControleur(getFragment().getChildFragmentManager(), (MainActivite)a);
-		ViewPager viewPager = (ViewPager) vue.getVue().findViewById(R.id.accueil_pager);
-		viewPager.setOffscreenPageLimit(semainesAvant+1+semainesApres);
-		viewPager.setAdapter(semainesPagerAdapter);
+//		ViewPager viewPager = (ViewPager) vue.findViewById(R.id.accueil_pager);
+		accueil_pager.setOffscreenPageLimit(semainesAvant+1+semainesApres);
+		accueil_pager.setAdapter(semainesPagerAdapter);
 		/// positionnement de l'index actuel
 		int positionViewPager = EdtControleur.semainesAvant;
 		Calendar now = Calendar.getInstance();
@@ -84,10 +90,10 @@ public class EdtControleur extends AsyncFragmentControleur {
 		if(now.after(samediActuel)){
 			positionViewPager++;
 		}
-		viewPager.setCurrentItem(positionViewPager);
+		accueil_pager.setCurrentItem(positionViewPager);
 		/// ajout indicateur de pst
-		UnderlinePageIndicator titleIndicator = (UnderlinePageIndicator)vue.getVue().findViewById(R.id.titles);
-		titleIndicator.setViewPager(viewPager);
+		UnderlinePageIndicator titleIndicator = (UnderlinePageIndicator)vue.findViewById(R.id.titles);
+		titleIndicator.setViewPager(accueil_pager);
 
 		// init index semaine
 		indexSemaineActuelle = now.get(Calendar.WEEK_OF_YEAR);
@@ -250,6 +256,6 @@ public class EdtControleur extends AsyncFragmentControleur {
 	
 	private void chargerVueDefaut(String texte) {
 		super.chargerVueDefaut();
-		((TextView)vue.getVue().findViewById(R.id.tvTitre)).setText(texte);
+		((TextView)vue.findViewById(R.id.tvTitre)).setText(texte);
 	}
 }

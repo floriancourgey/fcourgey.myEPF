@@ -20,7 +20,7 @@ public class EdtFragment extends AsyncFragment {
 		Log.e("EdtFragment", "savedInstanceState "+savedInstanceState);
 		controleur = new EdtControleur(this, inflater, container);
 		
-		return controleur.getVue().getVue();
+		return controleur.getVue();
 	}
 
 	public void onDelaiDAttenteDepassé() {

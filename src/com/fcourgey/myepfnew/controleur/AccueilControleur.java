@@ -5,12 +5,14 @@ import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Bundle;
 
+import com.fcourgey.android.mylib.framework.ActiviteControleur;
 import com.fcourgey.myepfnew.activite.AccueilActivite;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.vue.IdentifiantsVue;
 
-public class AccueilControleur {
+public class AccueilControleur extends ActiviteControleur {
 	
 	@SuppressWarnings("unused")
 	private static final String TAG = "AccueilControleur";
@@ -24,7 +26,8 @@ public class AccueilControleur {
 	 * on les demande puis on lance l'appli
 	 */
 	@SuppressLint("InflateParams")
-	public AccueilControleur(final AccueilActivite activite){
+	public AccueilControleur(final AccueilActivite activite, Bundle savedInstanceState){
+		super(activite, savedInstanceState);
 		// locale
 		Locale.setDefault(Locale.FRANCE);
 			

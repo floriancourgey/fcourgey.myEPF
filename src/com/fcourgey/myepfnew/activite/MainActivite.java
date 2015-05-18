@@ -21,6 +21,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 import com.fcourgey.android.mylib.framework.Activite;
 import com.fcourgey.myepfnew.R;
@@ -28,13 +30,14 @@ import com.fcourgey.myepfnew.controleur.MainControleur;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.Securite;
+import com.fcourgey.myepfnew.vue.DrawerVue;
 
 @SuppressWarnings("deprecation")
 public class MainActivite extends Activite {
 	
 	private static final String TAG = "MainActivite";
 	
-	private MainControleur controleur;
+	protected MainControleur controleur;
 	
 	public static final int NB_SEC_REQ_TIMEOUT = 15;
 
@@ -44,39 +47,43 @@ public class MainActivite extends Activite {
 	private static String identifiant;
 	private static String mdp;
 	
-	private static WebView wvCachee;
+	// composant
+	@InjectView(R.id.pbConnexionMyEpf)
+    protected ProgressBar pbConnexionMyEpf;
+	@InjectView(R.id.wvCachee)
+	protected WebView wvCachee;
 	
 	public static boolean edtDejaTelechargeUneFois = false;
 	
-	private ProgressBar pbConnexionMyEpf;
+//	private ProgressBar pbConnexionMyEpf;
 	
 	private MyEpfPreferencesModele prefs;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main_activite);
+		
+		ButterKnife.inject(this);
 		
 		prefs = AccueilActivite.prefs;
 		
 		edtDejaTelechargeUneFois = prefs.getBoolean(MyEpfPreferencesModele.KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS, false);
 		
-		setContentView(R.layout.main_activite);
-		
-		pbConnexionMyEpf = (ProgressBar)findViewById(R.id.pbConnexionMyEpf);
-		pbConnexionMyEpf.getProgressDrawable().setColorFilter(Color.CYAN, Mode.SRC_IN);
-		
 		identifiant = prefs.getIdentifiant();
 		try {
 			mdp = Securite.decrypt(prefs.getMdp());
 		} catch (Exception e) {
-			e.printStackTrace();
+			e.printStackTrace(); // TODO
 		}
 		
 		controleur = new MainControleur(this, savedInstanceState);
-		
+
+		pbConnexionMyEpf.getProgressDrawable().setColorFilter(Color.CYAN, Mode.SRC_IN);
+
 		// connexion à myEPF si pas fait et pas en cours
 		if(!connecteAMyEpf && !enTrainDeSeConnecterAMyEPF){
-			Log.i(TAG, "Connexion à myEPF");
+			avancement("Connexion à myEPF", 55);
 			connexionMyEPF();
 		}
 	}
@@ -89,8 +96,8 @@ public class MainActivite extends Activite {
 	@JavascriptInterface
 	public void connexionMyEPF() {
 		enTrainDeSeConnecterAMyEPF = true;
-		avancement("Requête login", 5);
-		wvCachee = (WebView)findViewById(R.id.wvCachee);
+		avancement("Requête login", 55);
+//		wvCachee = (WebView)findViewById(R.id.wvCachee);
 		runOnUiThread(new Runnable() {
 			@JavascriptInterface
 			@SuppressLint({ "NewApi", "JavascriptInterface", "SetJavaScriptEnabled" })
@@ -101,9 +108,9 @@ public class MainActivite extends Activite {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 				      WebView.setWebContentsDebuggingEnabled(true);
 				}
-				MainActivite.wvCachee.setWebChromeClient(new WebChromeClient());
-				MainActivite.wvCachee.loadUrl(MyEpfUrl.LOGIN_REQUETE);
-				MainActivite.wvCachee.setWebViewClient(new WebViewClient(){
+				wvCachee.setWebChromeClient(new WebChromeClient());
+				wvCachee.loadUrl(MyEpfUrl.LOGIN_REQUETE);
+				wvCachee.setWebViewClient(new WebViewClient(){
 					
 				    private boolean ignorerRequetesAccueil = false;
 				    
@@ -133,7 +140,7 @@ public class MainActivite extends Activite {
 				    		js+="document.getElementById('password').value='"+mdpEchapé+"';";
 				    		js+="document.getElementById('form1').submit();";
 				    		wvCachee.loadUrl(js);
-				    		avancement("Requête accueil", 35);
+				    		avancement("Requête accueil", 55);
 				    	}
 				    	// 1 bis -> mauvais identifiants
 				    	// 2
@@ -142,13 +149,13 @@ public class MainActivite extends Activite {
 				    		if(!ignorerRequetesAccueil){
 				    			ignorerRequetesAccueil = true;
 				    			wvCachee.loadUrl(MyEpfUrl.EDT_REQUETE);
-				    			avancement("Requête init edt 1", 50);
+				    			avancement("Requête init edt 1", 55);
 				    		}
 				    	} 
 				    	// 3
 				    	else if(url.contains(MyEpfUrl.EDT_RESULTAT)){
 				    		if(premiereRequeteEdtResultat){
-				    			avancement("Requête init edt 2", 65);
+				    			avancement("Requête init edt 2", 55);
 				    			premiereRequeteEdtResultat = false;
 				    			secondeRequeteEdtResultat = true;
 				    		} else if(secondeRequeteEdtResultat){
@@ -270,7 +277,7 @@ public class MainActivite extends Activite {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (controleur.getVue().getToggleBouton().onOptionsItemSelected(item)) {
+		if (((DrawerVue)controleur.getVue()).getToggleBouton().onOptionsItemSelected(item)) {
 	      return true;
 	    }
 		if (item.getItemId() == android.R.id.home) {

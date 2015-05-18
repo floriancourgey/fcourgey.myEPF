@@ -29,24 +29,25 @@ import android.webkit.CookieManager;
 import android.widget.TextView;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
-import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
+import com.fcourgey.myepfnew.vue.BulletinVue;
 
 @SuppressWarnings("deprecation")
 public class BulletinControleur extends AsyncFragmentControleur {
 	
-public static String CHEMIN_BULLETIN = "{SD}/{PACKAGE}/bulletin-{identifiant}.pdf";
+public static String CHEMIN_BULLETIN = "{SD}/myEPF/bulletin-{IDENTIFIANT}.pdf";
 	
 	private boolean ecritureOK = false;
 	
 	public BulletinControleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
 		super(f, inflater, container);
 
-		vue = new AsyncFragmentVue(this, inflater, container, R.layout.bulletin_fragment);
+//		vue = new AsyncFragmentVue(this, inflater, container, R.layout.bulletin_fragment);
+		vue = new BulletinVue(this);
 
 		Calendar c = Calendar.getInstance();
 		String identifiant = ((MainActivite)a).getIdentifiant();
@@ -55,14 +56,15 @@ public static String CHEMIN_BULLETIN = "{SD}/{PACKAGE}/bulletin-{identifiant}.pd
 		if(c.get(Calendar.MONTH)<=Calendar.SEPTEMBER){
 			iAnnee--;
 		}
-		MyEpfUrl.BULLETIN = MyEpfUrl.BULLETIN.replace("{ANNEE}", Integer.toString(iAnnee)).replace("{LOGIN}", identifiant);
-
+		MyEpfUrl.BULLETIN = MyEpfUrl.BULLETIN.replace("{ANNEE}", Integer.toString(iAnnee));
+		MyEpfUrl.BULLETIN = MyEpfUrl.BULLETIN.replace("{LOGIN}", identifiant);
+		
 		try{
 			String state = Environment.getExternalStorageState();
 			if (Environment.MEDIA_MOUNTED.equals(state)) {
 				ecritureOK = true;
 				CHEMIN_BULLETIN = CHEMIN_BULLETIN.replace("{SD}", Environment.getExternalStorageDirectory().toString());
-				CHEMIN_BULLETIN = CHEMIN_BULLETIN.replace("{PACKAGE}", getActivite().getPackageName());
+//				CHEMIN_BULLETIN = CHEMIN_BULLETIN.replace("{PACKAGE}", getActivite().getPackageName());
 				CHEMIN_BULLETIN = CHEMIN_BULLETIN.replace("{IDENTIFIANT}", identifiant);
 			} else {
 				ecritureOK = false;
@@ -74,7 +76,7 @@ public static String CHEMIN_BULLETIN = "{SD}/{PACKAGE}/bulletin-{identifiant}.pd
 		}
 
 
-		((TextView)vue.getVue().findViewById(R.id.bTelechargerBulletin)).setOnClickListener(new OnClickListener() {
+		((TextView)vue.findViewById(R.id.bTelechargerBulletin)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if(ecritureOK)
 					onTelechargerBulletinClicked();
@@ -161,7 +163,7 @@ public static String CHEMIN_BULLETIN = "{SD}/{PACKAGE}/bulletin-{identifiant}.pd
 		            onTelechargerBulletin();
 				} catch(IOException e){
 					e.printStackTrace();
-					Log.i("Bulletin.telechargerEtAfficherBulletin", "Impossible de lire la réponse finale");
+					Log.e("Bulletin.telechargerEtAfficherBulletin", "Impossible de lire la réponse finale");
 				}
 			}
 		});
@@ -211,6 +213,21 @@ public static String CHEMIN_BULLETIN = "{SD}/{PACKAGE}/bulletin-{identifiant}.pd
 
 	public void onMyEPFConnected() {
 		chargerVueComplete();
+	}
+	
+	private void avancement(String t, int p){
+		// fin
+		if(p >= 100){
+			
+		} 
+		// erreur
+		else if(p <= 0){
+			
+		}
+		// en cours
+		else {
+			
+		}
 	}
 
 }

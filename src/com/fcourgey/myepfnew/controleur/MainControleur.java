@@ -32,7 +32,10 @@ import android.webkit.CookieManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
+import com.fcourgey.android.mylib.framework.ActiviteControleur;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.activite.PreferencesActivite;
@@ -47,15 +50,21 @@ import com.fcourgey.myepfnew.vue.DrawerVue;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 @SuppressWarnings("deprecation")
-public class MainControleur {
+public class MainControleur extends ActiviteControleur {
 	
 	private static final String TAG = "MainControleur";
 	
+//	private DrawerVue vue;
+	
 	private MainActivite a;
 	
-	private DrawerVue vue;
-	
 	private Fragment fragmentActuel;
+	
+	private String identifiant;
+	
+	// design
+	@InjectView(R.id.photo_profil)
+	protected CircularImageView photo_profil;
 	
 	public static String CHEMIN_PHOTO_PROFIL = "{FILES_DIR}/photo-profil-{IDENTIFIANT}.jpg";
 	
@@ -65,10 +74,16 @@ public class MainControleur {
 	private static final String STOP_NOM = "font2";
 	
 	public MainControleur(MainActivite a, Bundle savedInstanceState) {
+		super(a, savedInstanceState);
 		this.a = a;
+		identifiant = a.getIdentifiant();
 		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{FILES_DIR}", a.getFilesDir().toString());
-		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{IDENTIFIANT}",a.getIdentifiant());
-		vue = new DrawerVue(this, a.getIdentifiant());
+		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{IDENTIFIANT}",identifiant);
+		
+		ButterKnife.inject(this, a);
+		
+		vue = new DrawerVue(this);
+
 		// affiche photo de profil si existe
 		// sinon, le DL sera appelé par onMyEPFConnected
 		if(isPhotoProfilDownloaded()){
@@ -159,7 +174,8 @@ public class MainControleur {
 	}
 
 	private void fermerDrawer(){
-		vue.getLayoutGeneral().closeDrawer(vue.getVue());
+		DrawerVue drawerVue = (DrawerVue)vue;
+		drawerVue.getLayoutGeneral().closeDrawer(drawerVue.getVue());
 	}
 	
 	/**
@@ -174,7 +190,7 @@ public class MainControleur {
 	 * faux sinon
 	 */
 	private boolean isNomPrenomDownloaded(){
-		if(a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+a.getIdentifiant())==null){
+		if(a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant)==null){
 			return false;
 		} else {
 			return true;
@@ -197,7 +213,7 @@ public class MainControleur {
 	 * Affiche la photo de profil
 	 */
 	private void afficherPhotoProfil(){
-		CircularImageView photoProfil = (CircularImageView)a.findViewById(R.id.photo_profil);
+//		CircularImageView photoProfil = (CircularImageView)a.findViewById(R.id.photo_profil);
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 		Bitmap bmp = BitmapFactory.decodeFile(CHEMIN_PHOTO_PROFIL, options);
@@ -212,8 +228,8 @@ public class MainControleur {
 			bmp=Bitmap.createBitmap(bmp, decalage_x, decalage_y,bmp.getWidth(), bmp.getWidth());
 		else
 			bmp=Bitmap.createBitmap(bmp, decalage_x, decalage_y,bmp.getHeight(), bmp.getHeight());
-		photoProfil.setImageBitmap(bmp);
-		Log.i(TAG, "màj photo de profil ok");
+		photo_profil.setImageBitmap(bmp);
+		Log.i(TAG, "afficherPhotoProfil OK");
 	}
 	
 	/**
@@ -237,9 +253,9 @@ public class MainControleur {
 	 */
 	public void initPhotoProfil(){
 		if(isPhotoProfilDownloaded()){
-			Log.i(TAG, "photo de profil existante");
+			Log.i(TAG, "initPhotoProfil : photo existante");
 		} else {
-			Log.i(TAG, "photo de profil non existante, téléchargement");
+			Log.i(TAG, "initPhotoProfil : photo non existante, téléchargement");
 			// download photo de profil
 			// +
 			// afficherPhotoProfil()
@@ -320,9 +336,9 @@ public class MainControleur {
 	 */
 	public void initNomPrenom(){
 		if(isNomPrenomDownloaded()){
-			Log.i(TAG, "nom de profil existant");
+			Log.i(TAG, "initNomPrenom : nom existant");
 		} else {
-			Log.i(TAG, "nom de profil non existant, téléchargement");
+			Log.i(TAG, "initNomPrenom : nom non existant, téléchargement");
 			// recherche nom de profil
 			// +
 			// afficherNomPrenomProfil()
@@ -366,7 +382,7 @@ public class MainControleur {
 						if(matcher.find()){
 							String nomPrenom = matcher.group(1);
 							// sauvegarde dans les pref
-							a.getPrefs().putString(MyEpfPreferencesModele.KEY_NOM_PRENOM+a.getIdentifiant(), nomPrenom);
+							a.getPrefs().putString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant, nomPrenom);
 							// affichage
 							afficherNomPrenom();
 						}
@@ -383,7 +399,7 @@ public class MainControleur {
 	 * 
 	 */
 	public void afficherNomPrenom(){
-		String nomPrenom = a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+a.getIdentifiant());
+		String nomPrenom = a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant);
 		TextView tvNomPrenom = (TextView)a.findViewById(R.id.tvNomPrenom);
 		if(nomPrenom == null){
 			tvNomPrenom.setVisibility(View.GONE);
@@ -391,6 +407,7 @@ public class MainControleur {
 		} else {
 			tvNomPrenom.setText(nomPrenom);
 		}
+		Log.d(TAG, "affichageNomPrenom OK");
 	}
 	
 	/**
@@ -420,10 +437,11 @@ public class MainControleur {
 	 * Ouvre le drawer si fermé
 	 */
 	public void ouvrirFermerDrawer() {
-		if (!vue.getLayoutGeneral().isDrawerOpen(vue.getVue())) {
-			vue.getLayoutGeneral().openDrawer(vue.getVue());
+		DrawerVue drawerVue = (DrawerVue)vue;
+		if (!drawerVue.getLayoutGeneral().isDrawerOpen(drawerVue.getVue())) {
+			drawerVue.getLayoutGeneral().openDrawer(drawerVue.getVue());
         } else {
-        	vue.getLayoutGeneral().closeDrawer(vue.getVue());
+        	drawerVue.getLayoutGeneral().closeDrawer(drawerVue.getVue());
         }
 	}
 	
@@ -432,21 +450,18 @@ public class MainControleur {
 	 */
 	public void onPostCreate(Bundle savedInstanceState) {
 		// Sync the toggle state after onRestoreInstanceState has occurred.
-		vue.getToggleBouton().syncState();
+		DrawerVue drawerVue = (DrawerVue)vue;
+		if(vue != null && drawerVue.getToggleBouton()!=null)
+			drawerVue.getToggleBouton().syncState();
 	}
 
 	/**
 	 * ? 
 	 */
 	public void onConfigurationChanged(Configuration newConfig) {
-		vue.getToggleBouton().onConfigurationChanged(newConfig);
+		((DrawerVue) vue).getToggleBouton().onConfigurationChanged(newConfig);
 	}
-
-	public DrawerVue getVue() {
-		return vue;
-	}
-
-	public MainActivite getActivite() {
-		return a;
+	public String getIdentifiant() {
+		return identifiant;
 	}
 }
