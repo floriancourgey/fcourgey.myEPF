@@ -54,8 +54,8 @@ public class SemaineVue extends AsyncFragmentVue {
 	// flag
 	private boolean vueInitialisée = false;
 	
-	public SemaineVue(SemaineControleur controleur){
-		super(controleur);
+	public SemaineVue(SemaineControleur controleur, ViewGroup container){
+		super(controleur, R.layout.semaine_fragment, container);
 		
 		jours = SemaineControleur.getJours();
 		heuresActives = controleur.isHeuresActives();

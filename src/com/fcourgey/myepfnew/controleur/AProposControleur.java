@@ -20,7 +20,7 @@ public class AProposControleur extends FragmentControleur {
 			versionName = "?";
 		}
 		
-		vue = new AProposVue(this, versionName);
+		vue = new AProposVue(this, container, versionName);
 	}
 
 }

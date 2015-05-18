@@ -15,7 +15,7 @@ public class BulletinFragment extends AsyncFragment {
 		
 		controleur = new BulletinControleur(this, inflater, container);
 		
-		return controleur.getVue();
+		return controleur.getView();
 	}
 	
 	public void onDelaiDAttenteDepassé() {

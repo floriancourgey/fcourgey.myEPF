@@ -29,12 +29,12 @@ import android.webkit.CookieManager;
 import android.widget.TextView;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
+import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
-import com.fcourgey.myepfnew.vue.BulletinVue;
 
 @SuppressWarnings("deprecation")
 public class BulletinControleur extends AsyncFragmentControleur {
@@ -46,8 +46,7 @@ public static String CHEMIN_BULLETIN = "{SD}/myEPF/bulletin-{IDENTIFIANT}.pdf";
 	public BulletinControleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
 		super(f, inflater, container);
 
-//		vue = new AsyncFragmentVue(this, inflater, container, R.layout.bulletin_fragment);
-		vue = new BulletinVue(this);
+		vue = new AsyncFragmentVue(this, R.layout.bulletin_fragment, container);
 
 		Calendar c = Calendar.getInstance();
 		String identifiant = ((MainActivite)a).getIdentifiant();

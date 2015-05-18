@@ -67,18 +67,19 @@ public class EdtControleur extends AsyncFragmentControleur {
 	
 	@InjectView(R.id.accueil_pager)
 	protected ViewPager accueil_pager;
+	@InjectView(R.id.titles)
+	protected UnderlinePageIndicator titleIndicator;
 
 	public EdtControleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
 		super(f, inflater, container);
 		
-		vue = new AsyncFragmentVue(this);
+		vue = new AsyncFragmentVue(this, R.layout.edt_fragment, container);
 		
-		ButterKnife.inject(this, vue);
+		ButterKnife.inject(this, vue.getView());
 		
 		// pages
 		/// init
 		semainesPagerAdapter = new EdtPagesControleur(getFragment().getChildFragmentManager(), (MainActivite)a);
-//		ViewPager viewPager = (ViewPager) vue.findViewById(R.id.accueil_pager);
 		accueil_pager.setOffscreenPageLimit(semainesAvant+1+semainesApres);
 		accueil_pager.setAdapter(semainesPagerAdapter);
 		/// positionnement de l'index actuel
@@ -92,7 +93,6 @@ public class EdtControleur extends AsyncFragmentControleur {
 		}
 		accueil_pager.setCurrentItem(positionViewPager);
 		/// ajout indicateur de pst
-		UnderlinePageIndicator titleIndicator = (UnderlinePageIndicator)vue.findViewById(R.id.titles);
 		titleIndicator.setViewPager(accueil_pager);
 
 		// init index semaine

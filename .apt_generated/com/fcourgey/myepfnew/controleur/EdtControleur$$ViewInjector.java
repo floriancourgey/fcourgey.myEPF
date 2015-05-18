@@ -8,11 +8,14 @@ import butterknife.ButterKnife.Injector;
 public class EdtControleur$$ViewInjector<T extends com.fcourgey.myepfnew.controleur.EdtControleur> implements Injector<T> {
   @Override public void inject(final Finder finder, final T target, Object source) {
     View view;
+    view = finder.findRequiredView(source, 2131099777, "field 'titleIndicator'");
+    target.titleIndicator = finder.castView(view, 2131099777, "field 'titleIndicator'");
     view = finder.findRequiredView(source, 2131099778, "field 'accueil_pager'");
     target.accueil_pager = finder.castView(view, 2131099778, "field 'accueil_pager'");
   }
 
   @Override public void reset(T target) {
+    target.titleIndicator = null;
     target.accueil_pager = null;
   }
 }
