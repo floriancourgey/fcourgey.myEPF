@@ -15,12 +15,13 @@
 		    android:summary="@string/desc_mdp"   
 		    android:dialogTitle="@string/desc_mdp"
 		    android:inputType="textPassword" />
-	    
+	    <!-- 
 	    <ListPreference
 	        android:key="@string/key_nb_semaines_to_dl"
 	        android:title="@string/titre_nb_semaines_to_dl"
 	        android:dialogTitle="@string/titre_nb_semaines_to_dl"
 	        android:summary="@string/desc_nb_semaines_to_dl" />
+	         -->
     </PreferenceCategory>
     
     <PreferenceCategory 
@@ -64,7 +65,7 @@
 	    </PreferenceScreen>
     </PreferenceCategory>
     
-    
+    <!-- 
     <PreferenceCategory 
         android:title="@string/categorie_autre">
 	    <Preference
@@ -73,4 +74,5 @@
 			android:summary="@string/desc_cache">
 	    </Preference>
 	</PreferenceCategory>
+	 -->
 </PreferenceScreen>
