@@ -48,7 +48,6 @@ public class SemaineControleur extends AsyncFragmentControleur {
 
 	public SemaineControleur(Fragment f, LayoutInflater inflater, ViewGroup container, int indexFragment){
 		super(f, inflater, container);
-		avancement("init controleur", 55);
 		
 		// init index
 		this.indexFragment = indexFragment;
@@ -61,7 +60,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 		dimancheDeCetteSemaine.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		dimancheDeCetteSemaine.add(Calendar.DATE, (indexSemaine-EdtControleur.indexSemaineActuelle)*7);
 		
-		Log.i(tag(), "onCreate");
+		avancement("onCreate", 55);
 		
 		// init json des pref
 		avancement("init json", 55);
@@ -141,7 +140,7 @@ public class SemaineControleur extends AsyncFragmentControleur {
 	 */
 	public void avancement(final String texte, final int pourcentage){
 		if(vue == null){
-			Log.i(tag(), "Avancement "+pourcentage+" : "+texte);
+			Log.i(tag(), "Avancement "+pourcentage+" : "+texte+" (vue null)");
 			return;
 		}
 		((SemaineVue)vue).avancement(texte, pourcentage, true);

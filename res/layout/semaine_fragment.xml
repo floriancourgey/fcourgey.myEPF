@@ -57,14 +57,14 @@
             android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/tvTelechargement2"
+                android:id="@+id/tvTelechargement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:text="initialisation" />
 
             <ProgressBar
-                android:id="@+id/pbTelechargement2"
+                android:id="@+id/pbTelechargement"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

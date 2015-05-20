@@ -8,8 +8,8 @@ import butterknife.ButterKnife.Injector;
 public class MainControleur$$ViewInjector<T extends com.fcourgey.myepfnew.controleur.MainControleur> implements Injector<T> {
   @Override public void inject(final Finder finder, final T target, Object source) {
     View view;
-    view = finder.findRequiredView(source, 2131099771, "field 'photo_profil'");
-    target.photo_profil = finder.castView(view, 2131099771, "field 'photo_profil'");
+    view = finder.findRequiredView(source, 2131099770, "field 'photo_profil'");
+    target.photo_profil = finder.castView(view, 2131099770, "field 'photo_profil'");
   }
 
   @Override public void reset(T target) {

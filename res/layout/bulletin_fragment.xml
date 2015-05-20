@@ -17,39 +17,31 @@
             />
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/vueComplete"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
 
         <Button
             android:id="@+id/bTelechargerBulletin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:text="Télécharger le bulletin" />
 
         <ProgressBar 
             android:id="@+id/pbAvancementBulletin"
             android:layout_width="fill_parent"
-            android:layout_height="1dp"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleHorizontal"
             />
         <TextView
             android:id="@+id/tvAvancementBulletin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="" />
-
-        <WebView
-            android:id="@+id/wvDebug"
-            android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:visibility="gone" />
-    </RelativeLayout>
+            />
+    </LinearLayout>
 
     <!-- erreur -->
 

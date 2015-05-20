@@ -19,6 +19,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.android.mylib.outils.Date;
@@ -36,10 +38,10 @@ public class SemaineVue extends AsyncFragmentVue {
 	public static double HAUTEUR_EDT;			// px
 	
 	// design
-//	private ProgressBar pbTelechargement;
-	private ProgressBar pbTelechargement2;
-//	private TextView tvTelechargement;
-	private TextView tvTelechargement2;
+	@InjectView(R.id.tvTelechargement)
+	protected TextView tvTelechargement;
+	@InjectView(R.id.pbTelechargement)
+	protected ProgressBar pbTelechargement;
 	private RelativeLayout heuresContainer;
 	private ArrayList<RelativeLayout> lJours_edt;
 	
@@ -60,17 +62,17 @@ public class SemaineVue extends AsyncFragmentVue {
 		jours = SemaineControleur.getJours();
 		heuresActives = controleur.isHeuresActives();
 		
-//		pbTelechargement = (ProgressBar)vue.findViewById(R.id.pbTelechargement);
-		pbTelechargement2 = (ProgressBar)findViewById(R.id.pbTelechargement2);
-//		tvTelechargement = (TextView)vue.findViewById(R.id.tvTelechargement);
-		tvTelechargement2 = (TextView)findViewById(R.id.tvTelechargement2);
+		ButterKnife.inject(this, getView());
 		
+		avancement("init header", 55, false);		
 		initHeader();
 		
+		avancement("init container", 55, false);
 		initContainers();
 		
 		// lignes moches mais
 		// nécessaires pour le getHeight
+		avancement("init vto", 55, false);
 		final RelativeLayout lundi_edt = (RelativeLayout)findViewById(R.id.lundi_edt);
 		ViewTreeObserver vto = lundi_edt.getViewTreeObserver();													
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {							
@@ -80,16 +82,19 @@ public class SemaineVue extends AsyncFragmentVue {
 				
 				HAUTEUR_EDT = lundi_edt.getHeight();
 				
+				avancement("init jours header", 55, false);
 				initJoursHeader(jours);
 				
+				avancement("init intervalles", 55, false);
 				HAUTEUR_INTERVALLE = (double)HAUTEUR_EDT/SemaineControleur.NB_TOTAL_INTERVALLE;
-				
 				initIntervalles();
 				
+				avancement("init barre now", 55, false);
 				initBarreNow();
 				
 				vueInitialisée = true;
 				
+				avancement("init cours", 55, false);
 				initCours(false);
 			}
 		});
@@ -105,6 +110,7 @@ public class SemaineVue extends AsyncFragmentVue {
 		TextView tvDateVacances = (TextView)findViewById(R.id.tvDateVacances);
 		tvDateVacances.setText(((TextView)findViewById(R.id.tvSemaine2)).getText());
 		tvDateVacances.setGravity(Gravity.CENTER);
+		avancement("chargerVueVacances", 100, false);
 	}
 	
 	@Override
@@ -112,6 +118,7 @@ public class SemaineVue extends AsyncFragmentVue {
 		super.chargerVueDefaut();
 		LinearLayout vueVacances = (LinearLayout)findViewById(R.id.vueVacances);
 		vueVacances.setVisibility(View.GONE);
+		avancement("chargerVueDefaut", 100, false);
 	}
 	
 	public void initCours(final boolean initCoursSuiteAuTelechargement){
@@ -136,6 +143,7 @@ public class SemaineVue extends AsyncFragmentVue {
 						lCours.add(JsonMyEPF.jsoToListeCours(jsonCours, getActivite()));
 					}
 				} catch (JSONException e) {
+					avancement("initCours", 0, false); // TODO
 					e.printStackTrace(); // TODO
 					return;
 				}
@@ -150,6 +158,7 @@ public class SemaineVue extends AsyncFragmentVue {
 				
 				// création boutons cours
 				// pour chaque container
+				avancement("créa boutons", 55, false);
 				Calendar jourCourant = (Calendar)controleur.getLundiDeCetteSemaine().clone();
 				for(final RelativeLayout jour_edt : lJours_edt){
 					// boutons cours
@@ -180,6 +189,7 @@ public class SemaineVue extends AsyncFragmentVue {
 	private void onInitCours(){
 		definirCm(null);
 		((SemaineControleur)controleur).onInitCours();
+		avancement("onInitCours", 100, false);
 	}
 
 	/**
@@ -370,32 +380,24 @@ public class SemaineVue extends AsyncFragmentVue {
 					if(pourcentage >= 100){
 						if(!appeleParLaMere)
 							Log.i(tag(), "Avancement terminé : "+texte);
-//						SemaineVue.this.tvTelechargement.setText(texte);
-//						SemaineVue.this.tvTelechargement.setVisibility(View.GONE);
-						SemaineVue.this.tvTelechargement2.setText(texte);
-						SemaineVue.this.tvTelechargement2.setVisibility(View.GONE);
-//						SemaineVue.this.pbTelechargement.setVisibility(View.GONE);
-						SemaineVue.this.pbTelechargement2.setVisibility(View.GONE);
+						SemaineVue.this.tvTelechargement.setText(texte);
+						SemaineVue.this.tvTelechargement.setVisibility(View.GONE);
+						SemaineVue.this.pbTelechargement.setVisibility(View.GONE);
 						
 					} else if(pourcentage > 0){
 						if(!appeleParLaMere)
 							Log.i(tag(), "Avancement "+pourcentage+" : "+texte);
-//						SemaineVue.this.tvTelechargement.setText(texte);
-						SemaineVue.this.tvTelechargement2.setVisibility(View.VISIBLE);
-//						SemaineVue.this.pbTelechargement.setProgress(pourcentage);
-//						SemaineVue.this.pbTelechargement.setVisibility(View.VISIBLE);
-						SemaineVue.this.tvTelechargement2.setText(texte);
-						SemaineVue.this.pbTelechargement2.setProgress(pourcentage);
-						SemaineVue.this.pbTelechargement2.setVisibility(View.VISIBLE);
+						SemaineVue.this.tvTelechargement.setVisibility(View.VISIBLE);
+						SemaineVue.this.tvTelechargement.setText(texte);
+						SemaineVue.this.pbTelechargement.setProgress(pourcentage);
+						SemaineVue.this.pbTelechargement.setVisibility(View.VISIBLE);
 						
 					} else {
 						if(!appeleParLaMere)
 							Log.i(tag(), "Avancement erreur : "+texte);
 //						EdtControleur.setTelechargementEdtEnCours(false);
-//						SemaineVue.this.tvTelechargement.setText(texte);
-//						SemaineVue.this.pbTelechargement.setVisibility(View.GONE);
-						SemaineVue.this.tvTelechargement2.setText(texte);
-						SemaineVue.this.pbTelechargement2.setVisibility(View.GONE);
+						SemaineVue.this.tvTelechargement.setText(texte);
+						SemaineVue.this.pbTelechargement.setVisibility(View.GONE);
 					}
 
 				}
