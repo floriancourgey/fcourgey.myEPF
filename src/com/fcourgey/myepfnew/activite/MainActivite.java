@@ -1,5 +1,8 @@
 package com.fcourgey.myepfnew.activite;
 
+import java.io.File;
+import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -8,6 +11,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -27,9 +31,11 @@ import butterknife.InjectView;
 import com.fcourgey.android.mylib.framework.Activite;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.controleur.MainControleur;
+import com.fcourgey.myepfnew.entite.Module;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.Securite;
+import com.fcourgey.myepfnew.outils.XmlNoteMyEpf;
 import com.fcourgey.myepfnew.vue.DrawerVue;
 
 @SuppressWarnings("deprecation")
@@ -261,7 +267,8 @@ public class MainActivite extends Activite {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 	    super.onPostCreate(savedInstanceState);
-	    controleur.onPostCreate(savedInstanceState);
+	    if(controleur != null)
+	    	controleur.onPostCreate(savedInstanceState);
 	}
 	/**
 	 * pour le drawer
@@ -269,7 +276,8 @@ public class MainActivite extends Activite {
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        controleur.onConfigurationChanged(newConfig);
+        if(controleur != null)
+        	controleur.onConfigurationChanged(newConfig);
     }
 
 	/**
@@ -326,6 +334,9 @@ public class MainActivite extends Activite {
 	}
 	public String getIdentifiant() {
 		return identifiant;
+	}
+	public WebView getWvCachee(){
+		return wvCachee;
 	}
 
 	@Override

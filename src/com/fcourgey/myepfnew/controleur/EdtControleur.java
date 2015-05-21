@@ -36,7 +36,7 @@ import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
-import com.fcourgey.myepfnew.outils.JsonMyEPF;
+import com.fcourgey.myepfnew.outils.JsonCoursMyEpf;
 import com.fcourgey.myepfnew.outils.StringOutils;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -127,7 +127,7 @@ public class EdtControleur extends AsyncFragmentControleur {
 	private void onMainJsonDownloaded(){
 		avancement("récupération des cours", 55);
 		try{
-			jsonCours = jsonMain.getJSONArray(JsonMyEPF.KEY_ARRAY_COURS);
+			jsonCours = jsonMain.getJSONArray(JsonCoursMyEpf.KEY_ARRAY_COURS);
 		} catch(JSONException e){
 			e.printStackTrace();
 			avancement("Impossible de récupérer le jsonCours", 0);
@@ -139,8 +139,8 @@ public class EdtControleur extends AsyncFragmentControleur {
 		for(int i=0 ; i<jsonCours.length() ; i++){
 			try {
 				JSONObject cours = jsonCours.getJSONObject(i);
-				String sDate = cours.getString(JsonMyEPF.KEY_COURS_DEBUT);
-				Calendar date = StringOutils.toCalendar(sDate, false);
+				String sDate = cours.getString(JsonCoursMyEpf.KEY_COURS_DEBUT);
+				Calendar date = StringOutils.toCalendar(sDate, "yyyy-MM-dd");
 				int iSemaine = date.get(Calendar.WEEK_OF_YEAR);
 				if(iSemaine >= indexPremiereSemaine && iSemaine <= indexDerniereSemaine){
 					ArrayList<JSONObject> lCours = mapCours.get(iSemaine);

@@ -14,6 +14,9 @@ public abstract class MyEpfUrl {
 	/// bulletin
 	public static final String BULLETIN_GENERATEUR = MY_EPF+"/_layouts/sharepointproject2/redirectionversbulletin.aspx";
 	public static String BULLETIN = MY_EPF+"parcoursscolaire/_layouts/SharePointProject2/AffichageBulletin.aspx?ANNEE={ANNEE}&LOGIN_RESEAU={LOGIN}";
+	/// notes
+	public static final String REPORT_NOTES = "https://my.epf.fr/parcoursscolaire/Rapports/FicheEleve/RpEleveNotesDeLannee.rdl";
+	public static final String REPORT_NOTES_RESULTAT = "https://my.epf.fr/parcoursscolaire/_layouts/ReportServer/RSViewerPage.aspx?rv:RelativeReportUrl=/parcoursscolaire/rapports/ficheeleve/rpelevenotesdelannee.rdl";
 	
 	// mydata.epf.fr
 	/// edt

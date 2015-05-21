@@ -44,6 +44,7 @@ import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 import com.fcourgey.myepfnew.fragment.AProposFragment;
 import com.fcourgey.myepfnew.fragment.BulletinFragment;
 import com.fcourgey.myepfnew.fragment.EdtFragment;
+import com.fcourgey.myepfnew.fragment.NotesFragment;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.Android;
 import com.fcourgey.myepfnew.vue.DrawerVue;
@@ -99,17 +100,7 @@ public class MainControleur extends ActiviteControleur {
 		}
 	}
 	
-	/**
-	 * au clic sur l'emploi du temps
-	 */
-	public void onEdtClicked(){
-		Fragment newFragment = new EdtFragment();
-		fragmentActuel = newFragment;
-        FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, newFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
-	}
+	
 	
 	/**
 	 * quand le délai d'attente est dépassé
@@ -126,15 +117,24 @@ public class MainControleur extends ActiviteControleur {
 	}
 	
 	/**
+	 * au clic sur l'emploi du temps
+	 */
+	public void onEdtClicked(){
+		lancerFragment(new EdtFragment());
+	}
+	
+	/**
 	 * au clic sur le bulletin
 	 */
 	public void onBulletinClicked(){
-		Fragment newFragment = new BulletinFragment();
-		fragmentActuel = newFragment;
-        FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, newFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+		lancerFragment(new BulletinFragment());
+	}
+	
+	/**
+	 * au clic sur les notes
+	 */
+	public void onNotesClicked(){
+		lancerFragment(new NotesFragment());
 	}
 
 	/**
@@ -155,6 +155,7 @@ public class MainControleur extends ActiviteControleur {
     	// lancement popup
         builder.create().show();
 	}
+	
 	/**
 	 * au clic sur A propos
 	 */
@@ -166,11 +167,20 @@ public class MainControleur extends ActiviteControleur {
         transaction.addToBackStack(null);
         transaction.commit();
 	}
+	
 	/**
 	 * au clic sur Quitter
 	 */
 	public void onQuitterClicked(){
 		Android.quitter();
+	}
+	
+	private void lancerFragment(Fragment newFragment){
+		fragmentActuel = newFragment;
+        FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
 	}
 
 	private void fermerDrawer(){
@@ -206,6 +216,9 @@ public class MainControleur extends ActiviteControleur {
 		} else if(fragmentActuel instanceof BulletinFragment) {
 			BulletinFragment f = (BulletinFragment)fragmentActuel;
 			((BulletinControleur)f.getControleur()).onMyEPFConnected();
+		} else if(fragmentActuel instanceof NotesFragment){
+			NotesFragment f = (NotesFragment)fragmentActuel;
+			((NotesControleur)f.getControleur()).onMyEPFConnected();
 		}
 	}
 	
@@ -274,7 +287,7 @@ public class MainControleur extends ActiviteControleur {
 					} catch (Exception e) {
 						e.printStackTrace();
 						Log.i(TAG, "Impossible de joindre le serveur EPF (étonnant à ce stade)");
-					} 
+					}
 					try {
 						String line;
 						BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -422,6 +435,8 @@ public class MainControleur extends ActiviteControleur {
 		} else if(titre.equals(a.getResources().getString(R.string.bulletin_titre))){
 			lTitres.setItemChecked(position, true);
 			onBulletinClicked();
+		} else if(titre.equals(a.getResources().getString(R.string.notes_titre))){ 
+			onNotesClicked();
 		} else if(titre.equals(a.getResources().getString(R.string.pref_titre))){
 			onPreferencesClicked();
 		} else if(titre.equals(a.getResources().getString(R.string.apropos_titre))){

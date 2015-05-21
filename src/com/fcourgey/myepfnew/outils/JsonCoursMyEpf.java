@@ -12,7 +12,7 @@ import com.fcourgey.myepfnew.entite.Cours;
 import com.fcourgey.myepfnew.entite.Cours.Type;
 import com.fcourgey.myepfnew.modele.DbModele;
 
-public class JsonMyEPF {
+public class JsonCoursMyEpf {
 	
 	public static final String KEY_ARRAY_COURS = "cours";
 	public static final String KEY_COURS_ID = "id";
@@ -36,8 +36,8 @@ public class JsonMyEPF {
 	    	type = Type.AUTRE;
 	    }
 	    String commentaire = jso.getString(KEY_COURS_COMMENTAIRE);
-	    Calendar horaireDebut = StringOutils.toCalendar(jso.getString(KEY_COURS_DEBUT), true);
-	    Calendar horaireFin = StringOutils.toCalendar(jso.getString(KEY_COURS_FIN), true);
+	    Calendar horaireDebut = StringOutils.toCalendar(jso.getString(KEY_COURS_DEBUT), "yyyy-MM-dd kk:mm");
+	    Calendar horaireFin = StringOutils.toCalendar(jso.getString(KEY_COURS_FIN), "yyyy-MM-dd kk:mm");
 	    
 	    String dateId = jso.getString(KEY_COURS_DEBUT);
 	    

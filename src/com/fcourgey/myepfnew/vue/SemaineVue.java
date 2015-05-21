@@ -29,7 +29,7 @@ import com.fcourgey.myepfnew.controleur.EdtPagesControleur;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
 import com.fcourgey.myepfnew.entite.Cours;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
-import com.fcourgey.myepfnew.outils.JsonMyEPF;
+import com.fcourgey.myepfnew.outils.JsonCoursMyEpf;
 
 public class SemaineVue extends AsyncFragmentVue {
 	
@@ -140,7 +140,7 @@ public class SemaineVue extends AsyncFragmentVue {
 				
 				try {
 					for(JSONObject jsonCours : lJsonCours){
-						lCours.add(JsonMyEPF.jsoToListeCours(jsonCours, getActivite()));
+						lCours.add(JsonCoursMyEpf.jsoToListeCours(jsonCours, getActivite()));
 					}
 				} catch (JSONException e) {
 					avancement("initCours", 0, false); // TODO
