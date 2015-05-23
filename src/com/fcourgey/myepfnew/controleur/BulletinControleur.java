@@ -17,7 +17,6 @@ import org.apache.http.protocol.HttpContext;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,12 +29,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import com.fcourgey.android.mylib.a_mettre_dans_java_lib.exceptions.ReadOnlyException;
-import com.fcourgey.android.mylib.a_mettre_dans_java_lib.outils.FichierOutils;
-import com.fcourgey.android.mylib.exceptions.SDReadOnlydException;
 import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
 import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.android.mylib.framework.Fragment;
+import com.fcourgey.myepfnew.MonApplication;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
@@ -45,10 +42,7 @@ import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 public class BulletinControleur extends AsyncFragmentControleur {
 	
 	private static final String TAG = "BulletinControleur";
-	public static String DOSSIER_BULLETIN = "{SD}/{PACKAGE}/";
 	public static String FICHIER_BULLETIN = "bulletin-{IDENTIFIANT}.pdf";
-	
-	private boolean ecritureOK = false;
 	
 	// design
 	@InjectView(R.id.tvAvancementBulletin)
@@ -73,37 +67,15 @@ public class BulletinControleur extends AsyncFragmentControleur {
 		MyEpfUrl.BULLETIN = MyEpfUrl.BULLETIN.replace("{ANNEE}", Integer.toString(iAnnee));
 		MyEpfUrl.BULLETIN = MyEpfUrl.BULLETIN.replace("{LOGIN}", identifiant);
 		
-		try{
-			String state = Environment.getExternalStorageState();
-			if (Environment.MEDIA_MOUNTED.equals(state)) {
-				ecritureOK = true;
-				DOSSIER_BULLETIN = DOSSIER_BULLETIN.replace("{SD}", Environment.getExternalStorageDirectory().toString());
-				DOSSIER_BULLETIN = DOSSIER_BULLETIN.replace("{PACKAGE}", getActivite().getPackageName());
-				FICHIER_BULLETIN = FICHIER_BULLETIN.replace("{IDENTIFIANT}", identifiant);
-//				CHEMIN_BULLETIN = Environment.getExternalStorageDirectory()+"/bulletin-myepf-"+identifiant+".pdf";
-				if(!FichierOutils.creerDossier(DOSSIER_BULLETIN)){
-					throw new ReadOnlyException();
-				}
-			} else {
-				throw new SDReadOnlydException();
-			}
-		}catch(SDReadOnlydException e){
-			ecritureOK = false;
-			lectureSeule();
-			return;
-		}catch(ReadOnlyException e){
-			ecritureOK = false;
+		if(MonApplication.DOSSIER_MY_EPF.contains("{")){
+			Log.e(TAG, "Dossier myEPF : "+MonApplication.DOSSIER_MY_EPF);
 			lectureSeule();
 			return;
 		}
-
-
+		
 		((TextView)vue.findViewById(R.id.bTelechargerBulletin)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(ecritureOK)
-					onTelechargerBulletinClicked();
-				else 
-					lectureSeule();
+				onTelechargerBulletinClicked();
 			}
 		});
 
@@ -173,7 +145,7 @@ public class BulletinControleur extends AsyncFragmentControleur {
 //					wvDebug.loadDataWithBaseURL(null, reponseHtml, mime, encoding, null);
 					
 					// écriture du fichier
-					final File file = new File(DOSSIER_BULLETIN+FICHIER_BULLETIN);
+					final File file = new File(MonApplication.DOSSIER_MY_EPF+FICHIER_BULLETIN);
 					output = new FileOutputStream(file);
 					final byte[] buffer = new byte[1024];
 		            int read;
@@ -197,8 +169,8 @@ public class BulletinControleur extends AsyncFragmentControleur {
 	
 	private void onTelechargerBulletin(){
 		avancement("ouverture", 90);
-		File file = new File(DOSSIER_BULLETIN+FICHIER_BULLETIN);
-		Log.i("bulletin.onTelechargerBulletin", "ouvertue du PDF "+DOSSIER_BULLETIN+FICHIER_BULLETIN);
+		File file = new File(MonApplication.DOSSIER_MY_EPF+FICHIER_BULLETIN);
+		Log.i("bulletin.onTelechargerBulletin", "ouvertue du PDF "+MonApplication.DOSSIER_MY_EPF+FICHIER_BULLETIN);
 		if(!file.exists() || file.isDirectory()) {
 			// impossible de trouver le bulletin
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivite());
@@ -218,7 +190,7 @@ public class BulletinControleur extends AsyncFragmentControleur {
 			avancement("fin", 100);
 		} catch (Exception e) {
 			String message = getActivite().getResources().getString(R.string.bulletin_nopdf_message);
-			message = message.replace("{CHEMIN_BULLETIN}", DOSSIER_BULLETIN+FICHIER_BULLETIN);
+			message = message.replace("{CHEMIN_BULLETIN}", MonApplication.DOSSIER_MY_EPF+FICHIER_BULLETIN);
 			// aucune appli pour ouvrir un PDF
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivite());
 			builder	
@@ -239,7 +211,7 @@ public class BulletinControleur extends AsyncFragmentControleur {
 		chargerVueErreur("délai d'attente dépassé", "Impossible de se connecter à my.epf.fr\nCheck tes identifiants dans les préférences\net redémarre l'appli");		
 	}
 
-	public void onMyEPFConnected() {
+	public void onMyEpfConnected() {
 		chargerVueComplete();
 	}
 	

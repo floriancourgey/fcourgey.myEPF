@@ -3,11 +3,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
-    <ListView
-        android:id="@+id/lvNotes"
+    
+    <RelativeLayout 
+        android:id="@+id/vueDefaut"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </ListView>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        >
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Attente connexion my.epf"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/vueComplete"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+	    <ListView
+	        android:id="@+id/lvNotes"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent" >
+	    </ListView>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/vueErreur"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/tvErreurTitre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Erreur ({ERREUR_TITRE})" />
+
+        <TextView
+            android:id="@+id/tvErreurMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+    </LinearLayout>
 
 </LinearLayout>

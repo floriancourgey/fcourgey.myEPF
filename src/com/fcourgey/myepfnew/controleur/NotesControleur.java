@@ -2,7 +2,9 @@ package com.fcourgey.myepfnew.controleur;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
@@ -25,9 +27,9 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +42,9 @@ import android.widget.TextView;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
 import com.fcourgey.android.mylib.framework.Fragment;
+import com.fcourgey.myepfnew.MonApplication;
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.entite.Matiere;
 import com.fcourgey.myepfnew.entite.Module;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
@@ -58,9 +62,21 @@ public class NotesControleur extends AsyncFragmentControleur {
 	public NotesControleur(Fragment f, LayoutInflater inflater, ViewGroup container){
 		super(f, inflater, container);
 		
+		xmlFile = new File(MonApplication.DOSSIER_MY_EPF,"notes.xml");
 		
 		vue = new NotesVue(this, container);
 		
+		mappingXmlModules(false);
+		chargerVueComplete();
+		
+		// si on est pas encore connecté à my.epf
+		if(MainActivite.connecteAMyEpf){
+//			telechargementXmlNotes();
+//			chargerVueComplete();
+		}
+	}
+	
+	public void onMyEpfConnected(){
 		telechargementXmlNotes();
 	}
 	
@@ -72,7 +88,6 @@ public class NotesControleur extends AsyncFragmentControleur {
 	public void telechargementXmlNotes(){
 		avancement("Requête notes", 55);
 		getActivite().runOnUiThread(new Runnable() {
-			
 			public void run() {
 				StrictMode.ThreadPolicy policy = new
 						StrictMode.ThreadPolicy.Builder()
@@ -88,10 +103,10 @@ public class NotesControleur extends AsyncFragmentControleur {
 					is = httpClient.execute((HttpUriRequest) httpGet, localContext).getEntity().getContent();
 				} catch (Exception e) {
 					e.printStackTrace();
-					Log.i("love sex", "Impossible de joindre le serveur EPF (étonnant à ce stade)");
-					return; // TODO
+					chargerVueErreur("HttpClient impossible", "Impossible de joindre le serveur EPF (étonnant à ce stade)");
+					return;
 				}
-				String line = "";
+				String line = null;
 				try {
 					BufferedReader br = new BufferedReader(new InputStreamReader(is));
 					while ((line = br.readLine()) != null) {
@@ -105,6 +120,10 @@ public class NotesControleur extends AsyncFragmentControleur {
 				} catch(Exception e){
 					e.printStackTrace();
 				}
+				if(!line.contains("ReportSession")){
+					chargerVueErreur("HTML parse", "Erreur dans la source html ("+line+")");
+					return;
+				}
 				// ajustements
 				line = line.replace("$create(Microsoft.Reporting.WebFormsClient._InternalReportViewer, ", "");
 				line = line.replace(", null, null, $get(\"m_sqlRsWebPart_ctl00_ReportViewer_ctl03\"));", "");
@@ -116,7 +135,8 @@ public class NotesControleur extends AsyncFragmentControleur {
 					JSONObject json = new JSONObject(line);
 					urlXml = json.getString("ExportUrlBase");
 				} catch (JSONException e) {
-					e.printStackTrace();// TODO: handle exception
+					e.printStackTrace();
+					chargerVueErreur("JSON parse", "Erreur dans la source json ("+line+")");
 					return;
 				}
 				urlXml = urlXml.replace("parcoursscolaireReserved", "parcoursscolaire/Reserved");
@@ -136,7 +156,11 @@ public class NotesControleur extends AsyncFragmentControleur {
 
 		            System.out.println("File get: " + response.getStatusLine());
 
-		            xmlFile = new File(Environment.getExternalStorageDirectory()+"/myepf/","notes.xml");
+		            if(MonApplication.DOSSIER_MY_EPF.contains("{")){
+		            	chargerVueErreur("XML save", "Impossible d'accéder au dossier de sauvegarde ("+MonApplication.DOSSIER_MY_EPF+")");
+		            	return;
+		            }
+		            
 					FileOutputStream fileOutput = new FileOutputStream(xmlFile);
 					InputStream inputStream = entity.getContent();
 					byte[] buffer = new byte[1024];
@@ -146,9 +170,10 @@ public class NotesControleur extends AsyncFragmentControleur {
 					}
 					fileOutput.close();
 					
-					mappingXmlModules();
+					mappingXmlModules(true);
 				} catch(Exception e){
-					e.printStackTrace(); //TODO
+					e.printStackTrace();
+					chargerVueErreur("XML save", "Erreur dans la sauvegarde XML");
 					return;
 				}
 			}
@@ -159,15 +184,34 @@ public class NotesControleur extends AsyncFragmentControleur {
 	 * +
 	 * lance l'affichage des notes @see affichageXmlNotes
 	 */
-	private void mappingXmlModules(){
-		lModules = XmlNoteMyEpf.xmlToLModules(xmlFile);
+	private void mappingXmlModules(boolean suiteAuTelechargement){
+		try{
+			lModules = XmlNoteMyEpf.xmlToLModules(xmlFile);
+		}catch(NullPointerException npe){
+			chargerVueErreur("Chargement des notes impossible", npe.getMessage());
+			return;
+		} catch(FileNotFoundException fnfe){
+			chargerVueErreur("Chargement des notes impossible", fnfe.getMessage());
+			return;
+		} catch(IOException ioe){
+			if(suiteAuTelechargement){
+				
+			} else {
+				chargerVueErreur("Chargement des notes impossible", ioe.getMessage());
+				return;
+			}
+		} catch(XmlPullParserException xppe){
+			chargerVueErreur("Chargement des notes impossible", xppe.getMessage());
+			return;
+		}
+		
 		affichageXmlNotes();
 	}
 	/**
 	 * affiche les notes depuis l'objet java
 	 */
 	private void affichageXmlNotes(){
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
 		NotesAdapter mAdapter = new NotesAdapter(getActivite());
 		mAdapter.addSectionHeaderItem("Les 5 dernières notes");
 		Note[] lastNotes = get5DernieresNotes();
@@ -181,24 +225,17 @@ public class NotesControleur extends AsyncFragmentControleur {
 				mAdapter.addItem(n.getType()+" : "+n.getNote()+"    ("+sdf.format(n.getDate().getTime())+")");
 			}
 		}
-		/*
-		for (int i = 1; i < 30; i++) {
-			mAdapter.addItem("Row Item #" + i);
-			if (i % 4 == 0) {
-				mAdapter.addSectionHeaderItem("Section #" + i);
-			}
-		}
-		*/
+
 		ListView lvNotes = (ListView)vue.findViewById(R.id.lvNotes);
 		lvNotes.setAdapter(mAdapter);
+		onNotesAffichees();
+	}
+	
+	private void onNotesAffichees(){
 	}
 	
 	public void avancement(String t, int p){
 		Log.i("notescontroleur", "avt "+p+" : "+t);
-	}
-	
-	public void onMyEPFConnected(){
-		telechargementXmlNotes();
 	}
 	
 	class NotesAdapter extends BaseAdapter {

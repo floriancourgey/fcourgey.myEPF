@@ -249,7 +249,7 @@ public class EdtControleur extends AsyncFragmentControleur {
 		}
 	}
 	
-	public void onMyEPFConnected() {
+	public void onMyEpfConnected() {
 		telecharcherMainJson();
 		semainesPagerAdapter.onMyEPFConnected();
 	}

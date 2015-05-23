@@ -207,18 +207,18 @@ public class MainControleur extends ActiviteControleur {
 		}
 	}
 	
-	public void onMyEPFConnected(){
+	public void onMyEpfConnected(){
 		initPhotoProfil();
 		initNomPrenom();
 		if(fragmentActuel instanceof EdtFragment){
 			EdtFragment f = (EdtFragment)fragmentActuel;
-			((EdtControleur)f.getControleur()).onMyEPFConnected();
+			((EdtControleur)f.getControleur()).onMyEpfConnected();
 		} else if(fragmentActuel instanceof BulletinFragment) {
 			BulletinFragment f = (BulletinFragment)fragmentActuel;
-			((BulletinControleur)f.getControleur()).onMyEPFConnected();
+			((BulletinControleur)f.getControleur()).onMyEpfConnected();
 		} else if(fragmentActuel instanceof NotesFragment){
 			NotesFragment f = (NotesFragment)fragmentActuel;
-			((NotesControleur)f.getControleur()).onMyEPFConnected();
+			((NotesControleur)f.getControleur()).onMyEpfConnected();
 		}
 	}
 	

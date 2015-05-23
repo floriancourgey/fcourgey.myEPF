@@ -233,7 +233,7 @@ public class MainActivite extends Activite {
 		avancement("onMyEPFConnected", 100);
 		enTrainDeSeConnecterAMyEPF = false;
 		connecteAMyEpf = true;
-		controleur.onMyEPFConnected();
+		controleur.onMyEpfConnected();
 	}
 	
 	/**

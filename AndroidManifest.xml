@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fcourgey.myepfnew"
-    android:versionCode="16000"
-    android:versionName="16" >
+    android:versionCode="16002"
+    android:versionName="16b" >
 
     <uses-sdk
         android:maxSdkVersion="22"
@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activite.MainActivite" />
+        <activity android:name=".activite.MainActivite" android:launchMode="singleTask"/>
         <activity android:name=".activite.PreferencesActivite" />
     </application>
 
