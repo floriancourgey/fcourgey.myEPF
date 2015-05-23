@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
+import com.fcourgey.myepfnew.vue.SemaineVue;
 
 public class SemaineFragment extends Fragment {
 	
@@ -33,7 +34,11 @@ public class SemaineFragment extends Fragment {
 		
 		int indexFragment = getArguments().getInt(KEY_INDEX_FRAGMENT);
 		
-		controleur = new SemaineControleur(this, inflater, container, indexFragment);
+		if(controleur == null){
+			controleur = new SemaineControleur(this, inflater, container, indexFragment);
+		} else {
+			((SemaineVue)controleur.getVue()).initCours(false);
+		}
 
 		return controleur.getView();
 	}

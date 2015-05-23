@@ -15,7 +15,9 @@ public class NotesFragment extends AsyncFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		controleur = new NotesControleur(this, inflater, container);
+		
+		if(controleur == null)
+			controleur = new NotesControleur(this, inflater, container);
 		
 		return controleur.getView();
 	}

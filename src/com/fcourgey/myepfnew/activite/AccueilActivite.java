@@ -32,6 +32,7 @@ public class AccueilActivite extends Activite {
 	 */
 	public void lancerSemainesActivite(){
 		Intent intent = new Intent(this, MainActivite.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP );
 		startActivity(intent);
 		finish();
 	}

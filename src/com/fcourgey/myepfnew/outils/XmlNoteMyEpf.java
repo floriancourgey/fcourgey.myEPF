@@ -1,12 +1,15 @@
 package com.fcourgey.myepfnew.outils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.xmlpull.v1.XmlPullParserException;
 
 import com.fcourgey.myepfnew.entite.Module;
 import com.fcourgey.myepfnew.entite.Note;
@@ -27,33 +30,34 @@ public class XmlNoteMyEpf {
 	public static final String KEY_NOTE_COEFF = "COEF";
 	public static final String KEY_NOTE_MOY = "MOYENNE_PROMO";
 
-	public static ArrayList<Module> xmlToLModules(File xml){
-		ArrayList<Module> lModules = new ArrayList<Module>();
-		try{
-			System.out.println("=== DEBUT ===");
-			Document doc = Jsoup.parse(xml, "utf-8");
-		    for (Element module : doc.select(ID_MODULE)) {
-//		    	System.out.println("MODULE "+module.attr(KEY_MODULE_NOM));
-		    	String nomModule = module.attr(KEY_MODULE_NOM);
-		    	Module m = new Module(nomModule);
-		    	ArrayList<Note> lNotes = new ArrayList<Note>();
-		    	for(Element note : module.select(ID_NOTE)){
-//		    		System.out.println(note.attr(KEY_NOTE_TYPE)+" : "+note.attr(KEY_NOTE_NOTE));
-		    		Calendar date = StringOutils.toCalendar(note.attr(KEY_NOTE_DATE), "dd/MM/yyyy");
-		    		String type = note.attr(KEY_NOTE_TYPE);
-		    		float valeur = readFloat(note, KEY_NOTE_NOTE);
-		    		float coeff = readFloat(note, KEY_NOTE_COEFF);
-		    		float moyenne = readFloat(note, KEY_NOTE_MOY);
-		    		lNotes.add(new Note(m, date, type, valeur, coeff, moyenne));
-		    	}
-		    	m.setLNotes(lNotes);
-		    	lModules.add(m);
-		    }
-		    System.out.println("=== FIN ===");
-		} catch(Exception e){
-			e.printStackTrace();//TODO
-			return null;
+	public static ArrayList<Module> xmlToLModules(File xml) throws NullPointerException, FileNotFoundException, IOException, XmlPullParserException {
+		if(xml==null){
+			throw new NullPointerException("xml==null");
+		}if(!xml.exists()){
+			throw new FileNotFoundException("xml introuvable");
 		}
+		ArrayList<Module> lModules = new ArrayList<Module>();
+		Document doc = Jsoup.parse(xml, "utf-8");
+		if(doc.select(ID_MODULE) == null){
+			throw new XmlPullParserException("Impossible de trouver le noeud "+ID_MODULE);
+		}
+	    for (Element module : doc.select(ID_MODULE)) {
+//		    	System.out.println("MODULE "+module.attr(KEY_MODULE_NOM));
+	    	String nomModule = module.attr(KEY_MODULE_NOM);
+	    	Module m = new Module(nomModule);
+	    	ArrayList<Note> lNotes = new ArrayList<Note>();
+	    	for(Element note : module.select(ID_NOTE)){
+//		    		System.out.println(note.attr(KEY_NOTE_TYPE)+" : "+note.attr(KEY_NOTE_NOTE));
+	    		Calendar date = StringOutils.toCalendar(note.attr(KEY_NOTE_DATE), "dd/MM/yyyy");
+	    		String type = note.attr(KEY_NOTE_TYPE);
+	    		float valeur = readFloat(note, KEY_NOTE_NOTE);
+	    		float coeff = readFloat(note, KEY_NOTE_COEFF);
+	    		float moyenne = readFloat(note, KEY_NOTE_MOY);
+	    		lNotes.add(new Note(m, date, type, valeur, coeff, moyenne));
+	    	}
+	    	m.setLNotes(lNotes);
+	    	lModules.add(m);
+	    }
 		return lModules;
 	}
 	
