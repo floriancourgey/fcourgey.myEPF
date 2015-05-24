@@ -56,6 +56,7 @@ public class BulletinControleur extends AsyncFragmentControleur {
 		vue = new AsyncFragmentVue(this, R.layout.bulletin_fragment, container);
 		
 		ButterKnife.inject(this, vue.getView());
+		
 
 		Calendar c = Calendar.getInstance();
 		String identifiant = ((MainActivite)a).getIdentifiant();
@@ -66,6 +67,7 @@ public class BulletinControleur extends AsyncFragmentControleur {
 		}
 		MyEpfUrl.BULLETIN = MyEpfUrl.BULLETIN.replace("{ANNEE}", Integer.toString(iAnnee));
 		MyEpfUrl.BULLETIN = MyEpfUrl.BULLETIN.replace("{LOGIN}", identifiant);
+		FICHIER_BULLETIN = FICHIER_BULLETIN.replace("{IDENTIFIANT}", identifiant);
 		
 		if(MonApplication.DOSSIER_MY_EPF.contains("{")){
 			Log.e(TAG, "Dossier myEPF : "+MonApplication.DOSSIER_MY_EPF);
