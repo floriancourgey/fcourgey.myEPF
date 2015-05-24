@@ -70,9 +70,12 @@ public class MainActivite extends Activite {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activite);
 		
-		ButterKnife.inject(this);
-		
 		prefs = AccueilActivite.prefs;
+		if(prefs == null){
+			prefs = new MyEpfPreferencesModele(this);
+		}
+		
+		ButterKnife.inject(this);
 		
 		edtDejaTelechargeUneFois = prefs.getBoolean(MyEpfPreferencesModele.KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS, false);
 		
