@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
@@ -50,6 +51,7 @@ import com.fcourgey.myepfnew.entite.Module;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.entite.Note;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
+import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.XmlNoteMyEpf;
 import com.fcourgey.myepfnew.vue.NotesVue;
 
@@ -64,15 +66,17 @@ public class NotesControleur extends AsyncFragmentControleur {
 		
 		xmlFile = new File(MonApplication.DOSSIER_MY_EPF,"notes.xml");
 		
-		vue = new NotesVue(this, container);
+		MyEpfPreferencesModele modele = (MyEpfPreferencesModele)getPrefs();
+		String derniereActu = modele.getString(MyEpfPreferencesModele.KEY_NOTES_DERNIERE_ACTU); 
+		vue = new NotesVue(this, container, derniereActu);
 		
 		mappingXmlModules(false);
 		chargerVueComplete();
 		
-		// si on est pas encore connecté à my.epf
+		// si on est connecté à my.epf
 		if(MainActivite.connecteAMyEpf){
-//			telechargementXmlNotes();
-//			chargerVueComplete();
+			telechargementXmlNotes();
+			chargerVueComplete();
 		}
 	}
 	
@@ -169,6 +173,14 @@ public class NotesControleur extends AsyncFragmentControleur {
 						fileOutput.write(buffer, 0, bufferLength);
 					}
 					fileOutput.close();
+					
+					// update texte dernière actualisation
+					Calendar now = Calendar.getInstance();
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+					((NotesVue)vue).setDerniereActualisation(sdf.format(now.getTime()));
+					// ajout dans les pref
+					MyEpfPreferencesModele modele = (MyEpfPreferencesModele)getPrefs();
+					modele.putString(MyEpfPreferencesModele.KEY_NOTES_DERNIERE_ACTU, sdf.format(now.getTime()));
 					
 					mappingXmlModules(true);
 				} catch(Exception e){

@@ -41,6 +41,7 @@ public class MyEpfPreferencesModele extends PreferencesModele {
 	public static String V14_MDP_HASHE="V14_MDP_HASHE";
 	public static String V14A_MDP_HASHE="V14A_MDP_HASHE";
 	public static String KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS = "KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS";
+	public static String KEY_NOTES_DERNIERE_ACTU = "KEY_NOTES_DERNIERE_ACTU";
 	
 //	private static Activite mere;
 	

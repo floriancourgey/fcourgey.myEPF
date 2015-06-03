@@ -18,6 +18,9 @@ public class Matiere {
         if (matiere.contains("Algèbre".toLowerCase(Locale.getDefault()))) {
             return "Alg.";
         }
+        if (matiere.contains("biochimie".toLowerCase(Locale.getDefault()))) {
+            return "Biochimie";
+        }
         if (matiere.contains("chimie".toLowerCase(Locale.getDefault()))) {
             return "Chimie";
         }

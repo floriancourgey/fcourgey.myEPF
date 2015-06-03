@@ -59,11 +59,12 @@ public class EdtPagesControleur extends FragmentPagerAdapter {
 	
     @Override
     public Fragment getItem(int index) {
-    	return SemaineFragment.newInstance(index);
+		return SemaineFragment.newInstance(index);
     }
     
     @Override
     public Object instantiateItem(ViewGroup container, int indexFragment) {
+    	Log.e(TAG, "instantiateItem");
         Fragment fragment = (Fragment) super.instantiateItem(container, indexFragment);
         lFrags.put(indexFragment, fragment);
         return fragment;

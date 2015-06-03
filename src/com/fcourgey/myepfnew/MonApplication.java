@@ -5,12 +5,12 @@ import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
+import android.app.Application;
+import android.os.Environment;
+
 import com.fcourgey.android.mylib.a_mettre_dans_java_lib.exceptions.ReadOnlyException;
 import com.fcourgey.android.mylib.a_mettre_dans_java_lib.outils.FichierOutils;
 import com.fcourgey.android.mylib.exceptions.SDReadOnlydException;
-
-import android.app.Application;
-import android.os.Environment;
 
 @ReportsCrashes(
 		customReportContent = { ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME, ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, ReportField.CUSTOM_DATA, ReportField.STACK_TRACE, ReportField.LOGCAT },                

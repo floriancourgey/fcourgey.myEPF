@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fcourgey.myepfnew"
-    android:versionCode="16003"
-    android:versionName="16c" >
+    android:versionCode="16004"
+    android:versionName="16d" >
 
     <uses-sdk
         android:maxSdkVersion="22"
