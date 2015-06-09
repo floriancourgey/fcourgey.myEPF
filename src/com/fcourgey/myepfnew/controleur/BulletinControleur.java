@@ -83,9 +83,9 @@ public class BulletinControleur extends AsyncFragmentControleur {
 
 		// si on est pas encore connecté à my.epf
 		// vue défaut
-		if(MainActivite.connecteAMyEpf){
+		if(ConnexionControleur.connecte){
 			chargerVueComplete();
-		} else if(MainActivite.enTrainDeSeConnecterAMyEPF && !MainActivite.connecteAMyEpf){
+		} else if(ConnexionControleur.enCours && !ConnexionControleur.connecte){
 			chargerVueDefaut();
 		} else {
 			lectureSeule();

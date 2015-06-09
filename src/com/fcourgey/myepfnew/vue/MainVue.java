@@ -6,6 +6,7 @@ import android.content.Context;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -26,9 +28,8 @@ import com.fcourgey.myepfnew.controleur.MainControleur;
 import com.joanzapata.android.iconify.Iconify;
 
 @SuppressWarnings("deprecation")
-public class DrawerVue extends ActiviteVue{
+public class MainVue extends ActiviteVue{
 	
-	@SuppressWarnings("unused")
 	private static final String TAG = "DrawerVue"; 
 	
 	private MainActivite a;
@@ -42,10 +43,11 @@ public class DrawerVue extends ActiviteVue{
 	protected ActionBarDrawerToggle toggleBouton; // bouton toggle en haut à gauche dans l'action bar
 	@InjectView(R.id.lTitres)
 	protected ListView lTitres; // listView des titres sur la gauche : Edt, bulletin, ...
+	@InjectView(R.id.pbConnexionMyEpf)
+	protected ProgressBar pbConnexionMyEpf;
 	
-	public DrawerVue(MainControleur controleur) {
+	public MainVue(MainControleur controleur) {
 		super(controleur);
-		this.controleur = controleur;
 		this.a = (MainActivite) controleur.getActivite();
 		this.identifiant = controleur.getIdentifiant();
 		
@@ -155,6 +157,28 @@ public class DrawerVue extends ActiviteVue{
 		@Override
 		public String getItem(int position) {
 			return titres[position];
+		}
+	}
+
+	public void avancement(final String texte, final int pourcentage) {
+		try{
+			a.runOnUiThread(new Runnable() {
+				public void run() {
+					if(pourcentage >= 100){
+						pbConnexionMyEpf.setVisibility(View.GONE);
+
+					} else if(pourcentage > 0){
+						pbConnexionMyEpf.setProgress(pourcentage);
+						pbConnexionMyEpf.setVisibility(View.VISIBLE);
+
+					} else {
+						pbConnexionMyEpf.setVisibility(View.GONE);
+					}
+				}
+			});
+		} catch (Exception e){
+			e.printStackTrace();
+			Log.w(TAG, "Erreur inconnue dans avancement..");
 		}
 	}
 }

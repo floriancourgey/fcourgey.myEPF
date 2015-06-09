@@ -45,7 +45,6 @@ import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
 import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.MonApplication;
 import com.fcourgey.myepfnew.R;
-import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.entite.Matiere;
 import com.fcourgey.myepfnew.entite.Module;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
@@ -74,7 +73,7 @@ public class NotesControleur extends AsyncFragmentControleur {
 		chargerVueComplete();
 		
 		// si on est connecté à my.epf
-		if(MainActivite.connecteAMyEpf){
+		if(ConnexionControleur.connecte){
 			telechargementXmlNotes();
 			chargerVueComplete();
 		}

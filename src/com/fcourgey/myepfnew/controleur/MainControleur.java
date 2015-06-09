@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -29,14 +31,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 import com.fcourgey.android.mylib.framework.ActiviteControleur;
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.activite.AccueilActivite;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.activite.PreferencesActivite;
 import com.fcourgey.myepfnew.entite.MyEpfUrl;
@@ -47,7 +52,7 @@ import com.fcourgey.myepfnew.fragment.EdtFragment;
 import com.fcourgey.myepfnew.fragment.NotesFragment;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.Android;
-import com.fcourgey.myepfnew.vue.DrawerVue;
+import com.fcourgey.myepfnew.vue.MainVue;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 @SuppressWarnings("deprecation")
@@ -55,13 +60,27 @@ public class MainControleur extends ActiviteControleur {
 	
 	private static final String TAG = "MainControleur";
 	
-//	private DrawerVue vue;
+	public static final int NB_SEC_REQ_TIMEOUT = 15;
+
+//	public static boolean connecteAMyEpf = false;
+//	public static boolean enTrainDeSeConnecterAMyEPF = false;
+		
+	private MyEpfPreferencesModele prefs;
 	
-	private MainActivite a;
+//	private MainVue vue;
+	
+	// composant
+	@InjectView(R.id.pbConnexionMyEpf)
+    protected ProgressBar pbConnexionMyEpf;
+	@InjectView(R.id.wvCachee)
+	protected WebView wvCachee;
+	
+	public static boolean edtDejaTelechargeUneFois = false;
 	
 	private Fragment fragmentActuel;
 	
 	private String identifiant;
+//	private String mdp;
 	
 	// design
 	@InjectView(R.id.photo_profil)
@@ -76,14 +95,22 @@ public class MainControleur extends ActiviteControleur {
 	
 	public MainControleur(MainActivite a, Bundle savedInstanceState) {
 		super(a, savedInstanceState);
-		this.a = a;
-		identifiant = a.getIdentifiant();
-		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{FILES_DIR}", a.getFilesDir().toString());
-		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{IDENTIFIANT}",identifiant);
+		//***
+		prefs = AccueilActivite.prefs;
+		if(prefs == null){
+			prefs = new MyEpfPreferencesModele(a);
+		}
 		
 		ButterKnife.inject(this, a);
 		
-		vue = new DrawerVue(this);
+		edtDejaTelechargeUneFois = prefs.getBoolean(MyEpfPreferencesModele.KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS, false);
+		
+		identifiant = prefs.getIdentifiant();
+		//***
+		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{FILES_DIR}", a.getFilesDir().toString());
+		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{IDENTIFIANT}",identifiant);
+		
+		vue = new MainVue(this);
 
 		// affiche photo de profil si existe
 		// sinon, le DL sera appelé par onMyEPFConnected
@@ -98,15 +125,24 @@ public class MainControleur extends ActiviteControleur {
 		if(savedInstanceState == null){
 			onEdtClicked();
 		}
+		
+		//**
+		pbConnexionMyEpf.getProgressDrawable().setColorFilter(Color.CYAN, Mode.SRC_IN);
+
+		// connexion à myEPF si pas fait et pas en cours
+		if(!ConnexionControleur.connecte && !ConnexionControleur.enCours){
+			avancement("Connexion à myEPF", 55);
+			new ConnexionControleur(this, wvCachee);
+		}
+		//**
 	}
-	
-	
 	
 	/**
 	 * quand le délai d'attente est dépassé
 	 * et qu'on est pas connecté à my.epf
 	 */
 	public void onDelaiDAttenteDepassé() {
+		avancement("Délai d'attente dépassé", 0);
 		if(fragmentActuel instanceof EdtFragment){
 			EdtFragment f = (EdtFragment)fragmentActuel;
 			f.onDelaiDAttenteDepassé();
@@ -114,6 +150,46 @@ public class MainControleur extends ActiviteControleur {
 			BulletinFragment f = (BulletinFragment)fragmentActuel;
 			f.onDelaiDAttenteDepassé();
 		}
+	}
+	
+	public void avancement(final String texte, final int pourcentage) {
+		if(pourcentage >= 100){
+			Log.i(TAG, "Avancement terminé : "+texte);
+		} else if(pourcentage > 0){
+			Log.i(TAG, "Avancement "+pourcentage+" : "+texte);
+		} else {
+			Log.i(TAG, "Avancement erreur : "+texte);
+		}
+		((MainVue)vue).avancement(texte, pourcentage);
+	}
+
+	/**
+	 * Est exécuté lorsque la connexion à myEPF a réussi
+	 */
+	public void onMyEpfConnected(){
+		avancement("onMyEPFConnected", 100);
+		initPhotoProfil();
+		initNomPrenom();
+		if(fragmentActuel instanceof EdtFragment){
+			EdtFragment f = (EdtFragment)fragmentActuel;
+			((EdtControleur)f.getControleur()).onMyEpfConnected();
+		} else if(fragmentActuel instanceof BulletinFragment) {
+			BulletinFragment f = (BulletinFragment)fragmentActuel;
+			((BulletinControleur)f.getControleur()).onMyEpfConnected();
+		} else if(fragmentActuel instanceof NotesFragment){
+			NotesFragment f = (NotesFragment)fragmentActuel;
+			((NotesControleur)f.getControleur()).onMyEpfConnected();
+		}
+	}
+
+	
+	public WebView getWvCachee(){
+		return wvCachee;
+	}
+
+	@Override
+	public MyEpfPreferencesModele getPrefs() {
+		return prefs;
 	}
 	
 	/**
@@ -184,8 +260,8 @@ public class MainControleur extends ActiviteControleur {
 	}
 
 	private void fermerDrawer(){
-		DrawerVue drawerVue = (DrawerVue)vue;
-		drawerVue.getLayoutGeneral().closeDrawer(drawerVue.getVue());
+		MainVue MainVue = (MainVue)vue;
+		MainVue.getLayoutGeneral().closeDrawer(MainVue.getVue());
 	}
 	
 	/**
@@ -200,25 +276,10 @@ public class MainControleur extends ActiviteControleur {
 	 * faux sinon
 	 */
 	private boolean isNomPrenomDownloaded(){
-		if(a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant)==null){
+		if(prefs.getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant)==null){
 			return false;
 		} else {
 			return true;
-		}
-	}
-	
-	public void onMyEpfConnected(){
-		initPhotoProfil();
-		initNomPrenom();
-		if(fragmentActuel instanceof EdtFragment){
-			EdtFragment f = (EdtFragment)fragmentActuel;
-			((EdtControleur)f.getControleur()).onMyEpfConnected();
-		} else if(fragmentActuel instanceof BulletinFragment) {
-			BulletinFragment f = (BulletinFragment)fragmentActuel;
-			((BulletinControleur)f.getControleur()).onMyEpfConnected();
-		} else if(fragmentActuel instanceof NotesFragment){
-			NotesFragment f = (NotesFragment)fragmentActuel;
-			((NotesControleur)f.getControleur()).onMyEpfConnected();
 		}
 	}
 	
@@ -231,10 +292,10 @@ public class MainControleur extends ActiviteControleur {
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 		Bitmap bmp = BitmapFactory.decodeFile(CHEMIN_PHOTO_PROFIL, options);
 		// crop du bmp
-		int decalage_x = a.getPrefs().getInt(MyEpfPreferencesModele.KEY_PHOTO_X, 0);
+		int decalage_x = prefs.getInt(MyEpfPreferencesModele.KEY_PHOTO_X, 0);
 		if(decalage_x < 0)
 			decalage_x = Math.abs(decalage_x);
-		int decalage_y = a.getPrefs().getInt(MyEpfPreferencesModele.KEY_PHOTO_Y, 0);
+		int decalage_y = prefs.getInt(MyEpfPreferencesModele.KEY_PHOTO_Y, 0);
 		if(decalage_y < 0)
 			decalage_y = Math.abs(decalage_y);
 		if(bmp.getWidth() < bmp.getHeight())
@@ -395,7 +456,7 @@ public class MainControleur extends ActiviteControleur {
 						if(matcher.find()){
 							String nomPrenom = matcher.group(1);
 							// sauvegarde dans les pref
-							a.getPrefs().putString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant, nomPrenom);
+							prefs.putString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant, nomPrenom);
 							// affichage
 							afficherNomPrenom();
 						}
@@ -412,7 +473,7 @@ public class MainControleur extends ActiviteControleur {
 	 * 
 	 */
 	public void afficherNomPrenom(){
-		String nomPrenom = a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant);
+		String nomPrenom = prefs.getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant);
 		TextView tvNomPrenom = (TextView)a.findViewById(R.id.tvNomPrenom);
 		if(nomPrenom == null){
 			tvNomPrenom.setVisibility(View.GONE);
@@ -452,11 +513,11 @@ public class MainControleur extends ActiviteControleur {
 	 * Ouvre le drawer si fermé
 	 */
 	public void ouvrirFermerDrawer() {
-		DrawerVue drawerVue = (DrawerVue)vue;
-		if (!drawerVue.getLayoutGeneral().isDrawerOpen(drawerVue.getVue())) {
-			drawerVue.getLayoutGeneral().openDrawer(drawerVue.getVue());
+		MainVue MainVue = (MainVue)vue;
+		if (!MainVue.getLayoutGeneral().isDrawerOpen(MainVue.getVue())) {
+			MainVue.getLayoutGeneral().openDrawer(MainVue.getVue());
         } else {
-        	drawerVue.getLayoutGeneral().closeDrawer(drawerVue.getVue());
+        	MainVue.getLayoutGeneral().closeDrawer(MainVue.getVue());
         }
 	}
 	
@@ -465,16 +526,16 @@ public class MainControleur extends ActiviteControleur {
 	 */
 	public void onPostCreate(Bundle savedInstanceState) {
 		// Sync the toggle state after onRestoreInstanceState has occurred.
-		DrawerVue drawerVue = (DrawerVue)vue;
-		if(vue != null && drawerVue.getToggleBouton()!=null)
-			drawerVue.getToggleBouton().syncState();
+		MainVue MainVue = (MainVue)vue;
+		if(vue != null && MainVue.getToggleBouton()!=null)
+			MainVue.getToggleBouton().syncState();
 	}
 
 	/**
 	 * ? 
 	 */
 	public void onConfigurationChanged(Configuration newConfig) {
-		((DrawerVue) vue).getToggleBouton().onConfigurationChanged(newConfig);
+		((MainVue) vue).getToggleBouton().onConfigurationChanged(newConfig);
 	}
 	public String getIdentifiant() {
 		return identifiant;

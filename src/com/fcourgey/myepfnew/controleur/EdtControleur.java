@@ -37,6 +37,7 @@ import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.JsonCoursMyEpf;
+import com.fcourgey.myepfnew.outils.Securite;
 import com.fcourgey.myepfnew.outils.StringOutils;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -102,14 +103,17 @@ public class EdtControleur extends AsyncFragmentControleur {
 		Log.i(TAG, "semaines ["+indexPremiereSemaine+" ; "+indexSemaineActuelle+" ; "+indexDerniereSemaine+"]");
 		
 		// si on a déjà du json dans les pref, on charge la vue complète
-		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele)getActivite().getPrefs();
-		if(prefs.getCoursSemaine(indexSemaineActuelle) != null){
-			chargerVueComplete();
-		}
+//		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele)getActivite().getPrefs();
+//		if(prefs.getCoursSemaine(indexSemaineActuelle) != null){
+//			chargerVueComplete();
+//		}
+//		if(MainControleur.edtDejaTelechargeUneFois){
+//			chargerVueComplete();
+//		}
 		// sinon vue défaut
-		else {
+//		else {
 			chargerVueDefaut("Connexion à my.epf");
-		}
+//		}
 	}
 	
 	
@@ -183,6 +187,7 @@ public class EdtControleur extends AsyncFragmentControleur {
 				prefs.setCoursSemaine(i, null);
 			}
 		}
+		prefs.putBoolean(MyEpfPreferencesModele.KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS, true);
 		onMapCoursMapped();
 	}
 	
@@ -257,5 +262,13 @@ public class EdtControleur extends AsyncFragmentControleur {
 	private void chargerVueDefaut(String texte) {
 		super.chargerVueDefaut();
 		((TextView)vue.findViewById(R.id.tvTitre)).setText(texte);
+	}
+
+
+	public void onDelaiDAttenteDepassé() {
+		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele) getPrefs();
+		String id = prefs.getIdentifiant();
+		String mdp = Securite.decrypt(prefs.getMdp());
+		chargerVueErreur("Impossible de se connecter à my.epf.fr", "identifiant("+id+")\nmdp("+mdp+")");
 	}
 }

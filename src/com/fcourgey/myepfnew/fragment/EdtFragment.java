@@ -22,7 +22,7 @@ public class EdtFragment extends AsyncFragment {
 	}
 
 	public void onDelaiDAttenteDepassé() {
-//		((EdtControleur)controleur).onDelaiDAttenteDepassé();
+		((EdtControleur)controleur).onDelaiDAttenteDepassé();
 	}
 	
 	
