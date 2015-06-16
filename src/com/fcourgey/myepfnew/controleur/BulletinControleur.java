@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ReadOnlyBufferException;
 import java.util.Calendar;
 
 import org.apache.http.client.HttpClient;
@@ -18,7 +17,6 @@ import org.apache.http.protocol.HttpContext;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,30 +24,39 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 import com.fcourgey.android.mylib.framework.AsyncFragmentControleur;
 import com.fcourgey.android.mylib.framework.AsyncFragmentVue;
 import com.fcourgey.android.mylib.framework.Fragment;
+import com.fcourgey.myepfnew.MonApplication;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
+import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 
 @SuppressWarnings("deprecation")
-public class BulletinControlleur extends AsyncFragmentControleur {
+public class BulletinControleur extends AsyncFragmentControleur {
 	
-public static String CHEMIN_BULLETIN;
+	private static final String TAG = "BulletinControleur";
+	public static String FICHIER_BULLETIN = "bulletin-{IDENTIFIANT}.pdf";
 	
-	private boolean ecritureOK = false;
+	// design
+	@InjectView(R.id.tvAvancementBulletin)
+	protected TextView tvAvancementBulletin;
+	@InjectView(R.id.pbAvancementBulletin)
+	protected ProgressBar pbAvancementBulletin;
 	
-	public static final String URL_MY_EPF = EdtControleur.URL_MY_EPF;
-	public static final String URL_BULLETIN2 = URL_MY_EPF+"/_layouts/sharepointproject2/redirectionversbulletin.aspx";
-	public static String URL_BULLETIN = "https://my.epf.fr/parcoursscolaire/_layouts/SharePointProject2/AffichageBulletin.aspx?ANNEE={ANNEE}&LOGIN_RESEAU={LOGIN}";
-
-	public BulletinControlleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
+	public BulletinControleur(Fragment f, LayoutInflater inflater, ViewGroup container) {
 		super(f, inflater, container);
 
-		vue = new AsyncFragmentVue(this, inflater, container, R.layout.bulletin_fragment);
+		vue = new AsyncFragmentVue(this, R.layout.bulletin_fragment, container);
+		
+		ButterKnife.inject(this, vue.getView());
+		
 
 		Calendar c = Calendar.getInstance();
 		String identifiant = ((MainActivite)a).getIdentifiant();
@@ -58,37 +65,27 @@ public static String CHEMIN_BULLETIN;
 		if(c.get(Calendar.MONTH)<=Calendar.SEPTEMBER){
 			iAnnee--;
 		}
-		URL_BULLETIN = URL_BULLETIN.replace("{ANNEE}", Integer.toString(iAnnee)).replace("{LOGIN}", identifiant);
-
-		try{
-			String state = Environment.getExternalStorageState();
-			if (Environment.MEDIA_MOUNTED.equals(state)) {
-				ecritureOK = true;
-				CHEMIN_BULLETIN = Environment.getExternalStorageDirectory()+"/bulletin-myepf-"+identifiant+".pdf";
-			} else {
-				ecritureOK = false;
-				throw new ReadOnlyBufferException();
-			}
-		}catch(ReadOnlyBufferException e){
+		MyEpfUrl.BULLETIN = MyEpfUrl.BULLETIN.replace("{ANNEE}", Integer.toString(iAnnee));
+		MyEpfUrl.BULLETIN = MyEpfUrl.BULLETIN.replace("{LOGIN}", identifiant);
+		FICHIER_BULLETIN = FICHIER_BULLETIN.replace("{IDENTIFIANT}", identifiant);
+		
+		if(MonApplication.DOSSIER_MY_EPF.contains("{")){
+			Log.e(TAG, "Dossier myEPF : "+MonApplication.DOSSIER_MY_EPF);
 			lectureSeule();
 			return;
 		}
-
-
-		((TextView)vue.getVue().findViewById(R.id.bTelechargerBulletin)).setOnClickListener(new OnClickListener() {
+		
+		((TextView)vue.findViewById(R.id.bTelechargerBulletin)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if(ecritureOK)
-					onTelechargerBulletinClicked();
-				else 
-					lectureSeule();
+				onTelechargerBulletinClicked();
 			}
 		});
 
 		// si on est pas encore connecté à my.epf
 		// vue défaut
-		if(MainActivite.connecteAMyEpf){
+		if(ConnexionControleur.connecte){
 			chargerVueComplete();
-		} else if(MainActivite.enTrainDeSeConnecterAMyEPF && !MainActivite.connecteAMyEpf){
+		} else if(ConnexionControleur.enCours && !ConnexionControleur.connecte){
 			chargerVueDefaut();
 		} else {
 			lectureSeule();
@@ -108,15 +105,17 @@ public static String CHEMIN_BULLETIN;
 	 * dans 
 	 */
 	private void telechargerEtAfficherBulletin() {
+		avancement("initilisation", 10);
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 		getActivite().runOnUiThread(new Runnable() {
 			public void run() {
+				avancement("téléchargement", 30);
 				HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
 				HttpContext localContext = new BasicHttpContext();
-				Log.i("Bulletin.telechargerEtAfficherBulletin", "url : "+URL_BULLETIN);
-				HttpGet httpGet = new HttpGet(URL_BULLETIN);
-				String cookies = CookieManager.getInstance().getCookie(URL_MY_EPF);
+				Log.i("Bulletin.telechargerEtAfficherBulletin", "url : "+MyEpfUrl.BULLETIN);
+				HttpGet httpGet = new HttpGet(MyEpfUrl.BULLETIN);
+				String cookies = CookieManager.getInstance().getCookie(MyEpfUrl.MY_EPF);
 				httpGet.setHeader(SM.COOKIE, cookies);
 				InputStream is = null;
 				OutputStream output = null;
@@ -126,7 +125,8 @@ public static String CHEMIN_BULLETIN;
 					e.printStackTrace();
 					Log.i("Bulletin.telechargerEtAfficherBulletin", "Impossible de joindre le serveur EPF (étonnant à ce stade 2)");
 					return;
-				} 
+				}
+				avancement("sauvegarde sur la SD", 60);
 				try {
 					// Lecture du PDF, décommenter pour debug
 //					String reponseHtml = "";
@@ -147,7 +147,7 @@ public static String CHEMIN_BULLETIN;
 //					wvDebug.loadDataWithBaseURL(null, reponseHtml, mime, encoding, null);
 					
 					// écriture du fichier
-					final File file = new File(CHEMIN_BULLETIN);
+					final File file = new File(MonApplication.DOSSIER_MY_EPF+FICHIER_BULLETIN);
 					output = new FileOutputStream(file);
 					final byte[] buffer = new byte[1024];
 		            int read;
@@ -162,15 +162,17 @@ public static String CHEMIN_BULLETIN;
 		            onTelechargerBulletin();
 				} catch(IOException e){
 					e.printStackTrace();
-					Log.i("Bulletin.telechargerEtAfficherBulletin", "Impossible de lire la réponse finale");
+					chargerVueErreur("Téléchargement du bulletin impossible", "Impossible de lire la réponse finale");
+//					Log.e("Bulletin.telechargerEtAfficherBulletin", "Impossible de lire la réponse finale");
 				}
 			}
 		});
 	}
 	
 	private void onTelechargerBulletin(){
-		File file = new File(CHEMIN_BULLETIN);
-		Log.i("bulletin.onTelechargerBulletin", "ouvertue du PDF "+CHEMIN_BULLETIN);
+		avancement("ouverture", 90);
+		File file = new File(MonApplication.DOSSIER_MY_EPF+FICHIER_BULLETIN);
+		Log.i("bulletin.onTelechargerBulletin", "ouvertue du PDF "+MonApplication.DOSSIER_MY_EPF+FICHIER_BULLETIN);
 		if(!file.exists() || file.isDirectory()) {
 			// impossible de trouver le bulletin
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivite());
@@ -187,9 +189,10 @@ public static String CHEMIN_BULLETIN;
 
 		try {
 			getActivite().startActivity(intent);
+			avancement("fin", 100);
 		} catch (Exception e) {
 			String message = getActivite().getResources().getString(R.string.bulletin_nopdf_message);
-			message = message.replace("{CHEMIN_BULLETIN}", CHEMIN_BULLETIN);
+			message = message.replace("{CHEMIN_BULLETIN}", MonApplication.DOSSIER_MY_EPF+FICHIER_BULLETIN);
 			// aucune appli pour ouvrir un PDF
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivite());
 			builder	
@@ -210,8 +213,35 @@ public static String CHEMIN_BULLETIN;
 		chargerVueErreur("délai d'attente dépassé", "Impossible de se connecter à my.epf.fr\nCheck tes identifiants dans les préférences\net redémarre l'appli");		
 	}
 
-	public void onMyEPFConnected() {
+	public void onMyEpfConnected() {
 		chargerVueComplete();
+	}
+	
+	private void avancement(String t, int p){
+		// fin
+		if(p >= 100){
+			// tv
+			Log.i(TAG, "Avancement terminé : "+t);
+			tvAvancementBulletin.setVisibility(View.GONE);
+			pbAvancementBulletin.setVisibility(View.GONE);
+		} 
+		// erreur
+		else if(p <= 0){
+			tvAvancementBulletin.setVisibility(View.GONE);
+			pbAvancementBulletin.setVisibility(View.GONE);
+			chargerVueErreur("", t);
+		}
+		// en cours
+		else {
+			Log.i(TAG, "Avancement "+p+" : "+t);
+			// tv
+			tvAvancementBulletin.setVisibility(View.VISIBLE);
+			tvAvancementBulletin.setText(t);
+			//pb
+			pbAvancementBulletin.setVisibility(View.VISIBLE);
+			pbAvancementBulletin.setProgress(p);
+			
+		}
 	}
 
 }

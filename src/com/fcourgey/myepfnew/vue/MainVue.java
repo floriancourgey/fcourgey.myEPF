@@ -6,6 +6,7 @@ import android.content.Context;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,39 +15,61 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 import com.fcourgey.android.mylib.framework.Activite;
+import com.fcourgey.android.mylib.framework.ActiviteVue;
 import com.fcourgey.myepfnew.R;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.controleur.MainControleur;
 import com.joanzapata.android.iconify.Iconify;
 
 @SuppressWarnings("deprecation")
-public class DrawerVue {
+<<<<<<< HEAD:src/com/fcourgey/myepfnew/vue/DrawerVue.java
+public class DrawerVue extends ActiviteVue{
+=======
+public class MainVue extends ActiviteVue{
+>>>>>>> origin/new-archi:src/com/fcourgey/myepfnew/vue/MainVue.java
 	
-	@SuppressWarnings("unused")
 	private static final String TAG = "DrawerVue"; 
 	
 	private MainActivite a;
 	private MainControleur controleur;
+	private String identifiant;
 	
-	private DrawerLayout layoutGeneral; // contient la vue principale et la vue du drawer
-	private LinearLayout vue; //vue du drawer
-	private ActionBarDrawerToggle toggleBouton; // bouton toggle en haut à gauche dans l'action bar
-	private ListView lTitres; // listView des titres sur la gauche : Edt, bulletin, ...
+//	@InjectView(R.id.layoutGeneral)
+	protected DrawerLayout layoutGeneral; // contient la vue principale et la vue du drawer
+//	@InjectView(R.id.drawer)
+	protected LinearLayout drawer; //vue du drawer
+	protected ActionBarDrawerToggle toggleBouton; // bouton toggle en haut à gauche dans l'action bar
+	@InjectView(R.id.lTitres)
+	protected ListView lTitres; // listView des titres sur la gauche : Edt, bulletin, ...
+<<<<<<< HEAD:src/com/fcourgey/myepfnew/vue/DrawerVue.java
 	
-	public DrawerVue(MainControleur controleur, String identifiant) {
+	public DrawerVue(MainControleur controleur) {
+		super(controleur);
 		this.controleur = controleur;
-		this.a = controleur.getActivite();
+=======
+	@InjectView(R.id.pbConnexionMyEpf)
+	protected ProgressBar pbConnexionMyEpf;
+	
+	public MainVue(MainControleur controleur) {
+		super(controleur);
+>>>>>>> origin/new-archi:src/com/fcourgey/myepfnew/vue/MainVue.java
+		this.a = (MainActivite) controleur.getActivite();
+		this.identifiant = controleur.getIdentifiant();
+		
 		initDrawer();
+		ButterKnife.inject(this, layoutGeneral);
 		initToggleButton();
 		initContenu(identifiant);
 	}
-	
 	private void initDrawer(){
-		layoutGeneral = (DrawerLayout) a.findViewById(R.id.drawer_layout);
-		vue = (LinearLayout) a.findViewById(R.id.drawer);
+		layoutGeneral = (DrawerLayout) a.findViewById(R.id.layoutGeneral);
+		drawer = (LinearLayout) a.findViewById(R.id.drawer);
 		
 		// Set a custom shadow that overlays the main content when the drawer opens
 		layoutGeneral.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -99,7 +122,7 @@ public class DrawerVue {
 	}
 
 	public LinearLayout getVue() {
-		return vue;
+		return drawer;
 	}
 
 	public ActionBarDrawerToggle getToggleBouton() {
@@ -145,6 +168,28 @@ public class DrawerVue {
 		@Override
 		public String getItem(int position) {
 			return titres[position];
+		}
+	}
+
+	public void avancement(final String texte, final int pourcentage) {
+		try{
+			a.runOnUiThread(new Runnable() {
+				public void run() {
+					if(pourcentage >= 100){
+						pbConnexionMyEpf.setVisibility(View.GONE);
+
+					} else if(pourcentage > 0){
+						pbConnexionMyEpf.setProgress(pourcentage);
+						pbConnexionMyEpf.setVisibility(View.VISIBLE);
+
+					} else {
+						pbConnexionMyEpf.setVisibility(View.GONE);
+					}
+				}
+			});
+		} catch (Exception e){
+			e.printStackTrace();
+			Log.w(TAG, "Erreur inconnue dans avancement..");
 		}
 	}
 }

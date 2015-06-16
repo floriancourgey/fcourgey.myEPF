@@ -19,15 +19,20 @@
         android:id="@+id/vueComplete"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
+		
+        <com.viewpagerindicator.UnderlinePageIndicator
+		    android:id="@+id/titles"
+		    android:layout_height="2dp"
+		    android:layout_alignParentBottom="true"
+		    android:layout_width="fill_parent" />
         <!-- semaines -->
-
         <android.support.v4.view.ViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/accueil_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
         </android.support.v4.view.ViewPager>
+        
     </RelativeLayout>
     <!-- erreur -->
 

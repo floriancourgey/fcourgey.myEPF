@@ -32,26 +32,30 @@ public class PreferencesFragment extends PreferenceFragment {
         // ajustement de certaines pref
         /// nb semaines to dl
         ListPreference prefNbSemainesToDl = (ListPreference) findPreference(MyEpfPreferencesModele.KEY_NB_SEMAINES_TO_DL);
-        String[] entries = new String[MyEpfPreferencesModele.NB_SEMAINES_MAX-MyEpfPreferencesModele.NB_SEMAINES_MIN+1];
-        for(int i=0 ; i<MyEpfPreferencesModele.NB_SEMAINES_MAX-MyEpfPreferencesModele.NB_SEMAINES_MIN+1 ; i++){
-        	entries[i] = Integer.toString(i+MyEpfPreferencesModele.NB_SEMAINES_MIN);
+        if(prefNbSemainesToDl != null){
+	        String[] entries = new String[MyEpfPreferencesModele.NB_SEMAINES_MAX-MyEpfPreferencesModele.NB_SEMAINES_MIN+1];
+	        for(int i=0 ; i<MyEpfPreferencesModele.NB_SEMAINES_MAX-MyEpfPreferencesModele.NB_SEMAINES_MIN+1 ; i++){
+	        	entries[i] = Integer.toString(i+MyEpfPreferencesModele.NB_SEMAINES_MIN);
+	        }
+	        prefNbSemainesToDl.setEntries(entries);
+	        prefNbSemainesToDl.setEntryValues(entries);
         }
-        prefNbSemainesToDl.setEntries(entries);
-        prefNbSemainesToDl.setEntryValues(entries);
         /// vider le cache
-        Preference cache = (Preference)findPreference(MyEpfPreferencesModele.KEY_CACHE);
-        cache.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				ViderCacheVue.show(getActivity(), new OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						MyEpfPreferencesModele.viderCache();
-						Android.quitter();
-					}
-				});
-				return false;
-			}
-		});
+        Preference prefCache = (Preference)findPreference(MyEpfPreferencesModele.KEY_CACHE);
+        if(prefCache != null){
+	        prefCache.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					ViderCacheVue.show(getActivity(), new OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							MyEpfPreferencesModele.viderCache();
+							Android.quitter();
+						}
+					});
+					return false;
+				}
+			});
+        }
         /// hash mdp
         mdpDansPreferences = pref.getMdp();
         findPreference(MyEpfPreferencesModele.KEY_MDP).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

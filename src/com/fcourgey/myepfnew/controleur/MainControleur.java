@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
@@ -29,34 +31,71 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
+import com.fcourgey.android.mylib.framework.ActiviteControleur;
 import com.fcourgey.myepfnew.R;
+import com.fcourgey.myepfnew.activite.AccueilActivite;
 import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.activite.PreferencesActivite;
+import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 import com.fcourgey.myepfnew.fragment.AProposFragment;
 import com.fcourgey.myepfnew.fragment.BulletinFragment;
 import com.fcourgey.myepfnew.fragment.EdtFragment;
+import com.fcourgey.myepfnew.fragment.NotesFragment;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.Android;
-import com.fcourgey.myepfnew.vue.DrawerVue;
+import com.fcourgey.myepfnew.vue.MainVue;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 @SuppressWarnings("deprecation")
-public class MainControleur {
+public class MainControleur extends ActiviteControleur {
 	
 	private static final String TAG = "MainControleur";
 	
-	private MainActivite a;
+<<<<<<< HEAD
+//	private DrawerVue vue;
 	
-	private DrawerVue vue;
+	private MainActivite a;
+=======
+	public static final int NB_SEC_REQ_TIMEOUT = 15;
+
+//	public static boolean connecteAMyEpf = false;
+//	public static boolean enTrainDeSeConnecterAMyEPF = false;
+		
+	private MyEpfPreferencesModele prefs;
+	
+//	private MainVue vue;
+	
+	// composant
+	@InjectView(R.id.pbConnexionMyEpf)
+    protected ProgressBar pbConnexionMyEpf;
+	@InjectView(R.id.wvCachee)
+	protected WebView wvCachee;
+	
+	public static boolean edtDejaTelechargeUneFois = false;
+>>>>>>> origin/new-archi
 	
 	private Fragment fragmentActuel;
 	
-	public static String CHEMIN_PHOTO_PROFIL;
+	private String identifiant;
+<<<<<<< HEAD
+=======
+//	private String mdp;
+>>>>>>> origin/new-archi
+	
+	// design
+	@InjectView(R.id.photo_profil)
+	protected CircularImageView photo_profil;
+	
+	public static String CHEMIN_PHOTO_PROFIL = "{FILES_DIR}/photo-profil-{IDENTIFIANT}.jpg";
 	
 	private static final String REGEX_PHOTO = "id=\"photo\" src=\"([/\\w-]*.jpg)\"";
 	private static final String STOP_PHOTO = "id=\"photo\"";
@@ -64,9 +103,35 @@ public class MainControleur {
 	private static final String STOP_NOM = "font2";
 	
 	public MainControleur(MainActivite a, Bundle savedInstanceState) {
+		super(a, savedInstanceState);
+<<<<<<< HEAD
 		this.a = a;
-		CHEMIN_PHOTO_PROFIL = a.getFilesDir()+"/photo-profil-"+a.getIdentifiant()+".jpg";
-		vue = new DrawerVue(this, a.getIdentifiant());
+		identifiant = a.getIdentifiant();
+		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{FILES_DIR}", a.getFilesDir().toString());
+		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{IDENTIFIANT}",identifiant);
+		
+		ButterKnife.inject(this, a);
+		
+		vue = new DrawerVue(this);
+=======
+		//***
+		prefs = AccueilActivite.prefs;
+		if(prefs == null){
+			prefs = new MyEpfPreferencesModele(a);
+		}
+		
+		ButterKnife.inject(this, a);
+		
+		edtDejaTelechargeUneFois = prefs.getBoolean(MyEpfPreferencesModele.KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS, false);
+		
+		identifiant = prefs.getIdentifiant();
+		//***
+		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{FILES_DIR}", a.getFilesDir().toString());
+		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{IDENTIFIANT}",identifiant);
+		
+		vue = new MainVue(this);
+>>>>>>> origin/new-archi
+
 		// affiche photo de profil si existe
 		// sinon, le DL sera appelé par onMyEPFConnected
 		if(isPhotoProfilDownloaded()){
@@ -80,25 +145,30 @@ public class MainControleur {
 		if(savedInstanceState == null){
 			onEdtClicked();
 		}
+<<<<<<< HEAD
 	}
 	
-	/**
-	 * au clic sur l'emploi du temps
-	 */
-	public void onEdtClicked(){
-		Fragment newFragment = new EdtFragment();
-		fragmentActuel = newFragment;
-        FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, newFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+	
+=======
+		
+		//**
+		pbConnexionMyEpf.getProgressDrawable().setColorFilter(Color.CYAN, Mode.SRC_IN);
+
+		// connexion à myEPF si pas fait et pas en cours
+		if(!ConnexionControleur.connecte && !ConnexionControleur.enCours){
+			avancement("Connexion à myEPF", 55);
+			new ConnexionControleur(this, wvCachee);
+		}
+		//**
 	}
+>>>>>>> origin/new-archi
 	
 	/**
 	 * quand le délai d'attente est dépassé
 	 * et qu'on est pas connecté à my.epf
 	 */
 	public void onDelaiDAttenteDepassé() {
+		avancement("Délai d'attente dépassé", 0);
 		if(fragmentActuel instanceof EdtFragment){
 			EdtFragment f = (EdtFragment)fragmentActuel;
 			f.onDelaiDAttenteDepassé();
@@ -108,16 +178,72 @@ public class MainControleur {
 		}
 	}
 	
+	public void avancement(final String texte, final int pourcentage) {
+		if(pourcentage >= 100){
+			Log.i(TAG, "Avancement terminé : "+texte);
+		} else if(pourcentage > 0){
+			Log.i(TAG, "Avancement "+pourcentage+" : "+texte);
+		} else {
+			Log.i(TAG, "Avancement erreur : "+texte);
+		}
+		((MainVue)vue).avancement(texte, pourcentage);
+	}
+
+	/**
+	 * Est exécuté lorsque la connexion à myEPF a réussi
+	 */
+	public void onMyEpfConnected(){
+		avancement("onMyEPFConnected", 100);
+		initPhotoProfil();
+		initNomPrenom();
+		if(fragmentActuel instanceof EdtFragment){
+			EdtFragment f = (EdtFragment)fragmentActuel;
+			((EdtControleur)f.getControleur()).onMyEpfConnected();
+		} else if(fragmentActuel instanceof BulletinFragment) {
+			BulletinFragment f = (BulletinFragment)fragmentActuel;
+			((BulletinControleur)f.getControleur()).onMyEpfConnected();
+		} else if(fragmentActuel instanceof NotesFragment){
+			NotesFragment f = (NotesFragment)fragmentActuel;
+			((NotesControleur)f.getControleur()).onMyEpfConnected();
+		}
+	}
+
+	
+	public WebView getWvCachee(){
+		return wvCachee;
+	}
+
+	@Override
+	public MyEpfPreferencesModele getPrefs() {
+		return prefs;
+	}
+	
+	/**
+	 * au clic sur l'emploi du temps
+	 */
+	public void onEdtClicked(){
+		lancerFragment(new EdtFragment());
+	}
+	
+	/**
+	 * au clic sur l'emploi du temps
+	 */
+	public void onEdtClicked(){
+		lancerFragment(new EdtFragment());
+	}
+	
 	/**
 	 * au clic sur le bulletin
 	 */
 	public void onBulletinClicked(){
-		Fragment newFragment = new BulletinFragment();
-		fragmentActuel = newFragment;
-        FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, newFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+		lancerFragment(new BulletinFragment());
+	}
+	
+	/**
+	 * au clic sur les notes
+	 */
+	public void onNotesClicked(){
+		lancerFragment(new NotesFragment());
 	}
 
 	/**
@@ -138,6 +264,7 @@ public class MainControleur {
     	// lancement popup
         builder.create().show();
 	}
+	
 	/**
 	 * au clic sur A propos
 	 */
@@ -149,15 +276,30 @@ public class MainControleur {
         transaction.addToBackStack(null);
         transaction.commit();
 	}
+	
 	/**
 	 * au clic sur Quitter
 	 */
 	public void onQuitterClicked(){
 		Android.quitter();
 	}
+	
+	private void lancerFragment(Fragment newFragment){
+		fragmentActuel = newFragment;
+        FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+	}
 
 	private void fermerDrawer(){
-		vue.getLayoutGeneral().closeDrawer(vue.getVue());
+<<<<<<< HEAD
+		DrawerVue drawerVue = (DrawerVue)vue;
+		drawerVue.getLayoutGeneral().closeDrawer(drawerVue.getVue());
+=======
+		MainVue MainVue = (MainVue)vue;
+		MainVue.getLayoutGeneral().closeDrawer(MainVue.getVue());
+>>>>>>> origin/new-archi
 	}
 	
 	/**
@@ -172,46 +314,56 @@ public class MainControleur {
 	 * faux sinon
 	 */
 	private boolean isNomPrenomDownloaded(){
-		if(a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+a.getIdentifiant())==null){
+<<<<<<< HEAD
+		if(a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant)==null){
+=======
+		if(prefs.getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant)==null){
+>>>>>>> origin/new-archi
 			return false;
 		} else {
 			return true;
 		}
 	}
 	
-	public void onMyEPFConnected(){
+<<<<<<< HEAD
+	public void onMyEpfConnected(){
 		initPhotoProfil();
 		initNomPrenom();
 		if(fragmentActuel instanceof EdtFragment){
 			EdtFragment f = (EdtFragment)fragmentActuel;
-			((EdtControleur)f.getControleur()).onMyEPFConnected();
+			((EdtControleur)f.getControleur()).onMyEpfConnected();
 		} else if(fragmentActuel instanceof BulletinFragment) {
 			BulletinFragment f = (BulletinFragment)fragmentActuel;
-			((BulletinControlleur)f.getControleur()).onMyEPFConnected();
+			((BulletinControleur)f.getControleur()).onMyEpfConnected();
+		} else if(fragmentActuel instanceof NotesFragment){
+			NotesFragment f = (NotesFragment)fragmentActuel;
+			((NotesControleur)f.getControleur()).onMyEpfConnected();
 		}
 	}
 	
+=======
+>>>>>>> origin/new-archi
 	/**
 	 * Affiche la photo de profil
 	 */
 	private void afficherPhotoProfil(){
-		CircularImageView photoProfil = (CircularImageView)a.findViewById(R.id.photo_profil);
+//		CircularImageView photoProfil = (CircularImageView)a.findViewById(R.id.photo_profil);
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 		Bitmap bmp = BitmapFactory.decodeFile(CHEMIN_PHOTO_PROFIL, options);
 		// crop du bmp
-		int decalage_x = a.getPrefs().getInt(MyEpfPreferencesModele.KEY_PHOTO_X, 0);
+		int decalage_x = prefs.getInt(MyEpfPreferencesModele.KEY_PHOTO_X, 0);
 		if(decalage_x < 0)
 			decalage_x = Math.abs(decalage_x);
-		int decalage_y = a.getPrefs().getInt(MyEpfPreferencesModele.KEY_PHOTO_Y, 0);
+		int decalage_y = prefs.getInt(MyEpfPreferencesModele.KEY_PHOTO_Y, 0);
 		if(decalage_y < 0)
 			decalage_y = Math.abs(decalage_y);
 		if(bmp.getWidth() < bmp.getHeight())
 			bmp=Bitmap.createBitmap(bmp, decalage_x, decalage_y,bmp.getWidth(), bmp.getWidth());
 		else
 			bmp=Bitmap.createBitmap(bmp, decalage_x, decalage_y,bmp.getHeight(), bmp.getHeight());
-		photoProfil.setImageBitmap(bmp);
-		Log.i(TAG, "màj photo de profil ok");
+		photo_profil.setImageBitmap(bmp);
+		Log.i(TAG, "afficherPhotoProfil OK");
 	}
 	
 	/**
@@ -235,9 +387,9 @@ public class MainControleur {
 	 */
 	public void initPhotoProfil(){
 		if(isPhotoProfilDownloaded()){
-			Log.i(TAG, "photo de profil existante");
+			Log.i(TAG, "initPhotoProfil : photo existante");
 		} else {
-			Log.i(TAG, "photo de profil non existante, téléchargement");
+			Log.i(TAG, "initPhotoProfil : photo non existante, téléchargement");
 			// download photo de profil
 			// +
 			// afficherPhotoProfil()
@@ -247,8 +399,8 @@ public class MainControleur {
 				public void run() {
 					HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
 					HttpContext localContext = new BasicHttpContext();
-					HttpGet httpGet = new HttpGet(MainActivite.URL_PROFIL);
-					String cookies = CookieManager.getInstance().getCookie(MainActivite.URL_MYDATA);
+					HttpGet httpGet = new HttpGet(MyEpfUrl.PROFIL);
+					String cookies = CookieManager.getInstance().getCookie(MyEpfUrl.MYDATA);
 					httpGet.setHeader(SM.COOKIE, cookies);
 					InputStream is = null;
 					try {
@@ -256,7 +408,7 @@ public class MainControleur {
 					} catch (Exception e) {
 						e.printStackTrace();
 						Log.i(TAG, "Impossible de joindre le serveur EPF (étonnant à ce stade)");
-					} 
+					}
 					try {
 						String line;
 						BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -283,7 +435,7 @@ public class MainControleur {
 
 							Log.i(TAG, urlPhotoRelatif);
 
-							String urlPhoto = MainActivite.URL_MYDATA+urlPhotoRelatif;
+							String urlPhoto = MyEpfUrl.MYDATA+urlPhotoRelatif;
 
 							httpGet = new HttpGet(urlPhoto);
 							httpGet.setHeader(SM.COOKIE, cookies);
@@ -318,9 +470,9 @@ public class MainControleur {
 	 */
 	public void initNomPrenom(){
 		if(isNomPrenomDownloaded()){
-			Log.i(TAG, "nom de profil existant");
+			Log.i(TAG, "initNomPrenom : nom existant");
 		} else {
-			Log.i(TAG, "nom de profil non existant, téléchargement");
+			Log.i(TAG, "initNomPrenom : nom non existant, téléchargement");
 			// recherche nom de profil
 			// +
 			// afficherNomPrenomProfil()
@@ -330,8 +482,8 @@ public class MainControleur {
 				public void run() {
 					HttpClient httpClient = MySSLSocketFactory.getNewHttpClient();
 					HttpContext localContext = new BasicHttpContext();
-					HttpGet httpGet = new HttpGet(MainActivite.URL_PROFIL);
-					String cookies = CookieManager.getInstance().getCookie(MainActivite.URL_MYDATA);
+					HttpGet httpGet = new HttpGet(MyEpfUrl.PROFIL);
+					String cookies = CookieManager.getInstance().getCookie(MyEpfUrl.MYDATA);
 					httpGet.setHeader(SM.COOKIE, cookies);
 					InputStream is = null;
 					try {
@@ -364,7 +516,11 @@ public class MainControleur {
 						if(matcher.find()){
 							String nomPrenom = matcher.group(1);
 							// sauvegarde dans les pref
-							a.getPrefs().putString(MyEpfPreferencesModele.KEY_NOM_PRENOM+a.getIdentifiant(), nomPrenom);
+<<<<<<< HEAD
+							a.getPrefs().putString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant, nomPrenom);
+=======
+							prefs.putString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant, nomPrenom);
+>>>>>>> origin/new-archi
 							// affichage
 							afficherNomPrenom();
 						}
@@ -381,7 +537,11 @@ public class MainControleur {
 	 * 
 	 */
 	public void afficherNomPrenom(){
-		String nomPrenom = a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+a.getIdentifiant());
+<<<<<<< HEAD
+		String nomPrenom = a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant);
+=======
+		String nomPrenom = prefs.getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant);
+>>>>>>> origin/new-archi
 		TextView tvNomPrenom = (TextView)a.findViewById(R.id.tvNomPrenom);
 		if(nomPrenom == null){
 			tvNomPrenom.setVisibility(View.GONE);
@@ -389,6 +549,7 @@ public class MainControleur {
 		} else {
 			tvNomPrenom.setText(nomPrenom);
 		}
+		Log.d(TAG, "affichageNomPrenom OK");
 	}
 	
 	/**
@@ -403,6 +564,8 @@ public class MainControleur {
 		} else if(titre.equals(a.getResources().getString(R.string.bulletin_titre))){
 			lTitres.setItemChecked(position, true);
 			onBulletinClicked();
+		} else if(titre.equals(a.getResources().getString(R.string.notes_titre))){ 
+			onNotesClicked();
 		} else if(titre.equals(a.getResources().getString(R.string.pref_titre))){
 			onPreferencesClicked();
 		} else if(titre.equals(a.getResources().getString(R.string.apropos_titre))){
@@ -418,10 +581,19 @@ public class MainControleur {
 	 * Ouvre le drawer si fermé
 	 */
 	public void ouvrirFermerDrawer() {
-		if (!vue.getLayoutGeneral().isDrawerOpen(vue.getVue())) {
-			vue.getLayoutGeneral().openDrawer(vue.getVue());
+<<<<<<< HEAD
+		DrawerVue drawerVue = (DrawerVue)vue;
+		if (!drawerVue.getLayoutGeneral().isDrawerOpen(drawerVue.getVue())) {
+			drawerVue.getLayoutGeneral().openDrawer(drawerVue.getVue());
         } else {
-        	vue.getLayoutGeneral().closeDrawer(vue.getVue());
+        	drawerVue.getLayoutGeneral().closeDrawer(drawerVue.getVue());
+=======
+		MainVue MainVue = (MainVue)vue;
+		if (!MainVue.getLayoutGeneral().isDrawerOpen(MainVue.getVue())) {
+			MainVue.getLayoutGeneral().openDrawer(MainVue.getVue());
+        } else {
+        	MainVue.getLayoutGeneral().closeDrawer(MainVue.getVue());
+>>>>>>> origin/new-archi
         }
 	}
 	
@@ -430,21 +602,28 @@ public class MainControleur {
 	 */
 	public void onPostCreate(Bundle savedInstanceState) {
 		// Sync the toggle state after onRestoreInstanceState has occurred.
-		vue.getToggleBouton().syncState();
+<<<<<<< HEAD
+		DrawerVue drawerVue = (DrawerVue)vue;
+		if(vue != null && drawerVue.getToggleBouton()!=null)
+			drawerVue.getToggleBouton().syncState();
+=======
+		MainVue MainVue = (MainVue)vue;
+		if(vue != null && MainVue.getToggleBouton()!=null)
+			MainVue.getToggleBouton().syncState();
+>>>>>>> origin/new-archi
 	}
 
 	/**
 	 * ? 
 	 */
 	public void onConfigurationChanged(Configuration newConfig) {
-		vue.getToggleBouton().onConfigurationChanged(newConfig);
+<<<<<<< HEAD
+		((DrawerVue) vue).getToggleBouton().onConfigurationChanged(newConfig);
+=======
+		((MainVue) vue).getToggleBouton().onConfigurationChanged(newConfig);
+>>>>>>> origin/new-archi
 	}
-
-	public DrawerVue getVue() {
-		return vue;
-	}
-
-	public MainActivite getActivite() {
-		return a;
+	public String getIdentifiant() {
+		return identifiant;
 	}
 }

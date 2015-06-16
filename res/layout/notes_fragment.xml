@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
     
     <RelativeLayout 
         android:id="@+id/vueDefaut"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:visibility="visible"
         >
         <TextView 
             android:layout_width="wrap_content"
@@ -21,30 +23,29 @@
         android:id="@+id/vueComplete"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/bTelechargerBulletin"
-            android:layout_width="wrap_content"
+        android:orientation="vertical" >
+        <LinearLayout 
+            android:id="@+id/llDerniereActualisation"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Télécharger le bulletin" />
-
-        <ProgressBar 
-            android:id="@+id/pbAvancementBulletin"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            style="?android:attr/progressBarStyleHorizontal"
-            />
-        <TextView
-            android:id="@+id/tvAvancementBulletin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:orientation="horizontal"
+            >
+	        <TextView android:id="@+id/tvLabelDerniereActualisation"
+	            android:layout_height="wrap_content"
+	            android:layout_width="wrap_content"
+	            android:text="Dernière actualisation : "/>
+	        <TextView android:id="@+id/tvDerniereActualisation"
+	            android:layout_height="wrap_content"
+	            android:layout_width="wrap_content"
+	            android:text="01 05 2015 16:15 "/>
+        </LinearLayout>
+	    <ListView
+	        android:id="@+id/lvNotes"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent" >
+	    </ListView>
     </LinearLayout>
-
-    <!-- erreur -->
-
+    
     <LinearLayout
         android:id="@+id/vueErreur"
         android:layout_width="fill_parent"
@@ -66,4 +67,4 @@
             android:gravity="center" />
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

@@ -97,13 +97,27 @@ public class Cours {
     	if(type == Type.EXAM){
     		// le champ extra est de type : "Partiel de Chimie Organique"
     		// on le transforme en "Partiel Chimie", avec Chimie l'abréviation de matière
-    		String[] split = commentaire.split(" de ");
-    		if(split.length == 1){
-    			split = commentaire.split(" d'");
+    		
+    		// /!\ plusieurs types :
+    		// Partiel de X					=> Partiel X
+    		// Partiel d'X					=> Partiel X
+    		// rattrapages 2ème semestre	=> Rattrapages
+    		String commToLower = commentaire.toLowerCase(Locale.getDefault());
+    		if(commToLower.contains(" de ")){
+    			String[] split = commentaire.split(" de ");
+    			String Exam = split[0];
+        		String matiere = Matiere.abre(split[1]);
+        		return Exam+" "+matiere;
+    		} else if(commToLower.contains(" d'")){
+    			String[] split = commentaire.split(" d'");
+    			String Exam = split[0];
+        		String matiere = Matiere.abre(split[1]);
+        		return Exam+" "+matiere;
+    		} else if(commToLower.contains("rattrapage")){
+    			return commentaire;
+    		} else {
+    			return commentaire;
     		}
-    		String Exam = split[0];
-    		String matiere = Matiere.abre(split[1]);
-    		return Exam+" "+matiere;
     	} else if(professeur != null && professeur.length() > 1){
     		return Matiere.abre(nom);
     	} else {

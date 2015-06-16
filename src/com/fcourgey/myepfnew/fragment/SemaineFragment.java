@@ -7,8 +7,11 @@ import android.view.ViewGroup;
 
 import com.fcourgey.android.mylib.framework.Fragment;
 import com.fcourgey.myepfnew.controleur.SemaineControleur;
+import com.fcourgey.myepfnew.vue.SemaineVue;
 
 public class SemaineFragment extends Fragment {
+	
+	public static final String KEY_INDEX_FRAGMENT = "KEY_INDEX_FRAGMENT";
 	
 	/**
 	 * appelé avant de lancer un onCreate
@@ -19,7 +22,7 @@ public class SemaineFragment extends Fragment {
 		SemaineFragment f = new SemaineFragment();
 		Bundle args = new Bundle();
 
-		args.putInt(SemaineControleur.KEY_INDEX, indexFragment);
+		args.putInt(KEY_INDEX_FRAGMENT, indexFragment);
 
 		f.setArguments(args);
 		return f;
@@ -29,8 +32,14 @@ public class SemaineFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		
-		controleur = new SemaineControleur(this, inflater, container);
+		int indexFragment = getArguments().getInt(KEY_INDEX_FRAGMENT);
+		
+		if(controleur == null){
+			controleur = new SemaineControleur(this, inflater, container, indexFragment);
+		} else {
+			((SemaineVue)controleur.getVue()).initCours(false);
+		}
 
-		return controleur.getVue().getVue();
+		return controleur.getView();
 	}
 }

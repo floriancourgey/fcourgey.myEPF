@@ -1,11 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fcourgey.myepfnew"
-    android:versionCode="14005"
-    android:versionName="14d" >
+    android:versionCode="16004"
+    android:versionName="16d" >
 
     <uses-sdk
         android:maxSdkVersion="22"
-        android:minSdkVersion="15"
+        android:minSdkVersion="16"
         android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -20,7 +20,7 @@
         android:name="MonApplication"
         >
         <activity
-            android:name="com.fcourgey.myepfnew.activite.AccueilActivite"
+            android:name=".activite.AccueilActivite"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.fcourgey.myepfnew.activite.MainActivite" />
-        <activity android:name="com.fcourgey.myepfnew.activite.PreferencesActivite" />
+        <activity android:name=".activite.MainActivite" android:launchMode="singleTask"/>
+        <activity android:name=".activite.PreferencesActivite" />
     </application>
 
 </manifest>

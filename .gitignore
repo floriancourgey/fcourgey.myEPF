@@ -1,3 +1,12 @@
+# word tmp
+~$*
+
+# butter knife generated class
+.apt_generated/*
+.apt_generated/
+.apt_generated
+*$$ViewInjector.java
+
 # Securité
 **/Securite.java
 **/Securite.class

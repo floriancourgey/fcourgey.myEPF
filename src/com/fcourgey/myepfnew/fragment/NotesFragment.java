@@ -6,25 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fcourgey.android.mylib.framework.AsyncFragment;
-import com.fcourgey.myepfnew.controleur.EdtControleur;
+import com.fcourgey.myepfnew.controleur.NotesControleur;
 
-public class EdtFragment extends AsyncFragment {
-	
+public class NotesFragment extends AsyncFragment {
 	/**
 	 * onCreate
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		controleur = new EdtControleur(this, inflater, container);
+		
+		if(controleur == null)
+			controleur = new NotesControleur(this, inflater, container);
 		
 		return controleur.getView();
 	}
-
-	public void onDelaiDAttenteDepassé() {
-//		((EdtControleur)controleur).onDelaiDAttenteDepassé();
-	}
-	
-	
 
 }

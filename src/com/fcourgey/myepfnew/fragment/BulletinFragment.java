@@ -6,21 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fcourgey.android.mylib.framework.AsyncFragment;
-import com.fcourgey.myepfnew.controleur.BulletinControlleur;
-import com.fcourgey.myepfnew.controleur.EdtControleur;
+import com.fcourgey.myepfnew.controleur.BulletinControleur;
 
 public class BulletinFragment extends AsyncFragment {
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		
-		controleur = new BulletinControlleur(this, inflater, container);
+		controleur = new BulletinControleur(this, inflater, container);
 		
-		return controleur.getVue().getVue();
+		return controleur.getView();
 	}
 	
 	public void onDelaiDAttenteDepassé() {
-		((EdtControleur)controleur).onDelaiDAttenteDepassé();
+		((BulletinControleur)controleur).onDelaiDAttenteDepassé();
 	}
 	
 }

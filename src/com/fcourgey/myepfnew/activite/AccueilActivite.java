@@ -15,14 +15,14 @@ public class AccueilActivite extends Activite {
 	 * Point de départ de l'appli
 	 */
 	@Override
-	public void onCreate(Bundle b) {
-    	super.onCreate(b);
+	public void onCreate(Bundle savedInstanceState) {
+    	super.onCreate(savedInstanceState);
     	
     	if(prefs == null){
 			prefs = new MyEpfPreferencesModele(this);
 		}
     	
-    	new AccueilControleur(this);
+    	controleur = new AccueilControleur(this, savedInstanceState);
 	}
 	
 	/**
@@ -32,6 +32,7 @@ public class AccueilActivite extends Activite {
 	 */
 	public void lancerSemainesActivite(){
 		Intent intent = new Intent(this, MainActivite.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP );
 		startActivity(intent);
 		finish();
 	}

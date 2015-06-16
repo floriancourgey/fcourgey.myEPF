@@ -9,9 +9,10 @@
     <string name="annuler">Annuler</string>
     
     <!-- Drawer -->
-    <string-array name="logos">
+    <string-array name="logos"> <!-- FONT AWESOME CODE fa-calendar par ex, donne juste calendar -->
         <item>calendar</item>
         <item>check-square-o</item>
+        <item>child</item>
         <item>cogs</item>
         <item>question</item>
 <!--         <item>@string/clause_titre</item> -->
@@ -20,6 +21,7 @@
     <string-array name="titres">
         <item>@string/edt_titre</item>
         <item>@string/bulletin_titre</item>
+        <item>@string/notes_titre</item>
         <item>@string/pref_titre</item>
         <item>@string/apropos_titre</item>
 <!--         <item>@string/clause_titre</item> -->
@@ -35,6 +37,9 @@
     <string name="bulletin_titre">Bulletin</string>
     <string name="bulletin_nopdf_titre">Impossible d\'ouvrir le bulletin</string>
     <string name="bulletin_nopdf_message">Tu n\'as aucune application pour ouvrir le bulletin en PDF. Il a tout de même été sauvegardé dans {CHEMIN_BULLETIN}.\n\nTu peux trouver Adobe Reader sur le play store.</string>
+    
+	<!-- Notes -->
+	<string name="notes_titre">Notes</string>
     
     <!-- Préférences -->
     <string name="pref_titre">Préférences</string>
