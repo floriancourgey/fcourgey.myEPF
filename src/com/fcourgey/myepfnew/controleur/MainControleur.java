@@ -59,12 +59,6 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 public class MainControleur extends ActiviteControleur {
 	
 	private static final String TAG = "MainControleur";
-	
-<<<<<<< HEAD
-//	private DrawerVue vue;
-	
-	private MainActivite a;
-=======
 	public static final int NB_SEC_REQ_TIMEOUT = 15;
 
 //	public static boolean connecteAMyEpf = false;
@@ -81,15 +75,11 @@ public class MainControleur extends ActiviteControleur {
 	protected WebView wvCachee;
 	
 	public static boolean edtDejaTelechargeUneFois = false;
->>>>>>> origin/new-archi
 	
 	private Fragment fragmentActuel;
 	
 	private String identifiant;
-<<<<<<< HEAD
-=======
 //	private String mdp;
->>>>>>> origin/new-archi
 	
 	// design
 	@InjectView(R.id.photo_profil)
@@ -104,16 +94,6 @@ public class MainControleur extends ActiviteControleur {
 	
 	public MainControleur(MainActivite a, Bundle savedInstanceState) {
 		super(a, savedInstanceState);
-<<<<<<< HEAD
-		this.a = a;
-		identifiant = a.getIdentifiant();
-		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{FILES_DIR}", a.getFilesDir().toString());
-		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{IDENTIFIANT}",identifiant);
-		
-		ButterKnife.inject(this, a);
-		
-		vue = new DrawerVue(this);
-=======
 		//***
 		prefs = AccueilActivite.prefs;
 		if(prefs == null){
@@ -130,7 +110,6 @@ public class MainControleur extends ActiviteControleur {
 		CHEMIN_PHOTO_PROFIL = CHEMIN_PHOTO_PROFIL.replace("{IDENTIFIANT}",identifiant);
 		
 		vue = new MainVue(this);
->>>>>>> origin/new-archi
 
 		// affiche photo de profil si existe
 		// sinon, le DL sera appelé par onMyEPFConnected
@@ -145,11 +124,6 @@ public class MainControleur extends ActiviteControleur {
 		if(savedInstanceState == null){
 			onEdtClicked();
 		}
-<<<<<<< HEAD
-	}
-	
-	
-=======
 		
 		//**
 		pbConnexionMyEpf.getProgressDrawable().setColorFilter(Color.CYAN, Mode.SRC_IN);
@@ -161,7 +135,6 @@ public class MainControleur extends ActiviteControleur {
 		}
 		//**
 	}
->>>>>>> origin/new-archi
 	
 	/**
 	 * quand le délai d'attente est dépassé
@@ -216,13 +189,6 @@ public class MainControleur extends ActiviteControleur {
 	@Override
 	public MyEpfPreferencesModele getPrefs() {
 		return prefs;
-	}
-	
-	/**
-	 * au clic sur l'emploi du temps
-	 */
-	public void onEdtClicked(){
-		lancerFragment(new EdtFragment());
 	}
 	
 	/**
@@ -293,13 +259,8 @@ public class MainControleur extends ActiviteControleur {
 	}
 
 	private void fermerDrawer(){
-<<<<<<< HEAD
-		DrawerVue drawerVue = (DrawerVue)vue;
-		drawerVue.getLayoutGeneral().closeDrawer(drawerVue.getVue());
-=======
 		MainVue MainVue = (MainVue)vue;
 		MainVue.getLayoutGeneral().closeDrawer(MainVue.getVue());
->>>>>>> origin/new-archi
 	}
 	
 	/**
@@ -314,35 +275,13 @@ public class MainControleur extends ActiviteControleur {
 	 * faux sinon
 	 */
 	private boolean isNomPrenomDownloaded(){
-<<<<<<< HEAD
-		if(a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant)==null){
-=======
 		if(prefs.getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant)==null){
->>>>>>> origin/new-archi
 			return false;
 		} else {
 			return true;
 		}
 	}
 	
-<<<<<<< HEAD
-	public void onMyEpfConnected(){
-		initPhotoProfil();
-		initNomPrenom();
-		if(fragmentActuel instanceof EdtFragment){
-			EdtFragment f = (EdtFragment)fragmentActuel;
-			((EdtControleur)f.getControleur()).onMyEpfConnected();
-		} else if(fragmentActuel instanceof BulletinFragment) {
-			BulletinFragment f = (BulletinFragment)fragmentActuel;
-			((BulletinControleur)f.getControleur()).onMyEpfConnected();
-		} else if(fragmentActuel instanceof NotesFragment){
-			NotesFragment f = (NotesFragment)fragmentActuel;
-			((NotesControleur)f.getControleur()).onMyEpfConnected();
-		}
-	}
-	
-=======
->>>>>>> origin/new-archi
 	/**
 	 * Affiche la photo de profil
 	 */
@@ -516,11 +455,7 @@ public class MainControleur extends ActiviteControleur {
 						if(matcher.find()){
 							String nomPrenom = matcher.group(1);
 							// sauvegarde dans les pref
-<<<<<<< HEAD
-							a.getPrefs().putString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant, nomPrenom);
-=======
 							prefs.putString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant, nomPrenom);
->>>>>>> origin/new-archi
 							// affichage
 							afficherNomPrenom();
 						}
@@ -537,11 +472,7 @@ public class MainControleur extends ActiviteControleur {
 	 * 
 	 */
 	public void afficherNomPrenom(){
-<<<<<<< HEAD
-		String nomPrenom = a.getPrefs().getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant);
-=======
 		String nomPrenom = prefs.getString(MyEpfPreferencesModele.KEY_NOM_PRENOM+identifiant);
->>>>>>> origin/new-archi
 		TextView tvNomPrenom = (TextView)a.findViewById(R.id.tvNomPrenom);
 		if(nomPrenom == null){
 			tvNomPrenom.setVisibility(View.GONE);
@@ -581,19 +512,11 @@ public class MainControleur extends ActiviteControleur {
 	 * Ouvre le drawer si fermé
 	 */
 	public void ouvrirFermerDrawer() {
-<<<<<<< HEAD
-		DrawerVue drawerVue = (DrawerVue)vue;
-		if (!drawerVue.getLayoutGeneral().isDrawerOpen(drawerVue.getVue())) {
-			drawerVue.getLayoutGeneral().openDrawer(drawerVue.getVue());
-        } else {
-        	drawerVue.getLayoutGeneral().closeDrawer(drawerVue.getVue());
-=======
 		MainVue MainVue = (MainVue)vue;
 		if (!MainVue.getLayoutGeneral().isDrawerOpen(MainVue.getVue())) {
 			MainVue.getLayoutGeneral().openDrawer(MainVue.getVue());
         } else {
         	MainVue.getLayoutGeneral().closeDrawer(MainVue.getVue());
->>>>>>> origin/new-archi
         }
 	}
 	
@@ -602,26 +525,16 @@ public class MainControleur extends ActiviteControleur {
 	 */
 	public void onPostCreate(Bundle savedInstanceState) {
 		// Sync the toggle state after onRestoreInstanceState has occurred.
-<<<<<<< HEAD
-		DrawerVue drawerVue = (DrawerVue)vue;
-		if(vue != null && drawerVue.getToggleBouton()!=null)
-			drawerVue.getToggleBouton().syncState();
-=======
 		MainVue MainVue = (MainVue)vue;
 		if(vue != null && MainVue.getToggleBouton()!=null)
 			MainVue.getToggleBouton().syncState();
->>>>>>> origin/new-archi
 	}
 
 	/**
 	 * ? 
 	 */
 	public void onConfigurationChanged(Configuration newConfig) {
-<<<<<<< HEAD
-		((DrawerVue) vue).getToggleBouton().onConfigurationChanged(newConfig);
-=======
 		((MainVue) vue).getToggleBouton().onConfigurationChanged(newConfig);
->>>>>>> origin/new-archi
 	}
 	public String getIdentifiant() {
 		return identifiant;

@@ -37,10 +37,7 @@ import com.fcourgey.myepfnew.entite.MyEpfUrl;
 import com.fcourgey.myepfnew.factory.MySSLSocketFactory;
 import com.fcourgey.myepfnew.modele.MyEpfPreferencesModele;
 import com.fcourgey.myepfnew.outils.JsonCoursMyEpf;
-<<<<<<< HEAD
-=======
 import com.fcourgey.myepfnew.outils.Securite;
->>>>>>> origin/new-archi
 import com.fcourgey.myepfnew.outils.StringOutils;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
@@ -106,16 +103,6 @@ public class EdtControleur extends AsyncFragmentControleur {
 		Log.i(TAG, "semaines ["+indexPremiereSemaine+" ; "+indexSemaineActuelle+" ; "+indexDerniereSemaine+"]");
 		
 		// si on a déjà du json dans les pref, on charge la vue complète
-<<<<<<< HEAD
-		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele)getActivite().getPrefs();
-		if(prefs.getCoursSemaine(indexSemaineActuelle) != null){
-			chargerVueComplete();
-		}
-		// sinon vue défaut
-		else {
-			chargerVueDefaut("Connexion à my.epf");
-		}
-=======
 //		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele)getActivite().getPrefs();
 //		if(prefs.getCoursSemaine(indexSemaineActuelle) != null){
 //			chargerVueComplete();
@@ -127,7 +114,6 @@ public class EdtControleur extends AsyncFragmentControleur {
 //		else {
 			chargerVueDefaut("Connexion à my.epf");
 //		}
->>>>>>> origin/new-archi
 	}
 	
 	
@@ -171,38 +157,6 @@ public class EdtControleur extends AsyncFragmentControleur {
 			} catch (JSONException e) {
 				avancement("Impossible de mapper le cours "+i, 0);
 			}
-<<<<<<< HEAD
-		}
-		int key;
-		int nbCours = 0;
-		for(int i = 0; i < mapCours.size(); i++) {
-			key = mapCours.keyAt(i);
-			ArrayList<JSONObject> lCours = mapCours.get(key);
-			for(JSONObject cours : lCours){
-//				System.out.println(cours.toString());
-				nbCours++;
-			}
-		}
-		avancement("mapping OK : "+nbCours+" cours sur "+mapCours.size()+" semaines", 55);
-		avancement("enregistrement json pref", 55);
-		MyEpfPreferencesModele prefs = (MyEpfPreferencesModele)getActivite().getPrefs();
-		/*
-		for(int i = 0; i < mapCours.size(); i++) {
-			key = mapCours.keyAt(i);
-			ArrayList<JSONObject> lCours = mapCours.get(key);
-			prefs.setCoursSemaine(key, lCours);
-		}
-		*/
-		for(int i=indexPremiereSemaine ; i<=indexDerniereSemaine ; i++){
-			System.out.println("mapCours.get("+i+")");
-			ArrayList<JSONObject> lCours = mapCours.get(i);
-			if(lCours != null){
-				prefs.setCoursSemaine(i, lCours);
-			} else {
-				prefs.setCoursSemaine(i, null);
-			}
-		}
-=======
 		}
 		int key;
 		int nbCours = 0;
@@ -234,7 +188,6 @@ public class EdtControleur extends AsyncFragmentControleur {
 			}
 		}
 		prefs.putBoolean(MyEpfPreferencesModele.KEY_EDT_DEJA_TELECHARGE_AU_MOINS_UNE_FOIS, true);
->>>>>>> origin/new-archi
 		onMapCoursMapped();
 	}
 	
@@ -309,8 +262,6 @@ public class EdtControleur extends AsyncFragmentControleur {
 	private void chargerVueDefaut(String texte) {
 		super.chargerVueDefaut();
 		((TextView)vue.findViewById(R.id.tvTitre)).setText(texte);
-<<<<<<< HEAD
-=======
 	}
 
 
@@ -319,6 +270,5 @@ public class EdtControleur extends AsyncFragmentControleur {
 		String id = prefs.getIdentifiant();
 		String mdp = Securite.decrypt(prefs.getMdp());
 		chargerVueErreur("Impossible de se connecter à my.epf.fr", "identifiant("+id+")\nmdp("+mdp+")");
->>>>>>> origin/new-archi
 	}
 }

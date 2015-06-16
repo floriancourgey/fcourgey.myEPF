@@ -27,12 +27,12 @@ import com.fcourgey.myepfnew.activite.MainActivite;
 import com.fcourgey.myepfnew.controleur.MainControleur;
 import com.joanzapata.android.iconify.Iconify;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings("deprecation")/*
 <<<<<<< HEAD:src/com/fcourgey/myepfnew/vue/DrawerVue.java
 public class DrawerVue extends ActiviteVue{
-=======
+=======*/
 public class MainVue extends ActiviteVue{
->>>>>>> origin/new-archi:src/com/fcourgey/myepfnew/vue/MainVue.java
+//>>>>>>> origin/new-archi:src/com/fcourgey/myepfnew/vue/MainVue.java
 	
 	private static final String TAG = "DrawerVue"; 
 	
@@ -47,18 +47,19 @@ public class MainVue extends ActiviteVue{
 	protected ActionBarDrawerToggle toggleBouton; // bouton toggle en haut à gauche dans l'action bar
 	@InjectView(R.id.lTitres)
 	protected ListView lTitres; // listView des titres sur la gauche : Edt, bulletin, ...
+	/*
 <<<<<<< HEAD:src/com/fcourgey/myepfnew/vue/DrawerVue.java
 	
 	public DrawerVue(MainControleur controleur) {
 		super(controleur);
 		this.controleur = controleur;
-=======
+=======*/
 	@InjectView(R.id.pbConnexionMyEpf)
 	protected ProgressBar pbConnexionMyEpf;
 	
 	public MainVue(MainControleur controleur) {
 		super(controleur);
->>>>>>> origin/new-archi:src/com/fcourgey/myepfnew/vue/MainVue.java
+//>>>>>>> origin/new-archi:src/com/fcourgey/myepfnew/vue/MainVue.java
 		this.a = (MainActivite) controleur.getActivite();
 		this.identifiant = controleur.getIdentifiant();
 		
